@@ -44,11 +44,9 @@ class MediaController {
     ])
     def index() {
 
-        String imageType = "image/png"
+        String videoType = "post.mimeType='video/quicktime'"
 
-        String videoType = "video/quicktime"
-
-        String type = ""
+        String imageType = "post.mimeType='image/png' or post.mimeType='image/jpeg'"
 
         String query = "select distinct post from Post post , Meta meta where post.id=meta.post"
 
@@ -56,14 +54,16 @@ class MediaController {
 
         if (params.type) {
 
-            if (params?.type == "image") type = imageType
+            if (params?.type == "image") {
+                query += " and (${imageType})"
+            }
 
-            if (params?.type == "video") type = videoType
-
-            query += " and post.mimeType='${type}'"
+            if (params?.type == "video") {
+                query += " and ${videoType}"
+            }
 
         } else {
-            query += " and (post.mimeType='${imageType}' or post.mimeType='${videoType}')"
+            query += " and (${imageType} or ${videoType})"
         }
 
         List posts = Post.executeQuery(query)
