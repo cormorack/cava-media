@@ -73,4 +73,12 @@ class Post {
     Meta getAttachedFile() {
         Meta.findByMetaKeyAndPost("_wp_attached_file", this)
     }
+
+    /**
+     * Returs the associtated S3 Meta
+     * @return cavamedia.Meta
+     */
+    Meta getS3() {
+        Meta.findByMetaKeyAndPost("amazonS3_info", this)
+    }
 }

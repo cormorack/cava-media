@@ -1,5 +1,6 @@
 package cavamedia
 
+import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringEscapeUtils
 import io.swagger.annotations.*
@@ -100,13 +101,19 @@ class MediaController {
     }
 
     /**
-     * Constructs individual geoJson Feature that varies depending on whether the Post is an image or video
+     * Constructs an individual geoJson Feature that varies depending on whether the Post is an image or video
      * @param post
      * @return String
      */
     private String buildFeature(Post post) {
 
         boolean isVideo = post.mimeType == "video/quicktime"
+
+        String uri = post.guid
+
+        if (!isVideo) {
+            uri = constructURL(post)
+        }
 
         def jb = new JsonBuilder()
 
@@ -121,8 +128,10 @@ class MediaController {
             properties {
                 title post.title
                 type post.mimeType
-                url post.guid
                 excerpt StringEscapeUtils.escapeHtml(post.excerpt)
+                url uri
+
+                // If it's a video, add the video-specific Metas
                 if (isVideo) {
                     if (post.videoURL) {
                         videoURL post.videoURL.metaValue
@@ -134,5 +143,27 @@ class MediaController {
             }
         }
         jb.toString()
+    }
+
+    /**
+     * Replace the default uri with the S3 uri
+     * @param uri
+     * @return String
+     */
+    private String constructURL(Post post) {
+
+        String uri = post.guid
+
+        if(post?.s3?.metaValue) {
+
+            String serializedData = post.s3.metaValue
+
+            de.ailis.pherialize.MixedArray list = Pherialize.unserialize(serializedData).toArray()
+
+            if (list.get("key")) {
+                uri = "https://s3-us-west-2.amazonaws.com/media.ooica.net/" + list.get("key").toString()
+            }
+        }
+        return uri
     }
 }
