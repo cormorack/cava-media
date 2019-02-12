@@ -35,50 +35,11 @@ class Post {
     }
 
     /**
-     * Returns the associated latitude Meta
+     * Finds and returns a Meta by metaKey
+     * @param key
      * @return cavamedia.Meta
      */
-    Meta getLatitude() {
-        Meta.findByMetaKeyAndPost("latitude", this)
-    }
-
-    /**
-     * Returns the associated longitude Meta
-     * @return cavamedia.Meta
-     */
-    Meta getLongitude() {
-        Meta.findByMetaKeyAndPost("longitude", this)
-    }
-
-    /**
-     * Returns the associated video URL Meta
-     * @return cavamedia.Meta
-     */
-    Meta getVideoURL() {
-        Meta.findByMetaKeyAndPost("_jwppp-video-url-1", this)
-    }
-
-    /**
-     * Returns the associated video poster image Meta
-     * @return cavamedia.Meta
-     */
-    Meta getVideoPoster() {
-        Meta.findByMetaKeyAndPost("_jwppp-video-image-1", this)
-    }
-
-    /**
-     * Returns the associated attached file Meta
-     * @return cavamedia.Meta
-     */
-    Meta getAttachedFile() {
-        Meta.findByMetaKeyAndPost("_wp_attached_file", this)
-    }
-
-    /**
-     * Returs the associtated S3 Meta
-     * @return cavamedia.Meta
-     */
-    Meta getS3() {
-        Meta.findByMetaKeyAndPost("amazonS3_info", this)
+    Meta getMetaValue(String key) {
+        Meta.findByMetaKeyAndPost(key, this)
     }
 }

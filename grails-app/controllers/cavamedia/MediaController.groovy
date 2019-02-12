@@ -10,6 +10,10 @@ class MediaController {
 
     static namespace = 'v1'
 
+    private final String baseURL = "https://s3-us-west-2.amazonaws.com/media.ooica.net/"
+
+    def postService
+
     /**
      * Map for Testing
      */
@@ -45,29 +49,7 @@ class MediaController {
     ])
     def index() {
 
-        String videoType = "post.mimeType='video/quicktime'"
-
-        String imageType = "post.mimeType='image/png' or post.mimeType='image/jpeg'"
-
-        String query = "select distinct post from Post post , Meta meta where post.id=meta.post"
-
-        query += " and (meta.metaKey='latitude' and meta.metaValue != '')"
-
-        if (params.type) {
-
-            if (params?.type == "image") {
-                query += " and (${imageType})"
-            }
-
-            if (params?.type == "video") {
-                query += " and ${videoType}"
-            }
-
-        } else {
-            query += " and (${imageType} or ${videoType})"
-        }
-
-        List posts = Post.executeQuery(query)
+        List posts = postService.getPosts(params.type)
 
         response.setContentType("text/json")
 
@@ -111,8 +93,28 @@ class MediaController {
 
         String uri = post.guid
 
+        String thumb, lat, lon, vUrl, vPoster = ""
+
+        if (post.getMetaValue("latitude") && post.getMetaValue("longitude")) {
+
+            lat = post.getMetaValue("latitude").metaValue
+
+            lon = post.getMetaValue("longitude").metaValue
+        }
+
         if (!isVideo) {
             uri = constructURL(post)
+            thumb = constructThumbnail(post)
+        }
+
+        // If it's a video, add the video-specific Metas
+        if (isVideo) {
+            if (post.getMetaValue("_jwppp-video-url-1")) {
+                vUrl = post.getMetaValue("_jwppp-video-url-1").metaValue
+            }
+            if (post.getMetaValue("_jwppp-video-image-1")) {
+                vPoster = post.getMetaValue("_jwppp-video-image-1").metaValue
+            }
         }
 
         def jb = new JsonBuilder()
@@ -121,8 +123,8 @@ class MediaController {
             type "Feature"
             geometry {
                 type "Point"
-                if (post.latitude && post.longitude) {
-                    coordinates([post.longitude.metaValue, post.latitude.metaValue])
+                if (lat && lon) {
+                    coordinates([lon, lat])
                 }
             }
             properties {
@@ -130,14 +132,15 @@ class MediaController {
                 type post.mimeType
                 excerpt StringEscapeUtils.escapeHtml(post.excerpt)
                 url uri
-
-                // If it's a video, add the video-specific Metas
+                if (!isVideo) {
+                    thumbnail thumb
+                }
                 if (isVideo) {
-                    if (post.videoURL) {
-                        videoURL post.videoURL.metaValue
+                    if (vUrl) {
+                        videoURL vUrl
                     }
-                    if (post.videoPoster) {
-                        videoPoster post.videoPoster.metaValue
+                    if (vPoster) {
+                        videoPoster vPoster
                     }
                 }
             }
@@ -154,16 +157,107 @@ class MediaController {
 
         String uri = post.guid
 
-        if(post?.s3?.metaValue) {
+        if(!post?.getMetaValue("amazonS3_info")?.metaValue) {
 
-            String serializedData = post.s3.metaValue
-
-            de.ailis.pherialize.MixedArray list = Pherialize.unserialize(serializedData).toArray()
-
-            if (list.get("key")) {
-                uri = "https://s3-us-west-2.amazonaws.com/media.ooica.net/" + list.get("key").toString()
-            }
+            log.error("No amazonS3_info found")
+            return uri
         }
-        return uri
+
+        String serializedData = getSerializedData(post.getMetaValue("amazonS3_info").metaValue, "key")
+
+        if (serializedData) return baseURL + serializedData
+
+        else return uri
+    }
+
+    /**
+     * Todo: this method needs the unique AWS ID in order to be accurate
+     * @param post
+     * @return
+     */
+    private String constructThumbnail(Post post) {
+
+        String data = ""
+
+        if (!post?.getMetaValue("_wp_attachment_metadata")?.metaValue) {
+
+            log.error("No _wp_attachment_metadata found")
+            return data
+        }
+
+        if(!post?.getMetaValue("amazonS3_info")?.metaValue) {
+
+            log.error("No amazonS3_info found")
+            return data
+        }
+
+        String s3Data = getSerializedData(post.getMetaValue("amazonS3_info").metaValue, "key")
+        
+        if (!s3Data) {
+            return data
+        }
+
+        String s3Id = extractID(s3Data)
+
+        String sizes = getSerializedData(post.getMetaValue("_wp_attachment_metadata").metaValue, "sizes")
+
+        if (!sizes) {
+            return data
+        }
+
+        data = sizes.split("medium_large=")[1]
+
+        String target = "{file="
+
+        data = data.substring(data.indexOf(target) + target.size()).split(",")[0]
+
+        return baseURL + "wp-content/uploads/" + s3Id + "/" + data
+    }
+
+    /**
+     * Given a url like:
+     * https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/01/02232110/flatfish_shr_sm_sulis20180625215451.jpg
+     * extract the S3 ID (/2019/01/02232110)
+     * @param url
+     * @return
+     */
+    private String extractID(String url) {
+
+        String a,b,c,d = ""
+
+        a = url.split("uploads")[1]
+
+        if (a) b = a.substring(a.indexOf("/"), +9)
+
+        if (b) c = a - b
+
+        if (c) d = c.split("/")[0]
+
+        if (d) return b.drop(1) + d
+
+        else return ""
+    }
+
+    /**
+     * Returns deserialized data
+     * @param data
+     * @param key
+     * @return deserialized String
+     */
+    private String getSerializedData(String data, String key) {
+
+        de.ailis.pherialize.MixedArray list = Pherialize.unserialize(data)?.toArray()
+
+        if (!list) {
+            log.error("Data could not be unserialized")
+            return ""
+        }
+
+        if (!list.get(key)) {
+            log.error("Data could not be looked up by key")
+            return ""
+        }
+
+        return list.get(key).toString()
     }
 }
