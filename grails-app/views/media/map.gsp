@@ -65,40 +65,15 @@
         background: #3074a4;
     }
 
-    #containerWrapper {
-        max-width: 600px;
-        max-height: 600px;
-        visibility: hidden;
-        z-index: 10;
-        background-color: black;
-        background: rgba(0, 0, 0, 0.75);
-        color: #fff;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin-left: -300px;
-        margin-top: -170px;
-        width: 600px;
-        height: 340px;
-    }
 
-    #close_button {
-        width: 100%;
-        visibility: hidden;
-        z-index: 10;
-    }
     </style>
-    <script type="text/javascript" src="<g:resource dir='jwplayer_new' file='jwplayer.js' />"></script>
+    <script type="text/javascript" src="https://interactiveoceans.washington.edu/jwplayer_new/jwplayer.js"></script>
     <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
 </head>
 
 <body>
-    <div id='menu'></div>
-    <div id='map'></div>
-    <div id="containerWrapper">
-        <div id="container">Loading the player... </div>
-        <br/><button id="close_button" onclick="removeElement()">Close</button>
-    </div>
+<div id='menu'></div>
+<div id='map'></div>
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2R0aG9tYXMiLCJhIjoiY2l6a2Njc3VyMDIzYjMzb2R5cmtndjk5YiJ9.vXN6i1-qOJpU1aA5EUR9bQ';
@@ -112,55 +87,147 @@
 
     map.on('load', function() {
 
-        var videoURL = 'http://localhost:8080/media/videos';
+        var videoURL = 'http://localhost:8080/api/v1/media?type=video';
 
-        var imageURL = 'http://localhost:8080/media/images';
+        var imageURL = 'http://35.166.196.47:8080/CavaMedia/api/v1/media?type=image';
+
+        map.addSource('imageData', { type: 'geojson', data: imageURL});
+
+        map.addLayer({
+            id: 'images',
+            type: 'circle',
+            source: 'imageData',
+            interactive:true,
+            paint: {
+                "circle-color": "#11b4da",
+                "circle-radius": 4,
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#fff"
+            }
+        });
+
+        var imageRollOverPopup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: true
+        });
+
+        map.on('mouseenter', 'images', function(e) {
+
+            map.getCanvas().style.cursor = 'pointer';
+
+            imageRollOverPopup.setLngLat(e.features[0].geometry.coordinates)
+                .setHTML(e.features[0].properties.title)
+                .addTo(map);
+        });
+
+        map.on('mouseleave', 'images', function() {
+            map.getCanvas().style.cursor = '';
+            imageRollOverPopup.remove();
+        });
+
+        map.on('click', 'images', function (e) {
+
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            var coordinates = e.features[0].geometry.coordinates.slice();
+
+            var description = e.features[0].properties.excerpt;
+
+            var imageURL = e.features[0].properties.url;
+
+            var imageTitle = e.features[0].properties.title;
+
+            var thumbnail = e.features[0].properties.thumbnail;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            var imageHTML = '<h3>' + imageTitle + '</h3><a href=\"' + imageURL + '\"><img src=\"' + thumbnail + '\" width=\"580px\"></a>';
+
+            var imagePopup = new mapboxgl.Popup()
+            imagePopup.setLngLat(coordinates)
+                .setHTML(imageHTML + '<p>' + description + '</p>')
+                .addTo(map);
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'images', function () {
+            map.getCanvas().style.cursor = '';
+        });
 
         map.addSource('videos', { type: 'geojson', data: videoURL});
 
-        map.addSource('images', { type: 'geojson', data: imageURL});
-
         map.addLayer({
             id: 'videos',
-            //type: 'symbol',
             type: 'circle',
             source: 'videos',
             interactive:true,
             paint: {
-                'circle-radius': 8,
-                'circle-color': 'rgba(55,148,179,1)'
-            },
-            "layout": {
-                /*"icon-image": "{icon}-15",
-                "text-field": "{title}",
-                "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                "text-offset": [0, 0.6],
-                "text-anchor": "top",
-                "icon-allow-overlap": true*/
-                //'visibility': 'visible'
+                "circle-color": "#32cd32",
+                "circle-radius": 4,
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#fff"
             }
         });
 
-        map.addLayer({
-            id: 'images',
-            //type: 'symbol',
-            type: 'circle',
-            source: 'images',
-            interactive:true,
-            paint: {
-                'circle-radius': 8,
-                'circle-color': 'rgba(55,148,179,1)'
-            },
-            "layout": {
-                /*"icon-image": "{icon}-15",
-                "text-field": "{title}",
-                "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                "text-offset": [0, 0.6],
-                "text-anchor": "top",
-                "icon-allow-overlap": true*/
-                //'visibility': 'visible'
-            }
+        var videoRollOverPopup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: true
         });
+
+        map.on('mouseenter', 'videos', function(e) {
+
+            map.getCanvas().style.cursor = 'pointer';
+
+            videoRollOverPopup.setLngLat(e.features[0].geometry.coordinates)
+                .setHTML(e.features[0].properties.title)
+                .addTo(map);
+        });
+
+        map.on('mouseleave', 'videos', function() {
+            map.getCanvas().style.cursor = '';
+            videoRollOverPopup.remove();
+        });
+
+        map.on('click', 'videos', function (e) {
+
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            var coordinates = e.features[0].geometry.coordinates.slice();
+
+            var description = e.features[0].properties.excerpt;
+
+            var imageTitle = e.features[0].properties.title;
+
+            var poster = e.features[0].properties.videoPoster;
+
+            var videoURL = e.features[0].properties.videoURL;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            var imageHTML = '<h3>' + imageTitle + '</h3><div id=\"container\">Loading the player...</div><p>' + description + '</p>';
+
+            var videoPopup = new mapboxgl.Popup()
+            videoPopup.setLngLat(coordinates)
+            videoPopup.setHTML(imageHTML);
+            videoPopup.addTo(map)
+
+            // Set up the video player
+            jwplayer("container").setup({
+                file: videoURL,
+                width:"580px",
+                height: "326px",
+                aspectratio: "16:9",
+                'image': poster
+            });
+        });
+
 
         var toggleableLayerIds = [ 'videos', 'images' ];
 
@@ -192,94 +259,6 @@
             var layers = document.getElementById('menu');
             layers.appendChild(link);
         }
-
-        // Create a popup, but don't add it to the map yet.
-        /*var popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false
-        });*/
-
-        map.on('click', 'videos', function (e) {
-
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
-
-            var coordinates = e.features[0].geometry.coordinates.slice();
-
-            var description = e.features[0].properties.excerpt;
-
-            var imageTitle = e.features[0].properties.title;
-
-            var poster = e.features[0].properties.videoPoster;
-
-            var videoURL = e.features[0].properties.videoURL;
-
-            // Ensure that if the map is zoomed out such that multiple
-            // copies of the feature are visible, the popup appears
-            // over the copy being pointed to.
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            // Populate the popup and set its coordinates
-            // based on the feature found.
-            //var popup = new mapboxgl.Popup()
-            //popup.setLngLat(coordinates)
-            //popup.setHTML(jwplayer("container").setup({ file:videoURL, width:"580px", aspectratio:"16:9", 'image':poster }))
-            //popup.addTo(map)
-            document.getElementById("containerWrapper").style.display = "visible";
-            document.getElementById("close_button").style.display = "visible";
-            jwplayer("container").setup({ file:videoURL, width: "580px", aspectratio:"16:9", 'image':poster });
-        });
-
-        map.on('click', 'images', function (e) {
-
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
-
-            var coordinates = e.features[0].geometry.coordinates.slice();
-
-            var description = e.features[0].properties.excerpt;
-
-            var imageURL = e.features[0].properties.url;
-
-            var imageTitle = e.features[0].properties.title;
-
-            // Ensure that if the map is zoomed out such that multiple
-            // copies of the feature are visible, the popup appears
-            // over the copy being pointed to.
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            var imageHTML = '<a href=\"' + imageURL + '\"><img src=\"' + imageURL + '\" width=\"580px\"></a>';
-
-            // Populate the popup and set its coordinates
-            // based on the feature found.
-            var popup = new mapboxgl.Popup()
-            popup.setLngLat(coordinates)
-            popup.setHTML(imageHTML + description);
-            popup.addTo(map)
-        });
-
-        // Change the cursor to a pointer when the mouse is over the places layer.
-        map.on('mouseenter', 'videos', function () {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-
-        // Change it back to a pointer when it leaves.
-        map.on('mouseleave', 'videos', function () {
-            map.getCanvas().style.cursor = '';
-        });
-
-        map.on('mouseenter', 'images', function () {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-
-        // Change it back to a pointer when it leaves.
-        map.on('mouseleave', 'images', function () {
-            map.getCanvas().style.cursor = '';
-        });
 
         /*map.addLayer({
             'id': 'wms-test-layer',
@@ -328,22 +307,6 @@
 
 </script>
 
-
-%{--<div id="containerWrapper">
-
-    <div id="container" class="imgbox">Loading the player... </div>
-    <br/><button onclick="removeElement()">Close</button>
-</div>--}%
-
-
-%{--<script type="text/javascript">
-    jwplayer("container").setup({
-        autostart: false,
-        width: "100%",
-        aspectratio: "16:9",
-        'file':'https://stream.ocean.washington.edu:443/rsn/mp4:j1058highlightshd1080p.mov/playlist.m3u8'
-    });
-</script>--}%
 
 </body>
 
