@@ -6,6 +6,10 @@ class Post {
 
     String title, excerpt, type, mimeType, guid, status
 
+    Set<Meta> metas
+
+    static hasMany = [metas: Meta]
+
     static mapping = {
         table "wp_posts"
         version false
@@ -18,6 +22,12 @@ class Post {
         status column: "post_status"
         cache true
     }
+
+    /*List<Meta> getMetas() {
+        def metas = Meta.withCriteria {
+            eq("post", this)
+        }
+    }*/
 
     /**
      * Returns associated Metas that have coordinates

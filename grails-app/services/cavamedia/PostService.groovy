@@ -7,30 +7,38 @@ class PostService {
 
     List getPosts(String type) {
 
-        String videoType = "post.mimeType='video/quicktime'"
+        def posts = Post.withCriteria {
 
-        String imageType = "post.mimeType='image/png' or post.mimeType='image/jpeg'"
+            if (type) {
 
-        def query = StringBuilder.newInstance()
+                if (type == "image") {
+                    or {
+                        eq("mimeType", "image/png")
+                        eq("mimeType", "image/jpeg")
+                    }
+                }
 
-        query << "select distinct post from Post post , Meta meta where post.id=meta.post"
+                if (type == "video") {
+                    eq("mimeType", "video/quicktime")
+                }
 
-        query << " and (meta.metaKey='latitude' and meta.metaValue != '')"
+            } else {
 
-        if (type) {
-
-            if (type == "image") {
-                query << " and (${imageType})"
+                or {
+                    eq("mimeType", "video/quicktime")
+                    or {
+                        eq("mimeType", "image/png")
+                        eq("mimeType", "image/jpeg")
+                    }
+                }
             }
 
-            if (type == "video") {
-                query << " and ${videoType}"
+            metas {
+                and {
+                    eq("metaKey", "latitude")
+                    //eq("metaKey", "longitude")
+                }
             }
-
-        } else {
-            query << " and (${imageType} or ${videoType})"
         }
-
-        List posts = Post.executeQuery(query.toString())
     }
 }

@@ -48,6 +48,7 @@ dependencies {
     runtime "com.h2database:h2"
     runtime 'mysql:mysql-connector-java:5.1.29'
     testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-datastore-rest-client"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"

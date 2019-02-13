@@ -114,6 +114,13 @@ environments:
             username: root
             password: root
             url: jdbc:mysql://localhost:8889/Cava
+    test:
+        dataSource:
+            logSql: true
+            readOnly: true
+            username: root
+            password: root
+            url: jdbc:mysql://localhost:8889/Cava
     production:
         dataSource:
             readOnly: true
