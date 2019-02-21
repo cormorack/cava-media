@@ -9,6 +9,11 @@ class PostService {
 
         def posts = Post.withCriteria {
 
+            metas {
+                eq("metaKey", "latitude")
+                ne("metaValue", "")
+            }
+
             if (type) {
 
                 if (type == "image") {
@@ -30,13 +35,6 @@ class PostService {
                         eq("mimeType", "image/png")
                         eq("mimeType", "image/jpeg")
                     }
-                }
-            }
-
-            metas {
-                and {
-                    eq("metaKey", "latitude")
-                    //eq("metaKey", "longitude")
                 }
             }
         }

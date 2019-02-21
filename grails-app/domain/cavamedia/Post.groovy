@@ -23,12 +23,6 @@ class Post {
         cache true
     }
 
-    /*List<Meta> getMetas() {
-        def metas = Meta.withCriteria {
-            eq("post", this)
-        }
-    }*/
-
     /**
      * Returns associated Metas that have coordinates
      * @return List
