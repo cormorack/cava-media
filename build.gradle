@@ -7,6 +7,7 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.1"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
+        //classpath "com.bmuschko:gradle-docker-plugin:3.2.1"
     }
 }
 
@@ -15,7 +16,7 @@ group "cavamedia"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
-apply plugin:"war"
+//apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
@@ -46,7 +47,8 @@ dependencies {
     profile "org.grails.profiles:web"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.1"
     runtime "com.h2database:h2"
-    runtime 'mysql:mysql-connector-java:5.1.29'
+    //runtime 'mysql:mysql-connector-java:5.1.29'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-datastore-rest-client"
     testCompile "org.grails.plugins:geb"
@@ -63,4 +65,19 @@ bootRun {
 assets {
     minifyJs = true
     minifyCss = true
+}
+
+ext {
+    dockerTag = "cavamedia/${project.name}:${project.version}".toLowerCase()
+    dockerBuildDir = mkdir("${buildDir}/docker")
+}
+
+task prepareDocker(type: Copy, dependsOn: assemble) {
+    description = 'Copy files from src/main/docker and application jar to Docker temporal build directory'
+    group = 'Docker'
+
+    from 'src/main/docker'
+    from project.jar
+
+    into dockerBuildDir
 }

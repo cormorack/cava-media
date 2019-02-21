@@ -205,6 +205,10 @@ class MediaController {
             return data
         }
 
+        if (sizes.split("medium_large=").length <= 1) {
+            return data
+        }
+
         data = sizes.split("medium_large=")[1]
 
         String target = "{file="
