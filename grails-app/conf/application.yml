@@ -103,7 +103,7 @@ hibernate:
 dataSource:
     pooled: true
     jmxExport: true
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
 environments:
@@ -111,12 +111,11 @@ environments:
         dataSource:
             logSql: true
             readOnly: true
-#            username: root
-#            password: root
-#            url: jdbc:mysql://localhost:8889/Cava
             username: cavauser
             password: iHazN0i0@
-            url: jdbc:mysql://localhost:3306/cavaweb
+            url: jdbc:mysql://localhost:8889/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+            #jndiName: java:comp/env/Cava
+            #url: jdbc:mysql://host.docker.internal:8889/cavaweb
     test:
         dataSource:
             logSql: true
@@ -128,8 +127,5 @@ environments:
         dataSource:
             readOnly: true
             dbCreate: none
-            #jndiName: java:comp/env/Cava
-            username: cavauser
-            password: iHazN0i0@
-            url: jdbc:mysql://mysqldb:3306/cavaweb
+            jndiName: java:comp/env/Cava
 
