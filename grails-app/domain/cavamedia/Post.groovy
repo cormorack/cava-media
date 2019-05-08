@@ -4,7 +4,7 @@ class Post {
 
     Date date
 
-    String title, excerpt, type, mimeType, guid, status
+    String title, excerpt, type, mimeType, guid, status, content
 
     Set<Meta> metas
 
@@ -20,6 +20,7 @@ class Post {
         date column: "post_date"
         mimeType column: "post_mime_type"
         status column: "post_status"
+        content column: "post_content"
         cache true
     }
 

@@ -1,3 +1,23 @@
+filesDir = "/files"
+streamURL = "stream.ocean.washington.edu"
+videoPrefix = "https://${streamURL}:443/rsn/mp4:"
+videoSuffix = "/playlist.m3u8"
+maxFileSize = 1000 * 1024 * 100 //100 MB
+cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
+cavaWpUser = "io"
+
+environments {
+
+    production {
+        cavaWpRestUrl = "https://ooica.net/"
+        streamUpload = "http://stream.ocean.washington.edu/streamService/saveFile"
+    }
+    development {
+        cavaWpRestUrl = "http://localhost:8888/"
+        streamUpload = "http://localhost:8080/Stream/streamService/saveFile"
+    }
+}
+
 swagger {
     info {
         description = "Cava Media API Documentation"
