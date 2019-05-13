@@ -2,11 +2,12 @@
 <html>
     <head>
         <title></title>
-        <meta name="layout" content="main" />
     </head>
 
     <body>
-        <h2>Your videos have been uploaded!</h2>
+        <g:if test="${flash.message}">
+            <h2>${flash.message}</h2>
+        </g:if>
         <h3><g:link controller="videoUpload" action="videoForm">Upload Another</g:link> </h3>
     </body>
 </html>

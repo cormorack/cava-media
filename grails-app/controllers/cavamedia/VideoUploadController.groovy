@@ -43,7 +43,18 @@ class VideoUploadController {
 
                 File renamedFile = new File("$path/$name")
 
-                mfile.transferTo(renamedFile)
+                try {
+
+                    if(!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
+
+                    mfile.transferTo(renamedFile)
+
+                } catch (Exception e) {
+                    log.error("An error occurred in ${controllerName}.${actionName} because of ${e.getCause()}")
+                    flash.message = "The video could not be uploaded"
+                    render(view:'videoForm')
+                    return
+                }
 
                 String[] s = name.split("[/]")
 
@@ -69,14 +80,45 @@ class VideoUploadController {
                 }
             }
         }
-        restService.doUploadProcess(post, upload, context)
+        if (restService.doUploadProcess(post, upload, context)) {
+
+            flash.message = "Your video(s) have been uploaded!"
+        }
+        else flash.message = "Your video(s) could not be uploaded!"
 
         render view: "uploaded"
     }
 
-    private void notFound() {
 
-        render status: NOT_FOUND
+    /**
+     *
+     * @param mfile
+     * @return
+     */
+    private addFile(MultipartFile mfile) {
+
+        String name = fileService.stripCharacters(mfile.getOriginalFilename())
+
+        java.io.File renamedFile = null
+
+        def path = getServletContext().getRealPath(config.filesDir)
+
+        renamedFile = new java.io.File("$path/$name")
+
+        if(renamedFile) {
+
+            try {
+
+                if(!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
+
+                mfile.transferTo(renamedFile)
+
+            } catch (Exception e) {
+                log.error("An error occurred in ${controllerName}.${actionName} because of ${e.getCause()}")
+                return null
+            }
+        }
+        return renamedFile
     }
 
     private Boolean checkFile(MultipartFile mfile) {

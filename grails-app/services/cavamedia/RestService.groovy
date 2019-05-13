@@ -39,9 +39,10 @@ class RestService {
             return false
         }
 
-        /*if ( !uploadVideo(post, context, upload)) {
+        if ( !uploadVideo(post, context, upload)) {
             log.error("The videos could not be uploaded to the WP API")
-        }*/
+            return false
+        }
         return true
     }
 
@@ -52,33 +53,19 @@ class RestService {
      */
     boolean addToStreamingServer(Upload upload) {
 
-        File dFile = upload.desktopVideo
+        List videos = []
 
-        File pFile = upload.phoneVideo
+        if (upload.desktopVideo) videos.add(upload.desktopVideo)
 
-        Date date = new Date()
+        if (upload.phoneVideo) videos.add(upload.phoneVideo)
 
         String url = "http://stream.ocean.washington.edu/streamService/newSaveFile"
 
-        if (dFile) {
+        for (File video in videos) {
 
-            RestResponse resp = postFileToApi(url, dFile, date, false)
+            RestResponse resp = postFileToApi(url, video, false, false)
 
-            dFile.delete()
-
-            println resp.status
-
-            if (resp?.status != 200) {
-                log.error(resp.json.toString())
-                return false
-            }
-        }
-
-        if (pFile) {
-
-            RestResponse resp = postFileToApi(url, pFile, date, false)
-
-            pFile.delete()
+            video.delete()
 
             if (resp?.status != 200) {
                 log.error(resp.json.toString())
@@ -148,11 +135,11 @@ class RestService {
         // Post the dummy file to WP
         String url = "${apiUrl()}" + "${restURI}media"
 
-        RestResponse resp = postFileToApi(url, tmpFile)
+        RestResponse resp = postFileToApi(url, tmpFile, true, true)
 
         tmpFile.delete()
 
-        if (!resp.json.id) {
+        if (!resp?.json?.id) {
             log.error("A valid JSON identifier was not found in the response: " + resp.json)
             return false
         }
@@ -187,7 +174,7 @@ class RestService {
         }
 
         // Add streaming video metas
-        if(upload) {
+        if (upload) {
             if (upload.desktopVideoURL) metaMap.put("_jwppp-video-url-1", upload.desktopVideoURL)
 
             if (upload.phoneVideoURL) metaMap.put("_jwppp-1-source-1-url", upload.phoneVideoURL)
@@ -203,15 +190,18 @@ class RestService {
         Closure json = {
             title = post.title
             description = jwShortcode ?: post.content
-            //caption = post.excerpt
-            //date = DateUtils.formatDate(post.date, "yyyy-MM-dd HH:mm:ss")
+            caption = post.content
             meta = metaMap
         }
 
         RestResponse resp = postToApi(url, json)
 
-        if (resp.status != 200) {
-            log.error(resp.json.toString() + " Problem File id: ${id}")
+        /*if (resp?.status != 200) {
+            log.error(resp?.json?.toString())
+            return false
+        }*/
+        if ( !resp?.status) {
+            log.error(resp?.json?.toString())
             return false
         }
         return true
@@ -228,9 +218,9 @@ class RestService {
 
         String url = "${apiUrl()}" + "${restURI}media"
 
-        RestResponse resp = postFileToApi(url, file)
+        RestResponse resp = postFileToApi(url, file, true, true)
 
-        if (!resp.json.id) {
+        if (!resp?.json?.id) {
             log.error("A valid JSON identifier was not found in the response")
             return ""
         }
@@ -277,26 +267,19 @@ class RestService {
      * @param metaMap
      * @return a grails.plugins.rest.client.RestResponse
      */
-    private RestResponse postFileToApi(String url, File jFile, Date theDate=null, boolean authenticate=true) {
+    private RestResponse postFileToApi(String url, File jFile, boolean authenticate=false, boolean useSSL=false) {
 
         def rest = new RestBuilder()
         RestResponse resp = null
-        //disableSSLCheck()
-
-        println "url is ${url}"
+        if (useSSL) disableSSLCheck()
 
         try {
 
             resp = rest.post(url) {
 
-                //if (authenticate) auth defaultWpUser, defaultPassword
+                if (authenticate) auth defaultWpUser, defaultPassword
                 contentType "multipart/form-data"
                 file = jFile
-                /*if (theDate) {
-                    json {
-                        date = DateUtils.formatDate(theDate, "yyyy-MM-dd HH:mm:ss")
-                    }
-                }*/
             }
         } catch (Exception e) {
             log.error(e.printStackTrace())
