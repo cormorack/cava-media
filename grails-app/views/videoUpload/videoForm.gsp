@@ -33,7 +33,17 @@
 
 <body>
     <h1>Upload Video</h1>
-    <g:uploadForm method="post" controller="videoUpload" action="uploadVideo" name="upload" onsubmit="validate();">
+    <g:if test="${flash.invalidToken}">
+        Don't click the upload button twice!
+    </g:if>
+    <g:uploadForm
+            method="post"
+            controller="videoUpload"
+            action="uploadVideo"
+            name="upload"
+            useToken="true"
+            onsubmit="validate();"
+    >
         <div class="dialog">
             <table>
                 <tbody>
@@ -50,9 +60,7 @@
                             <label for="title">Required Description:</label>
                         </td>
                         <td valign="top">
-                            <textarea id="content" name="content" cols="18" rows="4">
-
-                            </textarea>
+                            <textarea id="content" name="content" cols="18" rows="4"></textarea>
                         </td>
                     </tr>
                     <tr class="prop">

@@ -1,8 +1,9 @@
 package cavamedia
 
-class Upload {
 
-    String desktopVideoURL, phoneVideoURL
+class Upload implements grails.validation.Validateable {
+
+    String desktopVideoURL, phoneVideoURL, title, content
 
     File desktopVideo, phoneVideo, posterImage
 }

@@ -2,6 +2,10 @@ package cavamedia
 
 import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
+import grails.transaction.Transactional
+import grails.util.Holders
+import grails.util.Environment
+import org.springframework.beans.factory.annotation.Value
 
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.HttpsURLConnection
@@ -10,20 +14,19 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.servlet.ServletContext
 
-import grails.transaction.Transactional
-import grails.util.Holders
-import grails.util.Environment
-
 @Transactional(readOnly = true)
 class RestService {
 
     def config = Holders.config
 
-    //private String defaultWpUser = config.cavaUser
-    private String defaultWpUser = "io"
-    //private String defaultPassword = config.cavaWpPassword
-    private String defaultPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
+    @Value('${username}')
+    private String defaultWpUser //= config.cavaWpUser
+
+    @Value('${password}')
+    private String defaultPassword //= config.cavaWpPassword
+
     private final String restURI = "wp-json/wp/v2/"
+    private final String streamURL = "http://stream.ocean.washington.edu/streamService/newSaveFile"
 
     /**
      *
@@ -32,14 +35,14 @@ class RestService {
      * @param context
      * @return
      */
-    boolean doUploadProcess(Post post, Upload upload, ServletContext context) {
+    boolean doUploadProcess(Upload upload, ServletContext context) {
 
         if ( !addToStreamingServer(upload)) {
             log.error("The videos could not be uploaded to the streaming server")
             return false
         }
 
-        if ( !uploadVideo(post, context, upload)) {
+        if ( !uploadVideo(context, upload)) {
             log.error("The videos could not be uploaded to the WP API")
             return false
         }
@@ -59,11 +62,9 @@ class RestService {
 
         if (upload.phoneVideo) videos.add(upload.phoneVideo)
 
-        String url = "http://stream.ocean.washington.edu/streamService/newSaveFile"
-
         for (File video in videos) {
 
-            RestResponse resp = postFileToApi(url, video, false, false)
+            RestResponse resp = postFileToApi(streamURL, video, false, false)
 
             video.delete()
 
@@ -82,7 +83,7 @@ class RestService {
      * @param values
      * @return calls updateFile() to add metadata
      */
-    boolean uploadVideo(Post post, ServletContext context, Upload upload) {
+    boolean uploadVideo(ServletContext context, Upload upload) {
 
         File bFile = upload.desktopVideo
 
@@ -144,7 +145,7 @@ class RestService {
             return false
         }
 
-        return updateFile(post, resp.json.id, upload)
+        return updateFile(resp.json.id, upload)
     }
 
     /**
@@ -154,7 +155,7 @@ class RestService {
      * @param values
      * @return
      */
-    boolean updateFile(Post post, Integer id, Upload upload) {
+    boolean updateFile(Integer id, Upload upload) {
 
         Integer fileId = id
 
@@ -181,16 +182,16 @@ class RestService {
 
             if (posterImageURL) metaMap.put("_jwppp-video-image-1", posterImageURL)
 
-            metaMap.put("_jwppp-video-title-1", post.title)
+            metaMap.put("_jwppp-video-title-1", upload.title)
 
-            jwShortcode = '[jwp-video="1"]' + "\n" + post.content
+            jwShortcode = '[jwp-video="1"]' + "\n" + upload.content
         }
 
 
         Closure json = {
-            title = post.title
-            description = jwShortcode ?: post.content
-            caption = post.content
+            title = upload.title
+            description = jwShortcode ?: upload.content
+            caption = upload.content
             meta = metaMap
         }
 

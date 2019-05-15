@@ -45,7 +45,10 @@ ENV DBNAME ''
 
 # Setup Tomcat configuration files
 COPY src/backend/CavaMedia/docker/context.xml $CATALINA_HOME/conf/context.xml
-COPY src/backend/web.xml $CATALINA_HOME/conf/web.xml
+
+COPY src/backend/CavaMedia/docker/server.xml $CATALINA_HOME/conf/server.xml
+
+COPY src/backend/CavaMedia/docker/web.xml $CATALINA_HOME/conf/web.xml
 
 COPY src/backend/CavaMedia/docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
 

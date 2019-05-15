@@ -4,6 +4,8 @@ import javax.servlet.ServletContext
 import org.springframework.web.multipart.MultipartFile
 import static org.springframework.http.HttpStatus.*
 import grails.util.Holders
+import org.apache.commons.io.FilenameUtils
+
 
 class VideoUploadController {
 
@@ -13,31 +15,47 @@ class VideoUploadController {
     static allowedMethods = [uploadVideo:'POST']
 
     /**
-     *
+     * Forwards to the video upload page
      */
     def videoForm() { }
 
     /**
-     *
-     * @return
+     * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API
+     * @param upload (simple DTO)
+     * @return Message regarding the success or failure of the upload
      */
-    def uploadVideo() {
+    def uploadVideo(Upload upload) {
 
-        Post post = new Post(params)
+        withForm {
 
-        Upload upload = new Upload()
+            ServletContext context = getServletContext()
 
-        ServletContext context = getServletContext()
+            String filesDir = config.filesDir
 
-        String filesDir = config.filesDir
+            String path = context.getRealPath(filesDir)
 
-        String path = context.getRealPath(filesDir)
+            request.getFileNames().each {
 
-        request.getFileNames().each {
+                MultipartFile mfile = request.getFile(it)
 
-            MultipartFile mfile = request.getFile(it)
+                if (!mfile || mfile.isEmpty()) {
+                    flash.message = "A required file was not selected"
+                    render(view:'videoForm')
+                    return
+                }
 
-            if ( !mfile.isEmpty()) {
+                if (checkFileSize(mfile.getSize())) {
+
+                    flash.message = "Your file: ${mfile.getOriginalFilename()} exceeds the size limit!"
+                    render(view:'videoForm')
+                    return
+                }
+
+                if (!checkFileType(mfile)) {
+                    flash.message = "Your file type is not allowed"
+                    render(view:'videoForm')
+                    return
+                }
 
                 String name = stripCharacters(mfile.getOriginalFilename())
 
@@ -45,20 +63,20 @@ class VideoUploadController {
 
                 try {
 
-                    if(!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
+                    if (!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
 
                     mfile.transferTo(renamedFile)
 
                 } catch (Exception e) {
                     log.error("An error occurred in ${controllerName}.${actionName} because of ${e.getCause()}")
                     flash.message = "The video could not be uploaded"
-                    render(view:'videoForm')
+                    render(view: 'videoForm')
                     return
                 }
 
                 String[] s = name.split("[/]")
 
-                String relativeName = s[s.length -1]
+                String relativeName = s[s.length - 1]
 
                 if (it.equals("desktopVideo")) {
 
@@ -78,62 +96,50 @@ class VideoUploadController {
 
                     upload.posterImage = renamedFile
                 }
+
             }
-        }
-        if (restService.doUploadProcess(post, upload, context)) {
 
-            flash.message = "Your video(s) have been uploaded!"
-        }
-        else flash.message = "Your video(s) could not be uploaded!"
+            if (restService.doUploadProcess(upload, context)) {
 
-        render view: "uploaded"
+                flash.message = "Your video(s) have been uploaded."
+
+            } else flash.message = "Your video(s) could not be uploaded!"
+
+            render view: "uploaded"
+        }
     }
 
+    /**
+     * Checks file size against the config value
+     * @param fileSize
+     * @param type
+     * @return
+     */
+    private boolean checkFileSize(Long fileSize) {
+
+        return fileSize > config.maxImageSize
+    }
 
     /**
-     *
+     * Checks file types against the config values
      * @param mfile
      * @return
      */
-    private addFile(MultipartFile mfile) {
+    private Boolean checkFileType(MultipartFile mfile) {
 
-        String name = fileService.stripCharacters(mfile.getOriginalFilename())
+        String extension = FilenameUtils.getExtension(mfile.getOriginalFilename()).toLowerCase()
 
-        java.io.File renamedFile = null
-
-        def path = getServletContext().getRealPath(config.filesDir)
-
-        renamedFile = new java.io.File("$path/$name")
-
-        if(renamedFile) {
-
-            try {
-
-                if(!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
-
-                mfile.transferTo(renamedFile)
-
-            } catch (Exception e) {
-                log.error("An error occurred in ${controllerName}.${actionName} because of ${e.getCause()}")
-                return null
-            }
+        if(!extension || !config.fileTypes.contains(extension)) {
+            return false
         }
-        return renamedFile
+        return true
     }
 
-    private Boolean checkFile(MultipartFile mfile) {
-
-        if (mfile.isEmpty()) {
-            render(view:'videoForm', model:[file:file, params:params])
-            flash.message = "A file was not selected"
-        }
-
-        else if (mfile.getSize() > 10000000) {
-            render(view:'videoForm', model:[file:file, params:params])
-            flash.message = "The image exceeds the 10 MB limit"
-        }
-    }
-
+    /**
+     *
+     * @param filename
+     * @return
+     */
     private String stripCharacters(String filename) {
 
         filename = filename.toLowerCase()
