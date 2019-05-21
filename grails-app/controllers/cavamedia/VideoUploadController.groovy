@@ -1,30 +1,39 @@
 package cavamedia
 
-import javax.servlet.ServletContext
-import org.springframework.web.multipart.MultipartFile
-import static org.springframework.http.HttpStatus.*
+import grails.util.Environment
 import grails.util.Holders
+import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
-
+import org.springframework.web.multipart.MultipartFile
 
 class VideoUploadController {
 
     def config = Holders.config
     def restService
 
-    static allowedMethods = [uploadVideo:'POST']
+    def beforeInterceptor = [action: this.checkHost()]
+
+    static allowedMethods = [uploadVideo: 'POST']
 
     /**
      * Forwards to the video upload page
      */
-    def videoForm() { }
+    def videoForm() {}
 
     /**
-     * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API
-     * @param upload (simple DTO)
+     * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API.
+     * Checks the uploaded file size and file type.
+     * @param upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
     def uploadVideo(Upload upload) {
+
+        if (!checkParams()) {
+
+            flash.message = "A required field is missing"
+            render(view:'videoForm')
+            return
+        }
 
         withForm {
 
@@ -39,12 +48,13 @@ class VideoUploadController {
                 MultipartFile mfile = request.getFile(it)
 
                 if (!mfile || mfile.isEmpty()) {
+
                     flash.message = "A required file was not selected"
                     render(view:'videoForm')
                     return
                 }
 
-                if (checkFileSize(mfile.getSize())) {
+                if (mfile.getSize() > config.maxFileSize) {
 
                     flash.message = "Your file: ${mfile.getOriginalFilename()} exceeds the size limit!"
                     render(view:'videoForm')
@@ -52,12 +62,13 @@ class VideoUploadController {
                 }
 
                 if (!checkFileType(mfile)) {
+
                     flash.message = "Your file type is not allowed"
                     render(view:'videoForm')
                     return
                 }
 
-                String name = stripCharacters(mfile.getOriginalFilename())
+                String name = FileUtils.stripCharacters(mfile.getOriginalFilename())
 
                 File renamedFile = new File("$path/$name")
 
@@ -78,71 +89,100 @@ class VideoUploadController {
 
                 String relativeName = s[s.length - 1]
 
-                if (it.equals("desktopVideo")) {
-
-                    upload.desktopVideoURL = config.videoPrefix + relativeName + config.videoSuffix
-
-                    upload.desktopVideo = renamedFile
-                }
-
-                if (it.equals("phoneVideo")) {
-
-                    upload.phoneVideoURL = config.videoPrefix + relativeName + config.videoSuffix
-
-                    upload.phoneVideo = renamedFile
-                }
-
-                if (it.equals("posterImage")) {
-
-                    upload.posterImage = renamedFile
-                }
-
+                setUpload(upload, it, relativeName, renamedFile)
             }
 
-            if (restService.doUploadProcess(upload, context)) {
+            if (!restService.doUploadProcess(upload, context)) {
 
-                flash.message = "Your video(s) have been uploaded."
+                flash.message = "Your video(s) could not be uploaded!"
+            }
 
-            } else flash.message = "Your video(s) could not be uploaded!"
+            flash.message = "Your video(s) have been uploaded."
 
             render view: "uploaded"
         }
     }
 
     /**
-     * Checks file size against the config value
-     * @param fileSize
-     * @param type
+     * Sets the Upload properties
+     * @param upload
+     * @param file
+     * @param relativeName
+     * @param renamedFile
      * @return
      */
-    private boolean checkFileSize(Long fileSize) {
+    private setUpload(upload, file, relativeName, renamedFile) {
 
-        return fileSize > config.maxImageSize
+        String url = config.videoPrefix + relativeName + config.videoSuffix
+
+        if (file.equals("desktopVideo")) {
+
+            upload.desktopVideoURL = url
+
+            upload.desktopVideo = renamedFile
+        }
+
+        if (file.equals("phoneVideo")) {
+
+            upload.phoneVideoURL = url
+
+            upload.phoneVideo = renamedFile
+        }
+
+        if (file.equals("posterImage")) {
+
+            upload.posterImage = renamedFile
+        }
     }
 
     /**
      * Checks file types against the config values
      * @param mfile
-     * @return
+     * @return boolean value
      */
     private Boolean checkFileType(MultipartFile mfile) {
 
         String extension = FilenameUtils.getExtension(mfile.getOriginalFilename()).toLowerCase()
 
-        if(!extension || !config.fileTypes.contains(extension)) {
+        if (!extension || !config.fileTypes.contains(extension)) {
             return false
         }
         return true
     }
 
     /**
-     *
-     * @param filename
-     * @return
+     * Checks for required parameters
+     * @return boolean value
      */
-    private String stripCharacters(String filename) {
+    private boolean checkParams() {
 
-        filename = filename.toLowerCase()
-        filename = filename.replaceAll("[^\\d\\w\\.\\-]", "")
+        if (!params.title || !params.content || !params.desktopVideo || !params.posterImage) {
+            return false
+        }
+        return true
     }
+
+    /**
+     * Only requests from the specified host in the config are allowed
+     * @param request
+     * @return boolean value
+     */
+    private boolean checkHost() {
+
+        if (!request.getHeader("host")) {
+            return false
+        }
+
+        String host = request.getHeader("host")
+
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                return config.cavaHost == host
+                break
+            case Environment.PRODUCTION:
+                return config.cavaHost == host
+                break
+        }
+    }
+
 }

@@ -1,99 +1,86 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Upload Video</title>
-    <script type=text/javascript>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Upload Video</title>
+        <asset:stylesheet href="bootstrap.css"/>
+        <script type=text/javascript>
 
-        function validate() {
+            function validate() {
 
-            var desktopVideo = upload.desktopVideo.value;
-            var posterImage = upload.posterImage.value;
-            var title = upload.title.value;
-            var content = upload.content.value;
+                var desktopVideo = upload.desktopVideo.value;
+                var posterImage = upload.posterImage.value;
+                var title = upload.title.value;
+                var content = upload.content.value;
 
-            if (desktopVideo == '') {
-                alert('You must select a video.');
-                event.returnValue = false;
+                if (title == '') {
+                    alert('You must enter a title.');
+                    event.returnValue = false;
+                }
+                if (content == '') {
+                    alert('You must enter a description.');
+                    event.returnValue = false;
+                }
+                if (desktopVideo == '') {
+                    alert('You must select a video.');
+                    event.returnValue = false;
+                }
+                if (posterImage == '') {
+                    alert('You must select a poster image.');
+                    event.returnValue = false;
+                }
             }
-            if (posterImage == '') {
-                alert('You must select a poster image.');
-                event.returnValue = false;
-            }
-            if (title == '') {
-                alert('You must enter a title.');
-                event.returnValue = false;
-            }
-            if (content == '') {
-                alert('You must enter a description.');
-                event.returnValue = false;
-            }
-        }
-    </script>
-</head>
+        </script>
+        <asset:javascript src="jquery-3.3.1.min.js"/>
+        <asset:javascript src="jquery-progress-upload.js"/>
+    </head>
 
-<body>
-    <h1>Upload Video</h1>
-    <g:if test="${flash.invalidToken}">
-        Don't click the upload button twice!
-    </g:if>
-    <g:uploadForm
-            method="post"
-            controller="videoUpload"
-            action="uploadVideo"
-            name="upload"
-            useToken="true"
-            onsubmit="validate();"
-    >
-        <div class="dialog">
-            <table>
-                <tbody>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="title">Required Title:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="text" id="title" name="title" value=""/>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="title">Required Description:</label>
-                        </td>
-                        <td valign="top">
-                            <textarea id="content" name="content" cols="18" rows="4"></textarea>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="title">Required Video:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="file" name="desktopVideo"/>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="title">Required Poster Image:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="file" name="posterImage"/>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="title">Optional Mobile Video:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="file" name="phoneVideo"/>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <body>
+        <div class="container">
+            <h2>Upload Videos</h2>
+            <g:if test="${flash.invalidToken}">
+                <div class="alert alert-danger" role="alert">Don't click the upload button twice!</div>
+            </g:if>
+            <g:if test="${flash.message}">
+                <div class="alert alert-danger" role="alert">${flash.message}</div>
+            </g:if>
+            <div id="progressTimer"></div>
+            <g:uploadForm
+                method="post"
+                controller="videoUpload"
+                action="uploadVideo"
+                name="upload"
+                useToken="true"
+                onsubmit="validate();"
+            >
+                <div class="form-group">
+                    <label for="title">Required Title:</label>
+                    <input class="form-control" type="text" id="title" name="title" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="title">Required Description:</label>
+                    <textarea class="form-control" id="content" name="content" cols="18" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="title">Required Video:</label>
+                    <input class="form-control-file" type="file" id="desktopVideo" name="desktopVideo"/>
+                </div>
+                <div class="form-group">
+                    <label for="title">Required Poster Image:</label>
+                    <input class="form-control-file" type="file" id="posterImage" name="posterImage"/>
+                </div>
+                <div class="form-group">
+                    <label for="title">Optional Mobile Video:</label>
+                    <input class="form-control-file" type="file" id="phoneVideo" name="phoneVideo"/>
+                </div>
+                <button type="submit" class="btn btn-secondary">Upload</button>
+            </g:uploadForm>
         </div>
-        <div class="buttons">
-            <span class="button"><input class="save" type="submit" value="Upload" /></span>
-        </div>
-    </g:uploadForm>
+        %{--<script>
+            var settings = {};
+            $('#desktopVideo').setProgressedUploader(settings);
+        </script>--}%
     </body>
 
 </html>

@@ -19,30 +19,35 @@ class RestService {
 
     def config = Holders.config
 
+    /**
+     * The username and password are set as environmental variables in production
+     */
     @Value('${username}')
-    private String defaultWpUser //= config.cavaWpUser
+    private String defaultWpUser
 
     @Value('${password}')
-    private String defaultPassword //= config.cavaWpPassword
+    private String defaultPassword
 
     private final String restURI = "wp-json/wp/v2/"
+
     private final String streamURL = "http://stream.ocean.washington.edu/streamService/newSaveFile"
 
     /**
-     *
+     * Uploads videos to the streaming server. If successful, then uploads the poster image to WP
+     * and adds the video metadata to WP
      * @param post
      * @param values
      * @param context
-     * @return
+     * @return boolean value
      */
     boolean doUploadProcess(Upload upload, ServletContext context) {
 
-        if ( !addToStreamingServer(upload)) {
+        /*if (!addToStreamingServer(upload)) {
             log.error("The videos could not be uploaded to the streaming server")
             return false
-        }
+        }*/
 
-        if ( !uploadVideo(context, upload)) {
+        if (!uploadVideo(context, upload)) {
             log.error("The videos could not be uploaded to the WP API")
             return false
         }
@@ -50,9 +55,9 @@ class RestService {
     }
 
     /**
-     *
+     * Uploads videos to the streaming server and then deletes it
      * @param upload
-     * @return
+     * @return boolean value
      */
     boolean addToStreamingServer(Upload upload) {
 
@@ -77,17 +82,17 @@ class RestService {
     }
 
     /**
-     * Uploads a placeholder video file, per asinine WP.
+     * Uploads a placeholder video file, per asinine WP. Then deletes it from the file system.
      * @param post
      * @param context
      * @param values
-     * @return calls updateFile() to add metadata
+     * @return calls updateFile() to add the video metadata (a boolean value)
      */
     boolean uploadVideo(ServletContext context, Upload upload) {
 
         File bFile = upload.desktopVideo
 
-        if (! bFile) {
+        if (!bFile) {
             log.error("The desktop video could not be accessed")
             return
         }
@@ -101,14 +106,14 @@ class RestService {
 
         String pathOnServer = context.getRealPath(fullPath)
 
-        if ( !pathOnServer) {
+        if (!pathOnServer) {
             log.error("The placeholder video file was not found on the server")
             return false
         }
 
         File jFile = new File(pathOnServer)
 
-        if ( !jFile || !jFile.exists()) {
+        if (!jFile || !jFile.exists()) {
             log.error("The placeholder video file could not instantiated on the server")
             return false
         }
@@ -118,7 +123,7 @@ class RestService {
 
         File tmpFile = new File(context.getRealPath("${datedPath}.${extension}"))
 
-        if ( !tmpFile) {
+        if (!tmpFile) {
             log.error("tmpFile is null")
             return false
         }
@@ -127,13 +132,13 @@ class RestService {
 
         OutputStream dstStream = tmpFile.newDataOutputStream()
 
-        // Copy the file bytes with from the original placeholder file to the new one
+        // Copy the file bytes from the original placeholder file to the new one
         dstStream << srcStream
 
         srcStream.close()
         dstStream.close()
 
-        // Post the dummy file to WP
+        // Post the placeholder file to WP
         String url = "${apiUrl()}" + "${restURI}media"
 
         RestResponse resp = postFileToApi(url, tmpFile, true, true)
@@ -141,7 +146,7 @@ class RestService {
         tmpFile.delete()
 
         if (!resp?.json?.id) {
-            log.error("A valid JSON identifier was not found in the response: " + resp.json)
+            log.error("A valid JSON identifier was not found in the response: " + resp?.json)
             return false
         }
 
@@ -149,11 +154,11 @@ class RestService {
     }
 
     /**
-     *
+     * Updates the file metadata via the WP REST API
      * @param post
      * @param id
      * @param values
-     * @return
+     * @return boolean value
      */
     boolean updateFile(Integer id, Upload upload) {
 
@@ -197,11 +202,15 @@ class RestService {
 
         RestResponse resp = postToApi(url, json)
 
-        /*if (resp?.status != 200) {
+        /**
+         * For some reason WP returns a 403 here even though the content is updated...
+         * so we can't check for a 201
+         */
+        /*if (resp?.status != 201) {
             log.error(resp?.json?.toString())
             return false
         }*/
-        if ( !resp?.status) {
+        if (!resp?.status) {
             log.error(resp?.json?.toString())
             return false
         }
@@ -209,7 +218,7 @@ class RestService {
     }
 
     /**
-     *
+     * Adds an image to WP
      * @param values
      * @return
      */
@@ -250,7 +259,7 @@ class RestService {
 
             resp = rest.post(url) {
 
-                auth defaultWpUser, defaultPassword
+                auth cavaWpUser(), cavaWpPassword()
                 contentType "application/json"
                 json customJson
             }
@@ -262,13 +271,13 @@ class RestService {
     }
 
     /**
-     * Makes an HTTP POST with file data to the API
+     * Makes an HTTP POST with file data to the stream API
      * @param url
      * @param jFile
      * @param metaMap
      * @return a grails.plugins.rest.client.RestResponse
      */
-    private RestResponse postFileToApi(String url, File jFile, boolean authenticate=false, boolean useSSL=false) {
+    private RestResponse postFileToApi(String url, File jFile, boolean authenticate = false, boolean useSSL = false) {
 
         def rest = new RestBuilder()
         RestResponse resp = null
@@ -278,7 +287,7 @@ class RestService {
 
             resp = rest.post(url) {
 
-                if (authenticate) auth defaultWpUser, defaultPassword
+                if (authenticate) auth cavaWpUser(), cavaWpPassword()
                 contentType "multipart/form-data"
                 file = jFile
             }
@@ -318,30 +327,40 @@ class RestService {
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
-                //return config.cavaWpRestUrl
-                return "http://localhost:8888/"
+                return config.cavaWpRestUrl
                 break
             case Environment.PRODUCTION:
-                //return config.cavaWpRestUrl
-                return "https://ooica.net/"
+                return config.cavaWpRestUrl
                 break
         }
     }
 
     /**
-     * Returns a streaming server URL based on the runtime environment
+     * Returns a username based on the runtime environment
      */
-    def uploadUrl = {
+    String cavaWpUser() {
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
-                //return config.streamUpload
-                //return "http://localhost:8089/Stream/streamService/newSaveFile"
-                return "http://stream.ocean.washington.edu/streamService/newSaveFile"
+                return config.cavaWpUser
                 break
             case Environment.PRODUCTION:
-                //return config.streamUpload
-                return "http://stream.ocean.washington.edu/streamService/saveFile"
+                return defaultWpUser
+                break
+        }
+    }
+
+    /**
+     * Returns a password based on the runtime environment
+     */
+    String cavaWpPassword() {
+
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                return config.cavaWpPassword
+                break
+            case Environment.PRODUCTION:
+                return defaultPassword
                 break
         }
     }

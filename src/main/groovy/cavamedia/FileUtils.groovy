@@ -7,7 +7,7 @@ class FileUtils {
      * @param filename: A (String) name of a file
      * @return filename: The "stripped" name
      */
-    String stripCharacters(String filename) {
+    static String stripCharacters(String filename) {
 
         filename = filename.toLowerCase()
         filename = filename.replaceAll("[^\\d\\w\\.\\-]", "")
