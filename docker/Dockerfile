@@ -43,6 +43,10 @@ ENV PORT ''
 
 ENV DBNAME ''
 
+ENV WPUSER ''
+
+ENV WPPASSWORD ''
+
 # Setup Tomcat configuration files
 COPY src/backend/CavaMedia/docker/context.xml $CATALINA_HOME/conf/context.xml
 

@@ -22,10 +22,10 @@ class RestService {
     /**
      * The username and password are set as environmental variables in production
      */
-    @Value('${username}')
+    @Value('${wpuser}')
     private String defaultWpUser
 
-    @Value('${password}')
+    @Value('${wppassword}')
     private String defaultPassword
 
     private final String restURI = "wp-json/wp/v2/"
@@ -42,10 +42,10 @@ class RestService {
      */
     boolean doUploadProcess(Upload upload, ServletContext context) {
 
-        /*if (!addToStreamingServer(upload)) {
+        if (!addToStreamingServer(upload)) {
             log.error("The videos could not be uploaded to the streaming server")
             return false
-        }*/
+        }
 
         if (!uploadVideo(context, upload)) {
             log.error("The videos could not be uploaded to the WP API")
