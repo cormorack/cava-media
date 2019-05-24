@@ -63,7 +63,7 @@
                     <textarea class="form-control" id="content" name="content" cols="18" rows="4"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="title">Required Video (Less than 100MB):</label>
+                    <label for="title">Required Video (Less than 300MB):</label>
                     <input class="form-control-file" type="file" id="desktopVideo" name="desktopVideo"/>
                 </div>
                 <div class="form-group">

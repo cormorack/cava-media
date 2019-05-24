@@ -19,9 +19,9 @@ class VideoUploadController {
      * Forwards to the video upload page
      */
     def videoForm() {
-        println request.getRemoteAddr()
-        println request.getHeader("X-FORWARDED-FOR")
-        println request.getRemoteHost()
+        //println request.getRemoteAddr()
+        //println request.getHeader("X-FORWARDED-FOR")
+        //println request.getRemoteHost()
     }
 
     /**
