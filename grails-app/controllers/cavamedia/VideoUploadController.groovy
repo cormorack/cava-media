@@ -11,14 +11,18 @@ class VideoUploadController {
     def config = Holders.config
     def restService
 
-    def beforeInterceptor = [action: this.checkHost()]
+    //def beforeInterceptor = [action: this.checkHost()]
 
     static allowedMethods = [uploadVideo: 'POST']
 
     /**
      * Forwards to the video upload page
      */
-    def videoForm() {}
+    def videoForm() {
+        println request.getRemoteAddr()
+        println request.getHeader("X-FORWARDED-FOR")
+        println request.getRemoteHost()
+    }
 
     /**
      * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API.
@@ -169,11 +173,11 @@ class VideoUploadController {
      */
     private boolean checkHost() {
 
-        if (!request.getHeader("host")) {
+        if (!request.getRemoteAddr()) {
             return false
         }
 
-        String host = request.getHeader("host")
+        String host = request.getRemoteAddr()
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:

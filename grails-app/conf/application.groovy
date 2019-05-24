@@ -6,7 +6,7 @@ videoPrefix = "https://${streamURL}:443/rsn/mp4:"
 
 videoSuffix = "/playlist.m3u8"
 
-maxFileSize = 104857600  //100 MB 100 * 1024 * 1024
+maxFileSize = 314572800  //100 MB 100 * 1024 * 1024
 
 maxImageSize = 52428800  //50 MB 1000 * 1024 * 5
 
