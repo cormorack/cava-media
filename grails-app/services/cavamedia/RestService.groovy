@@ -55,7 +55,7 @@ class RestService {
     }
 
     /**
-     * Uploads videos to the streaming server and then deletes it
+     * Uploads videos to the streaming server and then deletes them from the local file system
      * @param upload
      * @return boolean value
      */
@@ -82,7 +82,7 @@ class RestService {
     }
 
     /**
-     * Uploads a placeholder video file, per asinine WP. Then deletes it from the file system.
+     * Uploads a placeholder video file, per asinine WP. Then deletes it from the local file system.
      * @param post
      * @param context
      * @param values

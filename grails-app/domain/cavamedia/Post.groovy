@@ -24,6 +24,8 @@ class Post {
         cache true
     }
 
+    def searchableProps = ['title', 'excerpt', 'type', 'content']
+
     /**
      * Returns associated Metas that have coordinates
      * @return List

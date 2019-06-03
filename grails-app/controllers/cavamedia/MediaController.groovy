@@ -61,6 +61,96 @@ class MediaController {
     }
 
     /**
+     * Renders the video page
+     */
+    def video() {}
+
+    def findVideos() {
+
+        setParams(params)
+
+        List videos = postService.getVideos(
+            params.max.toInteger(),
+            params.offset.toInteger(),
+            params.sort,
+            params.order,
+            params.q
+        )
+
+        response.setContentType("text/json")
+
+        if (!videos) {
+            render "{[]}"
+            return
+        }
+
+        List videoList = buildVideoList(videos)
+
+        respond videoList
+    }
+
+    /**
+     * Builds the JWPlayer JSON
+     * @param videos
+     * @return
+     */
+    private List buildVideoList(List videos) {
+
+        List videoList = []
+
+        for (Post post in videos) {
+
+            Map values = [:]
+            values.put("title", post.title)
+            String text = DateUtils.cleanText(post.content)
+            values.put("description", text)
+
+            if (post.getMetaValue("_jwppp-video-image-1")) {
+                values['image'] = post.getMetaValue("_jwppp-video-image-1").metaValue
+            }
+
+            List l = []
+
+            if (post.getMetaValue("_jwppp-video-url-1")) {
+                l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
+            }
+
+            values.put("sources", l.collect { [file: it] })
+
+            videoList.add(values)
+        }
+        return videoList
+    }
+
+    /**
+     * Sets default values for parameters
+     * sort=date, order=desc, offset=0, udate=list, max=default value in config.properties
+     * max cannot be larger than 64, less than 0
+     * @param params
+     * @return
+     */
+    private setParams(params) {
+
+        if (!params.max || !isNumeric(params.max.toString()) || params.max.toInteger() < 0) {
+            params.max = 400
+        }
+
+        if (!params.sort) params.sort = "date"
+        if (!params.order) params.order = "desc"
+        if (!params.offset || !isNumeric(params.offset.toString())) params.offset = 0
+    }
+
+    /**
+     * Returns true or false if the string is a number or not
+     * @param str
+     * @return
+     */
+    private Boolean isNumeric(String str) {
+
+        return org.apache.commons.lang.math.NumberUtils.isNumber(str)
+    }
+
+    /**
      * Builds a geoJson string
      * @param posts
      * @return a String of geoJson
