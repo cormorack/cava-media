@@ -3,15 +3,27 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        %{--<asset:stylesheet href="bootstrap.css"/>--}%
         <asset:stylesheet href="gallery.css"/>
         <title>Video Gallery</title>
     </head>
 
     <body>
         <div class="container">
-            <asset:javascript src="jwGallery.js"/>
             <div class="video-wall">
-                %{--<div class="header-bar">Discover Videos</div>--}%
+                %{--<div class="header-bar">
+                    <g:form method="get" action="${actionName}" controller="${controllerName}" class="form-signin">
+                        <div class="form-group">
+                            <div class="col-lg-9">
+                                <input class="form-control" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+                            </div>
+                            <div class="col-lg-3">
+                                <button class="btn btn-secondary" type="submit">Search</button>
+                                <g:link class="btn btn-secondary" role="button" controller="${controllerName}" action="${actionName}">Clear Search</g:link>
+                            </div>
+                        </div>
+                    </g:form>--}%
+                </div>
                 <g:each in="${(0..12)}">
                     <div class="row-flex-6">
                         <div class="column">
@@ -32,10 +44,21 @@
                 </g:each>
             </div>
         </div>
+        <asset:javascript src="jwGallery.js"/>
         <script type="text/javascript">
 
+            var query = getParam('q');
             var serviceURL = '${serverURL}';
             var serviceURI = serviceURL + '/media/findVideos.json';
+
+            if (query) {
+                serviceURI = serviceURI + '?q=' + query;
+            }
+
+            function getParam(name) {
+                if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+                    return decodeURIComponent(name[1]);
+            }
 
             // Request playlist data
             (function() {
