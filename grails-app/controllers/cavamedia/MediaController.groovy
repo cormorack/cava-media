@@ -65,6 +65,8 @@ class MediaController {
      */
     def video() {}
 
+    def videoGallery() {}
+
     def findVideos() {
 
         setParams(params)
@@ -101,21 +103,25 @@ class MediaController {
         for (Post post in videos) {
 
             Map values = [:]
-            values.put("title", post.title)
-            String text = DateUtils.cleanText(post.content)
-            values.put("description", text)
 
-            if (post.getMetaValue("_jwppp-video-image-1")) {
-                values['image'] = post.getMetaValue("_jwppp-video-image-1").metaValue
+            if (!post.getMetaValue("_jwppp-video-image-1") || !post.getMetaValue("_jwppp-video-url-1")) {
+                continue
             }
+
+            values.put("image", post.getMetaValue("_jwppp-video-image-1").metaValue)
+            values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
 
             List l = []
 
-            if (post.getMetaValue("_jwppp-video-url-1")) {
-                l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
-            }
+            l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
 
             values.put("sources", l.collect { [file: it] })
+
+            String text = DateUtils.cleanText(post.content)
+
+            values.put("description", text)
+            values.put("title", post.title)
+            values.put("id", post.id)
 
             videoList.add(values)
         }

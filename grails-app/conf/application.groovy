@@ -19,12 +19,14 @@ environments {
         cavaWpPassword = ""
         cavaWpUser = ""
         cavaHost = "ooica.net"
+        grails.serverURL = "https://media.ooica.net/CavaMedia"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
         cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
         cavaWpUser = "io"
         cavaHost = "localhost:8080"
+        grails.serverURL = "http://${cavaHost}"
     }
 }
 
