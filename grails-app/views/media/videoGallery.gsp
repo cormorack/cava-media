@@ -4,8 +4,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     %{--<asset:stylesheet href="bootstrap.css"/>--}%
-    %{--<asset:javascript src="jquery-3.3.1.min.js"/>
-    <asset:javascript src="jquery.twbsPagination.min.js"/>--}%
     <asset:stylesheet href="gallery.css"/>
     <title>Video Gallery</title>
 </head>
@@ -13,37 +11,38 @@
 <body>
 <div class="container">
     <div class="video-wall">
-    %{--<div class="header-bar">Discover Videos</div>
-    <g:form method="get" action="${actionName}" controller="${controllerName}" class="form-signin">
-        <div class="form-group">
-            <div class="col-lg-9">
-                <input class="form-control" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+        %{--<div class="header-bar">
+            <g:form method="get" action="${actionName}" controller="${controllerName}" class="form-signin">
+                <div class="form-group">
+                    <div class="col-lg-9">
+                        <input class="form-control" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-secondary" type="submit">Search</button>
+                        <g:link class="btn btn-secondary" role="button" controller="${controllerName}" action="${actionName}">Clear Search</g:link>
+                    </div>
+                </div>
+            </g:form>--}%
+    </div>
+    <g:each in="${(0..35)}">
+        <div class="row-flex-6">
+            <div class="column">
+                <div class="thumb large"></div>
+                <div class="row-flex-2">
+                    <div class="thumb"></div>
+                    <div class="thumb"></div>
+                </div>
             </div>
-            <div class="col-lg-3">
-                <button class="btn btn-secondary" type="submit">Search</button>
-                <g:link class="btn btn-secondary" role="button" controller="${controllerName}" action="${actionName}">Clear Search</g:link>
+            <div class="column">
+                <div class="row-flex-2">
+                    <div class="thumb"></div>
+                    <div class="thumb"></div>
+                </div>
+                <div class="thumb large"></div>
             </div>
         </div>
-    </g:form>--}%
-        <g:each in="${(0..35)}">
-            <div class="row-flex-6">
-                <div class="column">
-                    <div class="thumb large"></div>
-                    <div class="row-flex-2">
-                        <div class="thumb"></div>
-                        <div class="thumb"></div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="row-flex-2">
-                        <div class="thumb"></div>
-                        <div class="thumb"></div>
-                    </div>
-                    <div class="thumb large"></div>
-                </div>
-            </div>
-        </g:each>
-    </div>
+    </g:each>
+</div>
 </div>
 <asset:javascript src="jwGallery.js"/>
 <script type="text/javascript">
