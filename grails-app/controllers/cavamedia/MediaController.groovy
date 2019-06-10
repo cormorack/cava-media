@@ -1,9 +1,11 @@
 package cavamedia
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringEscapeUtils
 import io.swagger.annotations.*
+import grails.util.Holders
 
 @Api(value = "/api/v1", tags = ["Media"], description = "Media (images and videos)")
 class MediaController {
@@ -13,6 +15,7 @@ class MediaController {
     private final String baseURL = "https://s3-us-west-2.amazonaws.com/media.ooica.net/"
 
     def postService
+    def config = Holders.config
 
     /**
      * Map for Testing
@@ -92,6 +95,38 @@ class MediaController {
     }
 
     /**
+     *
+     * @return
+     */
+    def findAllVideos() {
+
+        setParams(params)
+
+        List videos = postService.getVideos(
+                params.max.toInteger(),
+                params.offset.toInteger(),
+                params.sort,
+                params.order,
+                params.q
+        )
+
+        println "videos size is ${videos.size()}"
+
+        response.setContentType("text/json")
+
+        if (!videos) {
+            render "{[]}"
+            return
+        }
+
+        List videoList = buildFullVideoList(videos)
+
+        println "videoList size is ${videoList.size()}"
+
+        respond videoList
+    }
+
+    /**
      * Builds the JWPlayer JSON
      * @param videos
      * @return
@@ -120,6 +155,43 @@ class MediaController {
             String text = DateUtils.cleanText(post.content)
 
             values.put("description", text)
+            values.put("title", post.title ?: "no title")
+            values.put("id", post.id)
+
+            videoList.add(values)
+        }
+        return videoList
+    }
+
+    /**
+     *
+     * @param videos
+     * @return
+     */
+    private List buildFullVideoList(List videos) {
+
+        List videoList = []
+
+        for (Post post in videos) {
+
+            Map values = [:]
+
+            if (post.getMetaValue("_jwppp-video-image-1")) {
+                values['image'] = post.getMetaValue("_jwppp-video-image-1").metaValue
+            }
+
+            List l = []
+
+            if (post.getMetaValue("_jwppp-video-url-1")) {
+                values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
+                l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
+            }
+
+            values.put("sources", l.collect { [file: it] })
+
+            String text = DateUtils.cleanText(post.content)
+
+            values.put("description", text)
             values.put("title", post.title)
             values.put("id", post.id)
 
@@ -131,14 +203,14 @@ class MediaController {
     /**
      * Sets default values for parameters
      * sort=date, order=desc, offset=0, udate=list, max=default value in config.properties
-     * max cannot be larger than 64, less than 0
+     * max cannot be larger than 500, less than 0
      * @param params
      * @return
      */
     private setParams(params) {
 
         if (!params.max || !isNumeric(params.max.toString()) || params.max.toInteger() < 0) {
-            params.max = 400
+            params.max = config.maxPerPage
         }
 
         if (!params.sort) params.sort = "date"

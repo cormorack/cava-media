@@ -4,9 +4,8 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     %{--<asset:stylesheet href="bootstrap.css"/>--}%
-    %{--<asset:javascript src="jquery-3.3.1.min.js"/>
-    <asset:javascript src="jquery.twbsPagination.min.js"/>--}%
-    <asset:stylesheet href="gallery.css"/>
+    <asset:stylesheet href="simplePagination.css"/>
+    <asset:javascript src="jquery-3.3.1.min.js"/>
     <title>Video Gallery</title>
 </head>
 
@@ -25,7 +24,7 @@
             </div>
         </div>
     </g:form>--}%
-        <g:each in="${(0..35)}">
+        <g:each in="${(0..2)}">
             <div class="row-flex-6">
                 <div class="column">
                     <div class="thumb large"></div>
@@ -44,6 +43,8 @@
             </div>
         </g:each>
     </div>
+    %{--<a href="javascript:nextPage()" id="btn_next">&lt;&lt; Next</a>
+    <a href="javascript:prevPage()" id="btn_prev">Back &gt;&gt; </a>--}%
 </div>
 <asset:javascript src="jwGallery.js"/>
 <script type="text/javascript">
@@ -60,6 +61,75 @@
         if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
     }
+
+   /* var max = (getParam('max') != null) ? getParam('max') : 24;
+    var offset = (getParam('offset') != null) ? getParam('offset') : 0;
+    var total = 400;
+    var current_page = 1;
+    var records_per_page = max;
+
+    function prevPage() {
+
+        if (current_page == 1) {
+            current_page--;
+            offset = offset - max;
+            changePage(current_page);
+        }
+    }
+
+    function nextPage() {
+
+        if (current_page < numPages()) {
+            current_page++;
+            offset = offset + max;
+            changePage(current_page);
+        }
+    }
+
+    function changePage(page) {
+
+        var btn_next = document.getElementById("btn_next");
+        var btn_prev = document.getElementById("btn_prev");
+
+        // Validate page
+        if (page < 1) page = 1;
+        if (page > numPages()) page = numPages();
+
+        if (page == 1) {
+            btn_prev.style.visibility = "hidden";
+        } else {
+            btn_prev.style.visibility = "visible";
+        }
+
+        if (page == numPages()) {
+            btn_next.style.visibility = "hidden";
+        } else {
+            btn_next.style.visibility = "visible";
+        }
+
+        window.location.href = window.location.protocol +
+            "//" +
+            window.location.host +
+            window.location.pathname +
+            '?' +
+            $.param({'max':max,'offset':offset});
+
+    }
+
+    function numPages() {
+
+        //alert("number of pages is " +  total / records_per_page);
+        return Math.ceil(total / records_per_page);
+    }
+
+    if(offset > 24) {
+        document.getElementById("btn_prev").style.visibility = "visible";
+    } else {
+        document.getElementById("btn_prev").style.visibility = "hidden";
+    }
+    if(offset > max) {
+        document.getElementById("btn_next").style.visibility = "hidden";
+    }*/
 
     // Request playlist data
     (function() {

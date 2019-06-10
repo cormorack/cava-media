@@ -12,14 +12,16 @@ maxImageSize = 52428800  //50 MB 1000 * 1024 * 5
 
 fileTypes = ['mov', 'mp4', 'm4v', 'jpg', 'jpeg', 'png', 'gif']
 
+maxPerPage = 500
+
 environments {
 
     production {
-        cavaWpRestUrl = "https://ooica.net/"
+        cavaWpRestUrl = "https://interactiveoceans.washington.edu/"
         cavaWpPassword = ""
         cavaWpUser = ""
-        cavaHost = "ooica.net"
-        grails.serverURL = "https://media.ooica.net/CavaMedia"
+        cavaHost = "interactiveoceans.washington.edu"
+        grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
@@ -32,18 +34,18 @@ environments {
 
 swagger {
     info {
-        description = "Cava Media API Documentation"
+        description = "InteractiveOceans Media API Documentation"
         version = "1.0.0"
-        title = "Cava Media"
-        termsOfServices = "http://app-dev.ooica.net"
+        title = "InteractiveOceans Media"
+        termsOfServices = "http://app.interactiveoceans.washington.edu"
         contact {
             name = "Contact Us"
-            url = "http://app-dev.ooica.net"
+            url = "http://app.interactiveoceans.washington.edu"
             email = "contact@gmail.com"
         }
         license {
             name = "licence under ..."
-            url = "http://app-dev.ooica.net"
+            url = "http://app.interactiveoceans.washington.edu"
         }
     }
     schemes = [io.swagger.models.Scheme.HTTP]

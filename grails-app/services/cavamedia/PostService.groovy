@@ -1,9 +1,14 @@
 package cavamedia
 
 import grails.transaction.Transactional
+import grails.util.Holders
 
 @Transactional(readOnly = true)
 class PostService {
+
+    def config = Holders.config
+
+    Integer maxPerPage = config.maxPerPage
 
     /**
      * Returns a list of Posts from the DB.  Includes parameters for searching and paging.
@@ -13,7 +18,7 @@ class PostService {
      * @param orderBy: can be either 'asc' or 'desc'
      * @return
      */
-    List getVideos(Integer max=400, Integer offset=0, String sortBy = "", String orderBy = "", String q="") {
+    List getVideos(Integer max=maxPerPage, Integer offset=0, String sortBy = "", String orderBy = "", String q="") {
 
         if (orderBy == "asc") {
             orderBy = "asc"
@@ -41,7 +46,10 @@ class PostService {
 
         def query = {
 
-            eq("mimeType", "video/quicktime")
+            or {
+                eq("mimeType", "video/quicktime")
+                eq("mimeType", "video/mp4")
+            }
 
             if(q) {
                 Post instance = new Post()
@@ -83,13 +91,19 @@ class PostService {
                 }
 
                 if (type == "video") {
-                    eq("mimeType", "video/quicktime")
+                    or {
+                        eq("mimeType", "video/quicktime")
+                        eq("mimeType", "video/mp4")
+                    }
                 }
 
             } else {
 
                 or {
-                    eq("mimeType", "video/quicktime")
+                    or {
+                        eq("mimeType", "video/quicktime")
+                        eq("mimeType", "video/mp4")
+                    }
                     or {
                         eq("mimeType", "image/png")
                         eq("mimeType", "image/jpeg")

@@ -10,6 +10,7 @@
     margin: 0 auto;
     flex-direction: column;
     background: #000;
+    width: 100%;
 }
 
 .header-bar {
@@ -83,7 +84,7 @@
     bottom: 0;
 }
 
-@media screen and (max-width: 1082px) {
+@media screen and (max-width: 1200px) {
     .video-wall {
         width: 750px;
     }
@@ -122,26 +123,6 @@
         min-height: 338px;
     }
 }
-
-@media screen and (max-width: 815px) {
-    .video-wall {
-        width: 600px;
-    }
-    .column {
-        flex-flow: column;
-    }
-    .row-flex-2 {
-        flex-flow: row;
-        width: 100%;
-    }
-    .thumb {
-        min-height: 168px;
-    }
-    .thumb.large {
-        min-height: 338px;
-    }
-}
-
 
 @media screen and (max-width: 665px) {
     .video-wall {

@@ -37,7 +37,7 @@
 
             var query = getParam('q');
             var serviceURL = '${serverURL}';
-            var serviceURI = serviceURL + '/media/findVideos.json';
+            var serviceURI = serviceURL + '/media/findAllVideos.json';
 
             if (query) {
                 serviceURI = serviceURI + '?q=' + query;

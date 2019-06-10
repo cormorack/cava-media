@@ -4,9 +4,8 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     %{--<asset:stylesheet href="bootstrap.css"/>--}%
-    %{--<asset:javascript src="jquery-3.3.1.min.js"/>
-    <asset:javascript src="jquery.twbsPagination.min.js"/>--}%
-    <asset:stylesheet href="gallery.css"/>
+    <asset:javascript src="jquery-3.3.1.min.js"/>
+    <asset:javascript src="jquery.twbsPagination.min.js"/>
     <title>Video Gallery</title>
 </head>
 
@@ -25,7 +24,7 @@
             </div>
         </div>
     </g:form>--}%
-        <g:each in="${(0..35)}">
+        <g:each in="${(0..2)}">
             <div class="row-flex-6">
                 <div class="column">
                     <div class="thumb large"></div>
@@ -43,6 +42,9 @@
                 </div>
             </div>
         </g:each>
+        <div id="pager">
+            <ul id="pagination" class="pagination-sm"></ul>
+        </div>
     </div>
 </div>
 <asset:javascript src="jwGallery.js"/>
@@ -59,6 +61,39 @@
     function getParam(name) {
         if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
+    }
+
+    var $pagination = $('#pagination'),
+        totalRecords = 0,
+        records = [],
+        displayRecords = [],
+        recPerPage = 10,
+        page = 1,
+        totalPages = 0;
+
+    $.ajax({
+        url: "http://dummy.restapiexample.com/api/v1/employees",
+        async: true,
+        dataType: 'json',
+        success: function (data) {
+            records = data;
+            console.log(records);
+            totalRecords = records.length;
+            totalPages = Math.ceil(totalRecords / recPerPage);
+            apply_pagination();
+        }
+    });
+
+    function generate_table() {
+        var tr;
+        $('#emp_body').html('');
+        for (var i = 0; i < displayRecords.length; i++) {
+            tr = $('<tr/>');
+            tr.append("<td>" + displayRecords[i].employee_name + "</td>");
+            tr.append("<td>" + displayRecords[i].employee_salary + "</td>");
+            tr.append("<td>" + displayRecords[i].employee_age + "</td>");
+            $('#emp_body').append(tr);
+        }
     }
 
     // Request playlist data
