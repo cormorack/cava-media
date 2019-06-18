@@ -1,29 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    %{--<asset:stylesheet href="bootstrap.css"/>--}%
+    <asset:stylesheet href="bootstrap.css"/>
     <asset:javascript src="jquery-3.3.1.min.js"/>
     <asset:javascript src="jquery.twbsPagination.min.js"/>
+    <asset:stylesheet href="gallery.css"/>
     <title>Video Gallery</title>
 </head>
 
 <body>
 <div class="container">
-    <div class="video-wall">
-    %{--<div class="header-bar">Discover Videos</div>
-    <g:form method="get" action="${actionName}" controller="${controllerName}" class="form-signin">
-        <div class="form-group">
-            <div class="col-lg-9">
-                <input class="form-control" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn btn-secondary" type="submit">Search</button>
-                <g:link class="btn btn-secondary" role="button" controller="${controllerName}" action="${actionName}">Clear Search</g:link>
-            </div>
-        </div>
-    </g:form>--}%
+    <div id="" class="video-wall">
         <g:each in="${(0..2)}">
             <div class="row-flex-6">
                 <div class="column">
@@ -42,9 +32,9 @@
                 </div>
             </div>
         </g:each>
-        <div id="pager">
-            <ul id="pagination" class="pagination-sm"></ul>
-        </div>
+    </div>
+    <div id="pager">
+        <ul id="pagination" class="pagination-sm"></ul>
     </div>
 </div>
 <asset:javascript src="jwGallery.js"/>
@@ -54,6 +44,14 @@
     var serviceURL = '${serverURL}';
     var serviceURI = serviceURL + '/media/findVideos.json';
 
+    var $pagination = $('#pagination'),
+        totalRecords = 415,
+        records = [],
+        displayRecords = [],
+        recPerPage = 24,
+        page = 1,
+        totalPages = 0;
+
     if (query) {
         serviceURI = serviceURI + '?q=' + query;
     }
@@ -61,39 +59,6 @@
     function getParam(name) {
         if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
-    }
-
-    var $pagination = $('#pagination'),
-        totalRecords = 0,
-        records = [],
-        displayRecords = [],
-        recPerPage = 10,
-        page = 1,
-        totalPages = 0;
-
-    $.ajax({
-        url: "http://dummy.restapiexample.com/api/v1/employees",
-        async: true,
-        dataType: 'json',
-        success: function (data) {
-            records = data;
-            console.log(records);
-            totalRecords = records.length;
-            totalPages = Math.ceil(totalRecords / recPerPage);
-            apply_pagination();
-        }
-    });
-
-    function generate_table() {
-        var tr;
-        $('#emp_body').html('');
-        for (var i = 0; i < displayRecords.length; i++) {
-            tr = $('<tr/>');
-            tr.append("<td>" + displayRecords[i].employee_name + "</td>");
-            tr.append("<td>" + displayRecords[i].employee_salary + "</td>");
-            tr.append("<td>" + displayRecords[i].employee_age + "</td>");
-            $('#emp_body').append(tr);
-        }
     }
 
     // Request playlist data
@@ -107,6 +72,7 @@
                 if (httpRequest.status === 200) {
                     var json = JSON.parse(httpRequest.response);
                     getThumbnails(json);
+
                 } else {
                     console.log(httpRequest.statusText);
                 }
@@ -123,6 +89,12 @@
     function getThumbnails(data) {
 
         var playlist = data;
+        //totalRecords = playlist.total;
+        alert("total is " + totalRecords);
+        //recPerPage = playlist.max;
+        alert("recPerPage is " + recPerPage);
+        totalPages = Math.ceil(totalRecords / recPerPage);
+        apply_pagination();
 
         thumbs.forEach(function(thumb, i) {
 
@@ -164,6 +136,20 @@
         player.on('complete', function() {
             player.remove();
             player = null;
+        });
+    }
+
+    function apply_pagination() {
+        $pagination.twbsPagination({
+            totalPages: totalPages,
+            visiblePages: 6,
+            onPageClick: function (event, page) {
+                displayRecordsIndex = Math.max(page - 1, 0) * recPerPage;
+                endRec = (displayRecordsIndex) + recPerPage;
+
+                displayRecords = records.slice(displayRecordsIndex, endRec);
+                //generate_table();
+            }
         });
     }
 </script>

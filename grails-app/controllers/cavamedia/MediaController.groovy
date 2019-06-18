@@ -74,13 +74,17 @@ class MediaController {
 
         setParams(params)
 
+        println params
+
         List videos = postService.getVideos(
-            params.max.toInteger(),
-            params.offset.toInteger(),
-            params.sort,
-            params.order,
-            params.q
+                params.max.toInteger(),
+                params.offset.toInteger(),
+                params.sort,
+                params.order,
+                params.q
         )
+
+        println "videos size is ${videos.size()}"
 
         response.setContentType("text/json")
 
@@ -91,7 +95,15 @@ class MediaController {
 
         List videoList = buildVideoList(videos)
 
-        respond videoList
+        println "videoList size is ${videoList.size()}"
+
+        Map paramMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
+
+        //render "done"
+
+        respond paramMap
+
+        //respond videoList
     }
 
     /**
@@ -123,7 +135,10 @@ class MediaController {
 
         println "videoList size is ${videoList.size()}"
 
-        respond videoList
+        Map paramMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
+
+        respond paramMap
+        //respond videoList
     }
 
     /**
@@ -172,28 +187,31 @@ class MediaController {
 
         List videoList = []
 
+        String defaultImage = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
+
         for (Post post in videos) {
+
+            if (!post.getMetaValue("_jwppp-video-url-1")) {
+                continue
+            }
 
             Map values = [:]
 
-            if (post.getMetaValue("_jwppp-video-image-1")) {
-                values['image'] = post.getMetaValue("_jwppp-video-image-1").metaValue
-            }
+            values.put("id", post.id)
+            values.put("title", post.title)
+            values.put("description", DateUtils.cleanText(post.content))
+
+            String videoImage = post.getMetaValue("_jwppp-video-image-1")?.metaValue ?: defaultImage
+
+            values.put("image", videoImage)
 
             List l = []
 
-            if (post.getMetaValue("_jwppp-video-url-1")) {
-                values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
-                l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
-            }
+            values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
+
+            l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
 
             values.put("sources", l.collect { [file: it] })
-
-            String text = DateUtils.cleanText(post.content)
-
-            values.put("description", text)
-            values.put("title", post.title)
-            values.put("id", post.id)
 
             videoList.add(values)
         }
@@ -360,7 +378,7 @@ class MediaController {
         }
 
         String s3Data = getSerializedData(post.getMetaValue("amazonS3_info").metaValue, "key")
-        
+
         if (!s3Data) {
             return data
         }

@@ -12,7 +12,7 @@ maxImageSize = 52428800  //50 MB 1000 * 1024 * 5
 
 fileTypes = ['mov', 'mp4', 'm4v', 'jpg', 'jpeg', 'png', 'gif']
 
-maxPerPage = 500
+maxPerPage = 24
 
 environments {
 
@@ -21,7 +21,7 @@ environments {
         cavaWpPassword = ""
         cavaWpUser = ""
         cavaHost = "interactiveoceans.washington.edu"
-        grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
+        grails.serverURL = "https://media.interactiveoceans.washington.edu"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
