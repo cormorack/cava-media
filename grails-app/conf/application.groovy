@@ -21,7 +21,7 @@ environments {
         cavaWpPassword = ""
         cavaWpUser = ""
         cavaHost = "interactiveoceans.washington.edu"
-        grails.serverURL = "https://media.interactiveoceans.washington.edu"
+        grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
