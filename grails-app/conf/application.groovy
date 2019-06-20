@@ -12,7 +12,7 @@ maxImageSize = 52428800  //50 MB 1000 * 1024 * 5
 
 fileTypes = ['mov', 'mp4', 'm4v', 'jpg', 'jpeg', 'png', 'gif']
 
-maxPerPage = 24
+maxPerPage = 8
 
 environments {
 

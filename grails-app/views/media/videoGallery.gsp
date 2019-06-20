@@ -23,7 +23,7 @@
                 </div>
             </g:form>
         </div>
-        <div class="container">
+        <div class="container" data-iframe-height>
             <div id="video-wall"></div>
             <a href="javascript:prevPage()" id="btn_prev" class="btn btn-secondary">Back </a>
             <a href="javascript:nextPage()" id="btn_next" class="btn btn-secondary">Next </a>
@@ -33,7 +33,7 @@
         <script type="text/javascript">
 
             var query = getParam('q');
-            var max = (getParam('max') != null) ? getParam('max') : 24;
+            var max = (getParam('max') != null) ? getParam('max') : 8;
             max = parseInt(max, 10);
 
             var offset = offset = (getParam('offset') != null) ? getParam('offset') : 0;
@@ -224,7 +224,11 @@
                 btn_next.style.visibility = "hidden";
             }
         </script>
-
+        <script
+            type="text/javascript"
+            src="https://s3-us-west-2.amazonaws.com/media.ooica.net/js/iframeResizer.contentWindow.min.js"
+            defer
+        ></script>
     </body>
 
 </html>
