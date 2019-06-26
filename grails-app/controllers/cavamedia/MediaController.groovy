@@ -1,6 +1,5 @@
 package cavamedia
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringEscapeUtils
@@ -68,23 +67,26 @@ class MediaController {
      */
     def video() {}
 
+    /**
+     * Renders the video gallery page
+     */
     def videoGallery() {}
 
+    /**
+     * Returns videos that DO NOT have images as JSON
+     * @return
+     */
     def findVideos() {
 
         setParams(params)
 
-        println params
-
         List videos = postService.getVideos(
-                params.max.toInteger(),
-                params.offset.toInteger(),
-                params.sort,
-                params.order,
-                params.q
+            params.max.toInteger(),
+            params.offset.toInteger(),
+            params.sort,
+            params.order,
+            params.q
         )
-
-        println "videos size is ${videos.size()}"
 
         response.setContentType("text/json")
 
@@ -93,21 +95,16 @@ class MediaController {
             return
         }
 
-        List videoList = buildVideoList(videos)
+        List videoList = buildVideoListNoImages(videos)
 
-        println "videoList size is ${videoList.size()}"
+        //Map paramMap = [playlist: videoList, total: videoList.size(), offset: params.offset, max:params.max]
 
-        Map paramMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
-
-        //render "done"
-
-        respond paramMap
-
-        //respond videoList
+        //respond paramMap
+        respond videoList
     }
 
     /**
-     *
+     * Returns a list of videos as JW Player JSON
      * @return
      */
     def findAllVideos() {
@@ -122,8 +119,6 @@ class MediaController {
                 params.q
         )
 
-        println "videos size is ${videos.size()}"
-
         response.setContentType("text/json")
 
         if (!videos) {
@@ -133,32 +128,33 @@ class MediaController {
 
         List videoList = buildFullVideoList(videos)
 
-        println "videoList size is ${videoList.size()}"
-
         Map paramMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
 
         respond paramMap
-        //respond videoList
     }
 
     /**
-     * Builds the JWPlayer JSON
+     * Builds the JWPlayer JSON.  Only videos without images are included.
      * @param videos
      * @return
      */
-    private List buildVideoList(List videos) {
+    private List buildVideoListNoImages(List videos) {
 
         List videoList = []
 
         for (Post post in videos) {
 
-            Map values = [:]
-
-            if (!post.getMetaValue("_jwppp-video-image-1") || !post.getMetaValue("_jwppp-video-url-1")) {
+            if (post.getMetaValue("_jwppp-video-image-1") || !post.getMetaValue("_jwppp-video-url-1") || !post.getMetaValue("ioID")) {
                 continue
             }
 
-            values.put("image", post.getMetaValue("_jwppp-video-image-1").metaValue)
+            Map values = [:]
+
+            values.put("id", post.id)
+            values.put("ioID", post.getMetaValue("ioID").metaValue)
+            values.put("title", post.title ?: "no title")
+            values.put("description", DateUtils.cleanText(post.content))
+
             values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
 
             List l = []
@@ -167,19 +163,13 @@ class MediaController {
 
             values.put("sources", l.collect { [file: it] })
 
-            String text = DateUtils.cleanText(post.content)
-
-            values.put("description", text)
-            values.put("title", post.title ?: "no title")
-            values.put("id", post.id)
-
             videoList.add(values)
         }
         return videoList
     }
 
     /**
-     *
+     * Builds the JWPlayer JSON.  Videos without images are given a default image.
      * @param videos
      * @return
      */
@@ -219,9 +209,9 @@ class MediaController {
     }
 
     /**
-     * Sets default values for parameters
-     * sort=date, order=desc, offset=0, udate=list, max=default value in config.properties
-     * max cannot be larger than 500, less than 0
+     * Sets default values for parameters.
+     * sort=date, order=desc, offset=0, max=default value in config.properties
+     * max cannot be larger than the configuration value, less than 0
      * @param params
      * @return
      */

@@ -12,7 +12,7 @@ class PostService {
 
     /**
      * Returns a list of Posts from the DB.  Includes parameters for searching and paging.
-     * @param max: defaults to 400
+     * @param max: defaults to the configuration value
      * @param offset: defaults to 0
      * @param sortBy: can be either 'date' or 'title'
      * @param orderBy: can be either 'asc' or 'desc'
