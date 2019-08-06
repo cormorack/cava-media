@@ -85,7 +85,8 @@ class MediaController {
             params.offset.toInteger(),
             params.sort,
             params.order,
-            params.q
+            params.q,
+            params.type
         )
 
         response.setContentType("text/json")
@@ -97,9 +98,6 @@ class MediaController {
 
         List videoList = buildVideoListNoImages(videos)
 
-        //Map paramMap = [playlist: videoList, total: videoList.size(), offset: params.offset, max:params.max]
-
-        //respond paramMap
         respond videoList
     }
 
@@ -112,11 +110,12 @@ class MediaController {
         setParams(params)
 
         List videos = postService.getVideos(
-                params.max.toInteger(),
-                params.offset.toInteger(),
-                params.sort,
-                params.order,
-                params.q
+            params.max.toInteger(),
+            params.offset.toInteger(),
+            params.sort,
+            params.order,
+            params.q,
+            params.type
         )
 
         response.setContentType("text/json")
@@ -223,7 +222,8 @@ class MediaController {
 
         if (!params.sort) params.sort = "date"
         if (!params.order) params.order = "desc"
-        if (!params.offset || !isNumeric(params.offset.toString())) params.offset = 0
+
+        if (!params.offset || !isNumeric (params.offset.toString()) ) params.offset = 0
     }
 
     /**
@@ -265,7 +265,10 @@ class MediaController {
      */
     private String buildFeature(Post post) {
 
-        boolean isVideo = post.mimeType == "video/quicktime"
+        boolean isVideo = false
+        if (post.mimeType == "video/quicktime" || post.mimeType == "video/mp4") {
+            isVideo = true
+        }
 
         String uri = post.guid
 
