@@ -11,7 +11,12 @@ class MediaController {
 
     static namespace = 'v1'
 
-    private final String baseURL = "https://s3-us-west-2.amazonaws.com/media.ooica.net/"
+    private final String BASE_URL = "https://s3-us-west-2.amazonaws.com/media.ooica.net/"
+    private final String VIDEO_IMAGE = "_jwppp-video-image-1"
+    private final String VIDEO_URL = "_jwppp-video-url-1"
+    private final String IO_ID = "ioID"
+    private final String S3_INFO = "amazonS3_info"
+    private final String WP_METADATA = "_wp_attachment_metadata"
 
     def postService
     def config = Holders.config
@@ -102,7 +107,7 @@ class MediaController {
     }
 
     /**
-     * Returns a list of videos as JW Player JSON
+     * Returns a list of videos formatted as JW Player JSON
      * @return
      */
     def findAllVideos() {
@@ -143,22 +148,22 @@ class MediaController {
 
         for (Post post in videos) {
 
-            if (post.getMetaValue("_jwppp-video-image-1") || !post.getMetaValue("_jwppp-video-url-1") || !post.getMetaValue("ioID")) {
+            if (post.getMetaValue(VIDEO_IMAGE) || !post.getMetaValue(VIDEO_URL) || !post.getMetaValue(IO_ID)) {
                 continue
             }
 
             Map values = [:]
 
             values.put("id", post.id)
-            values.put("ioID", post.getMetaValue("ioID").metaValue)
+            values.put(IO_ID, post.getMetaValue(IO_ID).metaValue)
             values.put("title", post.title ?: "no title")
             values.put("description", DateUtils.cleanText(post.content))
 
-            values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
+            values.put("file", post.getMetaValue(VIDEO_URL).metaValue)
 
             List l = []
 
-            l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
+            l.add(post.getMetaValue(VIDEO_URL).metaValue)
 
             values.put("sources", l.collect { [file: it] })
 
@@ -180,7 +185,7 @@ class MediaController {
 
         for (Post post in videos) {
 
-            if (!post.getMetaValue("_jwppp-video-url-1")) {
+            if (!post.getMetaValue(VIDEO_URL)) {
                 continue
             }
 
@@ -190,15 +195,15 @@ class MediaController {
             values.put("title", post.title)
             values.put("description", DateUtils.cleanText(post.content))
 
-            String videoImage = post.getMetaValue("_jwppp-video-image-1")?.metaValue ?: defaultImage
+            String videoImage = post.getMetaValue(VIDEO_IMAGE)?.metaValue ?: defaultImage
 
             values.put("image", videoImage)
 
             List l = []
 
-            values.put("file", post.getMetaValue("_jwppp-video-url-1").metaValue)
+            values.put("file", post.getMetaValue(VIDEO_URL).metaValue)
 
-            l.add(post.getMetaValue("_jwppp-video-url-1").metaValue)
+            l.add(post.getMetaValue(VIDEO_URL).metaValue)
 
             values.put("sources", l.collect { [file: it] })
 
@@ -288,11 +293,11 @@ class MediaController {
 
         // If it's a video, add the video-specific Metas
         if (isVideo) {
-            if (post.getMetaValue("_jwppp-video-url-1")) {
-                vUrl = post.getMetaValue("_jwppp-video-url-1").metaValue
+            if (post.getMetaValue(VIDEO_URL)) {
+                vUrl = post.getMetaValue(VIDEO_URL).metaValue
             }
-            if (post.getMetaValue("_jwppp-video-image-1")) {
-                vPoster = post.getMetaValue("_jwppp-video-image-1").metaValue
+            if (post.getMetaValue(VIDEO_IMAGE)) {
+                vPoster = post.getMetaValue(VIDEO_IMAGE).metaValue
             }
         }
 
@@ -336,41 +341,39 @@ class MediaController {
 
         String uri = post.guid
 
-        if(!post?.getMetaValue("amazonS3_info")?.metaValue) {
+        if(!post?.getMetaValue(S3_INFO)?.metaValue) {
 
-            log.error("No amazonS3_info found")
+            log.error("No ${S3_INFO} found")
             return uri
         }
 
-        String serializedData = getSerializedData(post.getMetaValue("amazonS3_info").metaValue, "key")
+        String serializedData = getSerializedData(post.getMetaValue(S3_INFO).metaValue, "key")
 
-        if (serializedData) return baseURL + serializedData
+        if (serializedData) return BASE_URL + serializedData
 
         else return uri
     }
 
     /**
-     * Todo: this method needs the unique AWS ID in order to be accurate
+     * Creates an image thumbnail from the WP Metatdata
      * @param post
-     * @return
+     * @return String
      */
     private String constructThumbnail(Post post) {
 
         String data = ""
 
-        if (!post?.getMetaValue("_wp_attachment_metadata")?.metaValue) {
-
-            log.error("No _wp_attachment_metadata found")
+        if (!post?.getMetaValue(WP_METADATA)?.metaValue) {
+            log.error("No ${WP_METADATA} found")
             return data
         }
 
-        if(!post?.getMetaValue("amazonS3_info")?.metaValue) {
-
-            log.error("No amazonS3_info found")
+        if (!post?.getMetaValue(S3_INFO)?.metaValue) {
+            log.error("No ${S3_INFO} found")
             return data
         }
 
-        String s3Data = getSerializedData(post.getMetaValue("amazonS3_info").metaValue, "key")
+        String s3Data = getSerializedData(post.getMetaValue(S3_INFO).metaValue, "key")
 
         if (!s3Data) {
             return data
@@ -378,7 +381,7 @@ class MediaController {
 
         String s3Id = extractID(s3Data)
 
-        String sizes = getSerializedData(post.getMetaValue("_wp_attachment_metadata").metaValue, "sizes")
+        String sizes = getSerializedData(post.getMetaValue(WP_METADATA).metaValue, "sizes")
 
         if (!sizes) {
             return data
@@ -394,7 +397,7 @@ class MediaController {
 
         data = data.substring(data.indexOf(target) + target.size()).split(",")[0]
 
-        return baseURL + "wp-content/uploads/" + s3Id + "/" + data
+        return BASE_URL + "wp-content/uploads/" + s3Id + "/" + data
     }
 
     /**
@@ -425,19 +428,13 @@ class MediaController {
      * Returns deserialized data
      * @param data
      * @param key
-     * @return deserialized String
+     * @return deserialized String or empty String
      */
     private String getSerializedData(String data, String key) {
 
         de.ailis.pherialize.MixedArray list = Pherialize.unserialize(data)?.toArray()
 
-        if (!list) {
-            log.error("Data could not be unserialized")
-            return ""
-        }
-
-        if (!list.get(key)) {
-            log.error("Data could not be looked up by key")
+        if (!list || !list.get(key)) {
             return ""
         }
 

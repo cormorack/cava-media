@@ -42,7 +42,7 @@
             var total = 0;
             var current_page = 1;
             var serviceURL = '${serverURL}';
-            var serviceURI = serviceURL + '/media/findAllVideos.json' + '?max=' + max + '&offset=' + offset;
+            var serviceURI = serviceURL + '/media/findAllVideos.json?type=video' + '&max=' + max + '&offset=' + offset;
 
             if (query) {
                 serviceURI = serviceURI  + '&q=' + query;
@@ -70,12 +70,12 @@
                         }
                     }
                 }
-                console.log(serviceURI);
+                //console.log(serviceURI);
                 httpRequest.open('GET', serviceURI, false);
                 httpRequest.send();
             })();
 
-            // Render thumbnails into grid layout
+            // Render thumbnails into a grid layout
             function generate_grid(data) {
 
                 var playlist = data.playlist;
