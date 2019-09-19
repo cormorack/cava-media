@@ -4,17 +4,23 @@ class UrlMappings {
 
     static mappings = {
 
-        /*"/images" {
-            controller = "media"
+        "/gallery" {
+            controller = "gallery"
             action = "index"
             type = "image"
         }
 
-        "/videos" {
-            controller = "media"
+        "/gallery/image" {
+            controller = "gallery"
+            action = "index"
+            type = "image"
+        }
+
+        "/gallery/video" {
+            controller = "gallery"
             action = "index"
             type = "video"
-        }*/
+        }
 
         "/" {
             controller = "apiDoc"

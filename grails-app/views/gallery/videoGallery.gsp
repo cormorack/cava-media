@@ -42,7 +42,7 @@
             var total = 0;
             var current_page = 1;
             var serviceURL = '${serverURL}';
-            var serviceURI = serviceURL + '/media/findAllVideos.json?type=video' + '&max=' + max + '&offset=' + offset;
+            var serviceURI = serviceURL + '/gallery/findAllVideos.json?type=video' + '&max=' + max + '&offset=' + offset;
 
             if (query) {
                 serviceURI = serviceURI  + '&q=' + query;

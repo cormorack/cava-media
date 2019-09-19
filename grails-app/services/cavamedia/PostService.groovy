@@ -11,52 +11,40 @@ class PostService {
     Integer maxPerPage = config.maxPerPage
 
     /**
-     * Returns a list of Posts from the DB.  Includes parameters for searching and paging.
+     * Returns a list of Posts from the DB.  Includes parameters for searching, paging, and sorting.
      * @param max: defaults to the configuration value
      * @param offset: defaults to 0
      * @param sortBy: can be either 'date' or 'title'
      * @param orderBy: can be either 'asc' or 'desc'
      * @param q: query string
-     * @param type: video or image
+     * @param type: can be either video or image
+     * @param geoReferenced: can be either true or false
      * @return java.util.List
      */
-    List getVideos(
-            Integer max=maxPerPage,
-            Integer offset=0,
-            String sortBy = "",
-            String orderBy = "",
-            String q="",
-            String type="") {
+    List getMedia(
+            Integer max = maxPerPage,
+            Integer offset = 0,
+            String sortBy = "date",
+            String orderBy = "asc",
+            String q = "",
+            String type = "",
+            String geoReferenced = "true"
+        ) {
 
-        /*orderBy = setOrderBy(orderBy)
+        orderBy = setOrderBy(orderBy)
 
-        sortBy = setSortBy(sortBy)*/
+        sortBy = setSortBy(sortBy)
 
-        if (orderBy == "asc") {
-            orderBy = "asc"
-        }
-
-        else if (orderBy == "desc") {
-            orderBy == "desc"
-        }
-
-        else if (orderBy != "asc" || orderBy != "desc") {
-            orderBy = "asc"
-        }
-
-        if (sortBy == "title") {
-            sortBy = "title"
-        }
-
-        else if (sortBy == "date") {
-            sortBy = "date"
-        }
-
-        else if (sortBy != "title" || sortBy != "date") {
-            sortBy = "date"
-        }
+        geoReferenced = setGeoReferenced(geoReferenced)
 
         def query = {
+
+            if (geoReferenced == "true") {
+                metas {
+                    eq("metaKey", "latitude")
+                    ne("metaValue", "")
+                }
+            }
 
             if (type) {
 
@@ -64,7 +52,10 @@ class PostService {
                     or {
                         eq("mimeType", "image/png")
                         eq("mimeType", "image/jpeg")
+                        eq("mimeType", "image/jpg")
                     }
+                    /*imageOrClause.delegate = delegate
+                    imageOrClause.call()*/
                 }
 
                 if (type == "video") {
@@ -72,6 +63,8 @@ class PostService {
                         eq("mimeType", "video/quicktime")
                         eq("mimeType", "video/mp4")
                     }
+                    /*videoOrClause.delegate = delegate
+                    videoOrClause.call()*/
                 }
 
             } else {
@@ -81,17 +74,17 @@ class PostService {
                         eq("mimeType", "video/quicktime")
                         eq("mimeType", "video/mp4")
                     }
+                    /*videoOrClause.delegate = delegate
+                    videoOrClause.call()*/
                     or {
                         eq("mimeType", "image/png")
                         eq("mimeType", "image/jpeg")
+                        eq("mimeType", "image/jpg")
                     }
+                    /*imageOrClause.delegate = delegate
+                    imageOrClause.call()*/
                 }
             }
-
-            /*or {
-                eq("mimeType", "video/quicktime")
-                eq("mimeType", "video/mp4")
-            }*/
 
             if(q) {
                 Post instance = new Post()
@@ -109,52 +102,48 @@ class PostService {
         List posts = Post.createCriteria().list(['max': max, 'offset': offset], query)
     }
 
-    /**
-     *
-     * @param type
-     * @return
-     */
-    List getPosts(String type) {
-
-        def posts = Post.withCriteria {
-
-            metas {
-                eq("metaKey", "latitude")
-                ne("metaValue", "")
-            }
-
-            if (type) {
-
-                if (type == "image") {
-                    or {
-                        eq("mimeType", "image/png")
-                        eq("mimeType", "image/jpeg")
-                    }
-                }
-
-                if (type == "video") {
-                    or {
-                        eq("mimeType", "video/quicktime")
-                        eq("mimeType", "video/mp4")
-                    }
-                }
-
-            } else {
-
-                or {
-                    or {
-                        eq("mimeType", "video/quicktime")
-                        eq("mimeType", "video/mp4")
-                    }
-                    or {
-                        eq("mimeType", "image/png")
-                        eq("mimeType", "image/jpeg")
-                    }
-                }
+    def imageOrClause = {
+        return {
+            or {
+                eq("mimeType", "image/png")
+                eq("mimeType", "image/jpeg")
+                eq("mimeType", "image/jpg")
             }
         }
+
     }
 
+    def videoOrClause = {
+        return {
+            or {
+                eq("mimeType", "video/quicktime")
+                eq("mimeType", "video/mp4")
+            }
+        }
+
+    }
+
+    /**
+     *
+     * @param geoReferenced
+     * @return
+     */
+    private String setGeoReferenced(String geoReferenced) {
+
+        if (geoReferenced == "true") geoReferenced = "true"
+
+        else if (geoReferenced == "false") geoReferenced = "false"
+
+        else if (geoReferenced != "true" || geoReferenced != "false") geoReferenced = "true"
+
+        return geoReferenced
+    }
+
+    /**
+     *
+     * @param orderBy
+     * @return
+     */
     private String setOrderBy(String orderBy) {
 
         if (orderBy == "asc") {
@@ -168,8 +157,14 @@ class PostService {
         else if (orderBy != "asc" || orderBy != "desc") {
             orderBy = "asc"
         }
+        return orderBy
     }
 
+    /**
+     *
+     * @param sortBy
+     * @return
+     */
     private String setSortBy(String sortBy) {
 
         if (sortBy == "title") {
@@ -183,5 +178,6 @@ class PostService {
         else if (sortBy != "title" || sortBy != "date") {
             sortBy = "date"
         }
+        return sortBy
     }
 }

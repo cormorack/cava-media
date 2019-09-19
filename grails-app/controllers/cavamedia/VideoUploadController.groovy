@@ -72,7 +72,7 @@ class VideoUploadController {
                     return
                 }
 
-                String name = FileUtils.stripCharacters(mfile.getOriginalFilename())
+                String name = Utilities.stripCharacters(mfile.getOriginalFilename())
 
                 File renamedFile = new File("$path/$name")
 

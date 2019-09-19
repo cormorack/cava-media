@@ -14,8 +14,6 @@ fileTypes = ['mov', 'mp4', 'm4v', 'jpg', 'jpeg', 'png', 'gif']
 
 maxPerPage = 8
 
-totalMax = 100
-
 environments {
 
     production {
