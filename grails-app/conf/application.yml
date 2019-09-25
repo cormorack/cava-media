@@ -108,7 +108,6 @@ hibernate:
         use_query_cache: true
         region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 
-
 dataSource:
     pooled: true
     jmxExport: true

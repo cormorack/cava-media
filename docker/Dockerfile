@@ -47,6 +47,8 @@ ENV WPUSER ''
 
 ENV WPPASSWORD ''
 
+ENV SERVER_URL ''
+
 # Setup Tomcat configuration files
 COPY src/backend/CavaMedia/docker/context.xml $CATALINA_HOME/conf/context.xml
 

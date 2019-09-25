@@ -1,3 +1,6 @@
+
+//import grails.util.Environment
+
 filesDir = "/files"
 
 streamURL = "stream.ocean.washington.edu"
@@ -16,6 +19,8 @@ maxPerPage = 8
 
 totalMax = 100
 
+//https://media-dev.ooica.net/CavaMedia
+
 environments {
 
     production {
@@ -23,14 +28,23 @@ environments {
         cavaWpPassword = ""
         cavaWpUser = ""
         cavaHost = "interactiveoceans.washington.edu"
-        grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
+        if(System.properties['grails.serverURL']) {
+            grails.serverURL = System.properties['grails.serverURL']
+        } else {
+            grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
+        }
+        println "serverURL is ${grails.serverURL}"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
         cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
         cavaWpUser = "io"
         cavaHost = "localhost:8080"
-        grails.serverURL = "http://${cavaHost}"
+        if(System.properties['grails.serverURL']) {
+            grails.serverURL = System.properties['grails.serverURL']
+        } else {
+            grails.serverURL = "http://${cavaHost}"
+        }
     }
 }
 
