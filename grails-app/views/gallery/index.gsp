@@ -143,7 +143,7 @@
 
                 <g:if test="${type == 'image'}" >
                     thumb.addEventListener('click', function() {
-                        location.href = video.file
+                        window.open(video.file, '_blank')
                     }, false);
                 </g:if>
                 <g:if test="${type == 'video'}" >
