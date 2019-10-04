@@ -1,0 +1,84 @@
+#gallery img {
+  height: 40vw;
+  object-fit: cover;
+  padding-bottom: 25px;
+}
+@media (min-width: 768px) {
+  #gallery img {
+    height: 25vw;
+  }
+}
+@media (min-width: 992px) {
+  #gallery img {
+    height: 18vw;
+  }
+}
+
+.carousel-item img {
+  width: 100vw;
+  object-fit: cover;
+}
+@media (min-width: 576px) {
+  .carousel-item img {
+    height: 40vw;
+  }
+}
+
+.modal-full {
+  min-width: 98%;
+}
+
+.carousel-indicators {
+  top: auto;
+  bottom: auto;
+  position: relative;
+}
+
+.modal-footer {
+  padding: 0.25rem;
+}
+
+.modal-header {
+  padding: 0.25rem;
+  border-bottom: 0;
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+}
+
+.modalCaption {
+  color: #f7f7f7;
+}
+
+#exampleModal {
+  background-color: rgba(0, 0, 0, 0.71);
+}
+
+.close {
+  color: #f7f7f7;
+  text-shadow: none;
+}
+
+/*.modal-full {
+  width: 98% !important;
+  height: 92% !important;
+  min-width: 98% !important;
+  min-height: 92% !important;
+  max-width: 98% !important;
+  max-height: 92% !important;
+  padding: 0 !important;
+}
+
+.modal-full-content {
+  height: 99% !important;
+  min-height: 99% !important;
+  max-height: 99% !important;
+}*/
+/*
+.container {
+  background: #000;
+}*/
+
+/*# sourceMappingURL=gallery2.css.map */

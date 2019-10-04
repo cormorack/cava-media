@@ -1,0 +1,100 @@
+// Use Bootstrap breakpoints for consistency.
+$bootstrap-sm: 576px;
+$bootstrap-md: 768px;
+$bootstrap-lg: 992px;
+$bootstrap-xl: 1200px;
+
+// Crop thumbnail images.
+#gallery {
+
+  img {
+    height: 40vw;
+    object-fit: cover;
+    padding-bottom: 25px;
+
+    @media (min-width: $bootstrap-md) {
+      height: 25vw;
+    }
+
+    @media (min-width: $bootstrap-lg) {
+      height: 18vw;
+    }
+  }
+}
+
+
+// Crop images in lightbox.
+.carousel-item {
+
+  img {
+    //height: 60vw;
+    width: 100vw;
+    object-fit: cover;
+
+    @media (min-width: $bootstrap-sm) {
+      height: 40vw;
+    }
+  }
+}
+
+.modal-full {
+  min-width: 98%;
+}
+
+.modal-full .modal-content {
+  //width: 75vw;
+}
+
+.carousel-indicators {
+  top: auto;
+  bottom: auto;
+  position: relative;
+}
+
+.modal-footer {
+  padding: .25rem;
+}
+
+.modal-header {
+  padding: .25rem;
+  border-bottom: 0;
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+}
+
+.modalCaption {
+  color: #f7f7f7;
+}
+
+#exampleModal {
+  background-color: rgba(0, 0, 0, 0.71);
+}
+
+.close {
+  color: #f7f7f7;
+  text-shadow: none;
+}
+
+/*.modal-full {
+  width: 98% !important;
+  height: 92% !important;
+  min-width: 98% !important;
+  min-height: 92% !important;
+  max-width: 98% !important;
+  max-height: 92% !important;
+  padding: 0 !important;
+}
+
+.modal-full-content {
+  height: 99% !important;
+  min-height: 99% !important;
+  max-height: 99% !important;
+}*/
+
+/*
+.container {
+  background: #000;
+}*/

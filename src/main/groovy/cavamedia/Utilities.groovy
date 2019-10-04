@@ -1,5 +1,6 @@
 package cavamedia
 
+import de.ailis.pherialize.MixedArray
 import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringEscapeUtils
@@ -14,6 +15,7 @@ class Utilities {
     static final String S3_INFO = "amazonS3_info"
     static final String WP_METADATA = "_wp_attachment_metadata"
     static final String IO_ID = "ioID"
+    static final String DEFAULT_IMAGE = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
 
     /**
      * Used to clean up file names.  Makes the name lower case and strips problematic characters
@@ -66,6 +68,7 @@ class Utilities {
     static String buildFeature(Post post) {
 
         boolean isVideo = false
+
         if (post.mimeType == "video/quicktime" || post.mimeType == "video/mp4") {
             isVideo = true
         }
@@ -83,7 +86,7 @@ class Utilities {
 
         if (!isVideo) {
             uri = constructURL(post)
-            thumb = constructThumbnail(post)
+            thumb = constructThumbnail(post, "medium_large")
         }
 
         // If it's a video, add the video-specific Metas
@@ -154,7 +157,7 @@ class Utilities {
      * @param post
      * @return String
      */
-    static String constructThumbnail(Post post) {
+    static String constructThumbnail(Post post, String size) {
 
         String data = ""
 
@@ -186,11 +189,11 @@ class Utilities {
             return data
         }
 
-        if (sizes.split("medium_large=").length <= 1) {
+        if (sizes.split(size).length <= 1) {
             return data
         }
 
-        data = sizes.split("medium_large=")[1]
+        data = sizes.split(size)[1]
 
         String target = "{file="
 
@@ -231,7 +234,7 @@ class Utilities {
      */
     static String getSerializedData(String data, String key) {
 
-        de.ailis.pherialize.MixedArray list = Pherialize.unserialize(data)?.toArray()
+        MixedArray list = Pherialize.unserialize(data)?.toArray()
 
         if (!list || !list.get(key)) {
             return ""
@@ -284,8 +287,6 @@ class Utilities {
 
         List videoList = []
 
-        String defaultImage = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
-
         for (Post post in videos) {
 
             if (!post.getMetaValue(VIDEO_URL)) {
@@ -298,7 +299,7 @@ class Utilities {
             values.put("title", post.title)
             values.put("description", DateUtils.cleanText(post.content))
 
-            String videoImage = post.getMetaValue(VIDEO_IMAGE)?.metaValue ?: defaultImage
+            String videoImage = post.getMetaValue(VIDEO_IMAGE)?.metaValue ?: DEFAULT_IMAGE
 
             values.put("image", videoImage)
 
@@ -315,21 +316,20 @@ class Utilities {
         return videoList
     }
 
+    /**
+     *
+     * @param images
+     * @return
+     */
     static List buildImageList(List images) {
 
         List imageList = []
 
-        String defaultImage = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
-
         for (Post post in images) {
-
-            /*if (!constructThumbnail(post)) {
-                continue
-            }*/
 
             String uri = constructURL(post)
 
-            String thumb = constructThumbnail(post) ?: defaultImage
+            String thumb = constructThumbnail(post, "medium") ?: DEFAULT_IMAGE
 
             Map values = [:]
 

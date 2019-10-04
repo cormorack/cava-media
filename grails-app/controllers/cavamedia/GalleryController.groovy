@@ -7,7 +7,14 @@ class GalleryController extends BaseController {
     /**
      * Renders the gallery page
      */
-    def index() {}
+    def index() {
+        render view: 'image'
+    }
+
+    /**
+     * Renders the gallery page
+     */
+    def image() {}
 
     /**
      * Renders the video page
@@ -53,6 +60,7 @@ class GalleryController extends BaseController {
     def findAllVideos() {
 
         params.geoReferenced = "false"
+        params.type = "video"
 
         setParams(params)
 
@@ -80,9 +88,14 @@ class GalleryController extends BaseController {
         respond paramMap
     }
 
+    /**
+     * Returns a list of images as JSON
+     * @return
+     */
     def findAllImages() {
 
         params.geoReferenced = "false"
+        params.type = "image"
 
         setParams(params)
 
@@ -105,7 +118,7 @@ class GalleryController extends BaseController {
 
         List imageList = Utilities.buildImageList(images)
 
-        Map paramMap = [playlist: imageList, total: images.getTotalCount(), offset: params.offset, max:params.max]
+        Map paramMap = [images: imageList, total: images.getTotalCount(), offset: params.offset, max: params.max]
 
         respond paramMap
     }

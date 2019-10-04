@@ -12,13 +12,13 @@ class UrlMappings {
 
         "/gallery/image" {
             controller = "gallery"
-            action = "index"
+            action = "image"
             type = "image"
         }
 
         "/gallery/video" {
             controller = "gallery"
-            action = "index"
+            action = "video"
             type = "video"
         }
 
