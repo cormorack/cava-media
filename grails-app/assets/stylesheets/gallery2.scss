@@ -4,6 +4,10 @@ $bootstrap-md: 768px;
 $bootstrap-lg: 992px;
 $bootstrap-xl: 1200px;
 
+body {
+  background-color: #ededed;
+}
+
 // Crop thumbnail images.
 #gallery {
 

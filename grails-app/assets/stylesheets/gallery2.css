@@ -1,3 +1,7 @@
+body {
+  background-color: #ededed;
+}
+
 #gallery img {
   height: 40vw;
   object-fit: cover;

@@ -133,7 +133,7 @@
                 if (start == 0) {
                     start = 1;
                 }
-                searchMessage = start + ' through ' + current + ' of ' + total + ' images.';
+                searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' images';
                 results.innerHTML = searchMessage;
             }
 
