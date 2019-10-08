@@ -35,6 +35,9 @@
         </div>
 
         <div class="container" data-iframe-height>
+            <div id="cover" style="display:none;">
+                <asset:image src="loader.gif" width="300px" height="300px"/>
+            </div>
             %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
             <div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>
 
@@ -100,25 +103,49 @@
 
             // Request playlist data
             (function() {
-                var httpRequest = new XMLHttpRequest();
+                /*var httpRequest = new XMLHttpRequest();
                 if (!httpRequest) {
                     return false;
                 }
                 httpRequest.onreadystatechange = function() {
+
                     if (httpRequest.readyState === XMLHttpRequest.DONE) {
                         if (httpRequest.status === 200) {
                             var json = JSON.parse(httpRequest.response);
                             total = json.total;
                             generate_grid(json);
                             createSearchResults(total);
+                            document.getElementById('cover').style.display = "none";
                         } else {
                             console.log(httpRequest.statusText);
                         }
                     }
                 }
                 //console.log(serviceURI);
+                document.getElementById('cover').style.display = "visible";
                 httpRequest.open('GET', serviceURI, false);
-                httpRequest.send();
+                httpRequest.send();*/
+
+                var loading = $("#cover");
+                $(document).ajaxStart(function () {
+                    loading.show();
+                });
+
+                $(document).ajaxStop(function () {
+                    loading.hide();
+                });
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: serviceURI,
+                    async: false,
+                    success: function (jsonData) {
+                        total = jsonData.total;
+                        generate_grid(jsonData);
+                        createSearchResults(total);
+                    }
+                });
+
             })();
 
             function createSearchResults(total) {
