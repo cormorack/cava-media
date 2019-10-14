@@ -224,7 +224,7 @@
 
             var maxPlusOffset = parseInt(max, 10) + parseInt(offset, 10);
 
-            if (maxPlusOffset > total) {
+            if (maxPlusOffset >= total) {
                 btn_next.style.visibility = "hidden";
             }
         </script>
