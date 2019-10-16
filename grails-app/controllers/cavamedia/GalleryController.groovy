@@ -11,6 +11,8 @@ class GalleryController extends BaseController {
         render view: 'image'
     }
 
+    def map() {}
+
     /**
      * Renders the gallery page
      */

@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Add a third party vector tile source</title>
+    <title>Map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <style>
     body { margin:0; padding:0; }
@@ -20,7 +20,15 @@
 
     .mapboxgl-popup {
         max-width: 600px;
-        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
+    .mapboxgl-popup-content {
+        position: relative;
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 10px 10px 15px;
+        pointer-events: auto;
+        width: 600px;
     }
 
     #menu {
@@ -67,7 +75,7 @@
 
 
     </style>
-    <script type="text/javascript" src="https://interactiveoceans.washington.edu/jwplayer_new/jwplayer.js"></script>
+    <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
     <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
 </head>
 
@@ -89,7 +97,7 @@
 
         var videoURL = 'http://localhost:8080/api/v1/media?type=video';
 
-        var imageURL = 'http://35.166.196.47:8080/CavaMedia/api/v1/media?type=image';
+        var imageURL = 'http://localhost:8080/api/v1/media?type=image';
 
         map.addSource('imageData', { type: 'geojson', data: imageURL});
 
@@ -146,7 +154,7 @@
 
             var imageHTML = '<h3>' + imageTitle + '</h3><a href=\"' + imageURL + '\"><img src=\"' + thumbnail + '\" width=\"580px\"></a>';
 
-            var imagePopup = new mapboxgl.Popup()
+            var imagePopup = new mapboxgl.Popup();
             imagePopup.setLngLat(coordinates)
                 .setHTML(imageHTML + '<p>' + description + '</p>')
                 .addTo(map);
@@ -213,10 +221,10 @@
 
             var imageHTML = '<h3>' + imageTitle + '</h3><div id=\"container\">Loading the player...</div><p>' + description + '</p>';
 
-            var videoPopup = new mapboxgl.Popup()
-            videoPopup.setLngLat(coordinates)
+            var videoPopup = new mapboxgl.Popup();
+            videoPopup.setLngLat(coordinates);
             videoPopup.setHTML(imageHTML);
-            videoPopup.addTo(map)
+            videoPopup.addTo(map);
 
             // Set up the video player
             jwplayer("container").setup({
@@ -229,7 +237,7 @@
         });
 
 
-        var toggleableLayerIds = [ 'videos', 'images' ];
+        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry'];
 
         for (var i = 0; i < toggleableLayerIds.length; i++) {
 
@@ -260,42 +268,43 @@
             layers.appendChild(link);
         }
 
-        /*map.addLayer({
-            'id': 'wms-test-layer',
+        map.addLayer({
+            'id': 'base-bathymetry',
             'type': 'raster',
             'source': {
                 'type': 'raster',
                 'tiles': [
-                    'http://52.41.106.186:8080/geoserver/bmpyramid/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=bmpyramid:bmpyramid'
+                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif'
+                ],
+                'tileSize': 256
+            },
+            'paint': {}
+        }, 'aeroway-taxiway');
+
+        map.addLayer({
+            'id': 'oregon-bathymetry',
+            'type': 'raster',
+            'source': {
+                'type': 'raster',
+                'tiles': [
+                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff'
                 ],
                 'tileSize': 256
             },
             'paint': {}
         }, 'aeroway-taxiway');
         map.addLayer({
-            'id': 'wms-test-layer1',
+            'id': 'axial-bathymetry',
             'type': 'raster',
             'source': {
                 'type': 'raster',
                 'tiles': [
-                    'http://52.41.106.186:8080/geoserver/bmpyramid/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=bmpyramid:AxialCaldera'
+                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-AxialBaseTiled.tiff'
                 ],
                 'tileSize': 256
             },
             'paint': {}
         }, 'aeroway-taxiway');
-        map.addLayer({
-            'id': 'wms-test-layer2',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    'http://52.41.106.186:8080/geoserver/bmpyramid/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=bmpyramid:hydrate'
-                ],
-                'tileSize': 256
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');*/
     });
 
     map.addControl(new mapboxgl.NavigationControl());
