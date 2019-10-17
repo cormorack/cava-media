@@ -21,6 +21,12 @@ totalMax = 100
 
 //https://media-dev.ooica.net/CavaMedia
 
+if(System.properties['lambdaURL']) {
+    lambdaURL = System.properties['lambdaURL']
+} else {
+    lambdaURL = "https://cava-tiles.ooica.net"
+}
+
 environments {
 
     production {

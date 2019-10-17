@@ -1,4 +1,5 @@
 <g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
+<g:set var="lamdaURL" value="${grailsApplication.config.lambdaURL}" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,6 +75,34 @@
         background: #3074a4;
     }
 
+    #fit {
+        display: block;
+        position: relative;
+        margin: 0px auto;
+        width: 50%;
+        height: 40px;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #fff;
+        background: #ee8a65;
+    }
+
+    #info {
+        display: block;
+        position: relative;
+        margin: 0px auto;
+        width: 50%;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #222;
+        background: #fff;
+    }
 
     </style>
     <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
@@ -83,7 +112,8 @@
 <body>
 <div id='menu'></div>
 <div id='map'></div>
-
+<button id='fit'>Zoom to Grotto</button>
+%{--<pre id='info'></pre>--}%
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2R0aG9tYXMiLCJhIjoiY2l6a2Njc3VyMDIzYjMzb2R5cmtndjk5YiJ9.vXN6i1-qOJpU1aA5EUR9bQ';
 
@@ -91,10 +121,15 @@
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v9',
         zoom: 6,
+        maxZoom: 25,
         center: [-130.00, 46.016]
     });
 
     map.on('load', function() {
+
+        /*map.on('zoomend', function() {
+            console.log(map.getZoom())
+        });*/
 
         var videoURL = '${serverURL}/api/v1/media?type=video';
 
@@ -238,7 +273,7 @@
         });
 
 
-        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry'];
+        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto'];
 
         for (var i = 0; i < toggleableLayerIds.length; i++) {
 
@@ -269,13 +304,21 @@
             layers.appendChild(link);
         }
 
+        var baseMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif';
+
+        var axialMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-SlopeBase.tiff';
+
+        var oregonMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff';
+
+        var grotto = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS_out3.tif';
+
         map.addLayer({
             'id': 'base-bathymetry',
             'type': 'raster',
             'source': {
                 'type': 'raster',
                 'tiles': [
-                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif'
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + baseMap
                 ],
                 'tileSize': 256
             },
@@ -288,7 +331,7 @@
             'source': {
                 'type': 'raster',
                 'tiles': [
-                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff'
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + oregonMap
                 ],
                 'tileSize': 256
             },
@@ -300,13 +343,49 @@
             'source': {
                 'type': 'raster',
                 'tiles': [
-                    'https://spgmxrjuz0.execute-api.us-west-2.amazonaws.com/production/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-AxialBaseTiled.tiff'
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + axialMap
                 ],
                 'tileSize': 256
             },
             'paint': {}
         }, 'aeroway-taxiway');
+        map.addLayer({
+            'id': 'grotto',
+            'type': 'raster',
+            'source': {
+                'type': 'raster',
+                'tiles': [
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + grotto
+                ],
+                'tileSize': 256,
+                'maxzoom': 25
+            },
+            'paint': {}
+        }, 'aeroway-taxiway');
+
     });
+
+    document.getElementById('fit').addEventListener('click', function() {
+        map.fitBounds([[
+            -125.1469607,
+            44.5701122
+        ], [
+            -125.1464911,
+            44.5698893,
+        ]]);
+    });
+
+    /*map.on('mousemove', function (e) {
+        //console.log(e);
+        var coord = mapboxgl.MercatorCoordinate.fromLngLat(e.lngLat, 0);
+        //console.log(coord);
+        document.getElementById('info').innerHTML =
+        // e.point is the x, y coordinates of the mousemove event relative
+        // to the top-left corner of the map
+            JSON.stringify(e.point) + '<br />' +
+            // e.lngLat is the longitude, latitude geographical position of the event
+            JSON.stringify(e.lngLat.wrap());
+    });*/
 
     map.addControl(new mapboxgl.NavigationControl());
 
