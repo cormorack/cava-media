@@ -1,3 +1,4 @@
+<g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,9 +96,9 @@
 
     map.on('load', function() {
 
-        var videoURL = 'http://localhost:8080/api/v1/media?type=video';
+        var videoURL = '${serverURL}/api/v1/media?type=video';
 
-        var imageURL = 'http://localhost:8080/api/v1/media?type=image';
+        var imageURL = '${serverURL}/api/v1/media?type=image';
 
         map.addSource('imageData', { type: 'geojson', data: imageURL});
 
