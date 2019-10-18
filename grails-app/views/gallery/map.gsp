@@ -79,7 +79,7 @@
         display: block;
         position: relative;
         margin: 0px auto;
-        width: 50%;
+        width: 20%;
         height: 40px;
         padding: 10px;
         border: none;
@@ -88,6 +88,7 @@
         text-align: center;
         color: #fff;
         background: #ee8a65;
+        top: 10px;
     }
 
     #info {
@@ -273,7 +274,7 @@
         });
 
 
-        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto'];
+        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto', 'axialCaldera'];
 
         for (var i = 0; i < toggleableLayerIds.length; i++) {
 
@@ -311,6 +312,8 @@
         var oregonMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff';
 
         var grotto = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS_out3.tif';
+
+        var axialCaldera = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff';
 
         map.addLayer({
             'id': 'base-bathymetry',
@@ -359,6 +362,18 @@
                 ],
                 'tileSize': 256,
                 'maxzoom': 25
+            },
+            'paint': {}
+        }, 'aeroway-taxiway');
+        map.addLayer({
+            'id': 'axialCaldera',
+            'type': 'raster',
+            'source': {
+                'type': 'raster',
+                'tiles': [
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + axialCaldera
+                ],
+                'tileSize': 256
             },
             'paint': {}
         }, 'aeroway-taxiway');
