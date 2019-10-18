@@ -315,69 +315,41 @@
 
         var axialCaldera = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff';
 
-        map.addLayer({
-            'id': 'base-bathymetry',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + baseMap
-                ],
-                'tileSize': 256
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');
+        var geotiffs = {
+            'base-bathymetry': baseMap,
+            'oregon-bathymetry': oregonMap,
+            'axial-bathymetry': axialMap,
+            'grotto': grotto,
+            'axialCaldera': axialCaldera
+        };
 
-        map.addLayer({
-            'id': 'oregon-bathymetry',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + oregonMap
-                ],
-                'tileSize': 256
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');
-        map.addLayer({
-            'id': 'axial-bathymetry',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + axialMap
-                ],
-                'tileSize': 256
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');
-        map.addLayer({
-            'id': 'grotto',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + grotto
-                ],
-                'tileSize': 256,
-                'maxzoom': 25
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');
-        map.addLayer({
-            'id': 'axialCaldera',
-            'type': 'raster',
-            'source': {
-                'type': 'raster',
-                'tiles': [
-                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + axialCaldera
-                ],
-                'tileSize': 256
-            },
-            'paint': {}
-        }, 'aeroway-taxiway');
+        for (var key in geotiffs) {
 
+            (function() {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: '${lamdaURL}/tilejson.json?url=' + geotiffs[key],
+                    async: false,
+                    success: function (jsonData) {
+                        map.addLayer({
+                            'id': key,
+                            'type': 'raster',
+                            'source': {
+                                'type': 'raster',
+                                'tiles': [
+                                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + geotiffs[key]
+                                ],
+                                'tileSize': 256,
+                                'maxzoom': 25,
+                                'bounds': jsonData.bounds
+                            },
+                            'paint': {}
+                        }, 'aeroway-taxiway');
+                    }
+                });
+            })();
+        }
     });
 
     document.getElementById('fit').addEventListener('click', function() {
