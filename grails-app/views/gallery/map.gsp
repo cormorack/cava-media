@@ -8,7 +8,9 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <asset:javascript src="jquery-3.3.1.min.js"/>
+    %{--<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>--}%
+    %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>--}%
     <style>
     body { margin:0; padding:0; }
 
@@ -325,32 +327,38 @@
 
         for (var key in geotiffs) {
 
-            (function() {
-                $.ajax({
-                    type: "GET",
-                    dataType: "json",
-                    url: '${lamdaURL}/tilejson.json?url=' + geotiffs[key],
-                    async: false,
-                    success: function (jsonData) {
-                        map.addLayer({
-                            'id': key,
-                            'type': 'raster',
-                            'source': {
-                                'type': 'raster',
-                                'tiles': [
-                                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + geotiffs[key]
-                                ],
-                                'tileSize': 256,
-                                'maxzoom': 25,
-                                'bounds': jsonData.bounds
-                            },
-                            'paint': {}
-                        }, 'aeroway-taxiway');
-                    }
-                });
-            })();
+            var url = '${lamdaURL}/tilejson.json?url=' + geotiffs[key];
+
+            $.when( getData(url)).done( function( response){
+                map.addLayer({
+                    'id': key,
+                    'type': 'raster',
+                    'source': {
+                        'type': 'raster',
+                        'tiles': [
+                            '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + geotiffs[key]
+                        ],
+                        'tileSize': 256,
+                        'maxzoom': 25,
+                        'bounds': response.bounds
+                    },
+                    'paint': {}
+                }, 'aeroway-taxiway');
+            });
         }
     });
+
+    function getData(id) {
+
+        return $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: id,
+            async: false,
+            crossDomain: true,
+            success: function (jsonData) {}
+        });
+    }
 
     document.getElementById('fit').addEventListener('click', function() {
         map.fitBounds([[
