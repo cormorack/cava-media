@@ -8,6 +8,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+%{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js" integrity="sha256-L/S5mZS8SPJVWoKym3Zwgf2f3/s3X3MaZ7QBA9HdnN8=" crossorigin="anonymous"></script>--}%
     <asset:javascript src="jquery-3.3.1.min.js"/>
     %{--<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>--}%
     %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>--}%
@@ -77,7 +78,7 @@
         background: #3074a4;
     }
 
-    #fit {
+    #grotto {
         display: block;
         position: relative;
         margin: 0px auto;
@@ -115,7 +116,7 @@
 <body>
 <div id='menu'></div>
 <div id='map'></div>
-<button id='fit'>Zoom to Grotto</button>
+<button id='grotto'>Zoom to Grotto</button>
 %{--<pre id='info'></pre>--}%
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2R0aG9tYXMiLCJhIjoiY2l6a2Njc3VyMDIzYjMzb2R5cmtndjk5YiJ9.vXN6i1-qOJpU1aA5EUR9bQ';
@@ -124,6 +125,7 @@
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v9',
         zoom: 6,
+        minZoom: 6,
         maxZoom: 25,
         center: [-130.00, 46.016]
     });
@@ -276,7 +278,7 @@
         });
 
 
-        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto', 'axialCaldera'];
+        var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto', 'axial-caldera'];
 
         for (var i = 0; i < toggleableLayerIds.length; i++) {
 
@@ -307,60 +309,130 @@
             layers.appendChild(link);
         }
 
-        var baseMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif';
+        /*map.addLayer({
+            id: "base-bathymetry",
+            type: "raster",
+            source: {
+                type: "raster",
+                tiles: [
+                    "https://cava-tiles.ooica.net/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif"
+                ],
+                tileSize: 256,
+                bounds: [
+                    -138.492009,
+                    39.54366575651345,
+                    -116.69978616419914,
+                    50.480746
+                ]
+            }
+        });
+        map.addLayer({
+            id: "oregon-bathymetry",
+            type: "raster",
+            source: {
+                type: "raster",
+                tiles: [
+                    "https://cava-tiles.ooica.net/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff"
+                ],
+                tileSize: 256,
+                bounds: [
+                    -126.45647399999999,
+                    44.18692671187357,
+                    -123.89187174248997,
+                    45.300175
+                ]
+            }
+        });
+        map.addLayer({
+            id: "axial-bathymetry",
+            type: "raster",
+            source: {
+                type: "raster",
+                tiles: [
+                    "https://cava-tiles.ooica.net/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-SlopeBase.tiff"
+                ],
+                tileSize: 256,
+                bounds: [
+                    -130.276534,
+                    45.76193155752328,
+                    -129.5379349971798,
+                    46.097759
+                ]
+            }
+        });
+        map.addLayer({
+            id: "axial-caldera",
+            type: "raster",
+            source: {
+                type: "raster",
+                tiles: [
+                    "https://cava-tiles.ooica.net/tiles/{z}/{x}/{y}.png?url=https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff"
+                ],
+                tileSize: 256,
+                bounds: [
+                    -130.11226899999997,
+                    45.89459005059433,
+                    -129.89870429854253,
+                    46.00606
+                ]
+            }
+        });*/
 
-        var axialMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-SlopeBase.tiff';
+        var layers = [
+            {'layerKey': 'base-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif'},
+            {'layerKey': 'axial-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-SlopeBase.tiff'},
+            {'layerKey': 'oregon-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff'},
+            {'layerKey': 'grotto', 'layerURL':'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS.tiff'},
+            {'layerKey': 'axial-caldera', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff'}
+        ];
 
-        var oregonMap = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff';
+        var boundLayers = [];
 
-        var grotto = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS_out3.tif';
+        layers.forEach( function( layer) {
 
-        var axialCaldera = 'https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff';
+            var url = '${lamdaURL}/tilejson.json?url=' + layer['layerURL'];
 
-        var geotiffs = {
-            'base-bathymetry': baseMap,
-            'oregon-bathymetry': oregonMap,
-            'axial-bathymetry': axialMap,
-            'grotto': grotto,
-            'axialCaldera': axialCaldera
-        };
+            boundLayers.push(fetchData(url));
+        });
 
-        for (var key in geotiffs) {
-
-            var url = '${lamdaURL}/tilejson.json?url=' + geotiffs[key];
-
-            $.when( getData(url)).done( function( response){
-                map.addLayer({
-                    'id': key,
-                    'type': 'raster',
-                    'source': {
-                        'type': 'raster',
-                        'tiles': [
-                            '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + geotiffs[key]
-                        ],
-                        'tileSize': 256,
-                        'maxzoom': 25,
-                        'bounds': response.bounds
-                    },
-                    'paint': {}
-                }, 'aeroway-taxiway');
-            });
-        }
+        Promise.all( boundLayers).then(function (values) {
+            values.forEach(function (el, idx) {
+                var index = layers[idx];
+                createLayer(index['layerKey'], index['layerURL'], el.bounds, el.minzoom);
+            })
+        });
     });
 
-    function getData(id) {
+    function createLayer(layerKey, layerURL, layerBounds, layerMinZoom) {
+        map.addLayer({
+            'id': layerKey,
+            'type': 'raster',
+            'source': {
+                'type': 'raster',
+                'tiles': [
+                    '${lamdaURL}/tiles/{z}/{x}/{y}.png?url=' + layerURL
+                ],
+                'tileSize': 256,
+                'maxzoom': 25,
+                'minzoom': layerMinZoom,
+                'bounds': layerBounds
+            },
+            'paint': {}
+        }, 'aeroway-taxiway');
+    }
 
+    function fetchData(url) {
         return $.ajax({
             type: "GET",
             dataType: "json",
-            url: id,
-            async: false,
+            url: url,
+            //async: false,
             crossDomain: true,
             success: function (jsonData) {}
         });
     }
 
-    document.getElementById('fit').addEventListener('click', function() {
+    document.getElementById('grotto').addEventListener('click', function() {
         map.fitBounds([[
             -125.1469607,
             44.5701122
