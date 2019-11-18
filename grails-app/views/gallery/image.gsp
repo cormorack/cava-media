@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
-
+<!DOCTYPE html>
 <html>
 
     <head>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="container" data-iframe-height>
-            <div id="cover" style="display:none;">
+            <div id="cover" style="display:none; z-index: 10">
                 <asset:image src="loader.gif" width="300px" height="300px"/>
             </div>
             %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
@@ -83,7 +83,7 @@
             var max = (getParam('max') != null) ? getParam('max') : 12;
             max = parseInt(max, 10);
 
-            var offset = offset = (getParam('offset') != null) ? getParam('offset') : 0;
+            var offset = (getParam('offset') != null) ? getParam('offset') : 0;
             offset = parseInt(offset, 10);
 
             var total = 0;
@@ -101,32 +101,10 @@
                     return decodeURIComponent(name[1]);
             }
 
-            // Request playlist data
             (function() {
-                /*var httpRequest = new XMLHttpRequest();
-                if (!httpRequest) {
-                    return false;
-                }
-                httpRequest.onreadystatechange = function() {
-
-                    if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                        if (httpRequest.status === 200) {
-                            var json = JSON.parse(httpRequest.response);
-                            total = json.total;
-                            generate_grid(json);
-                            createSearchResults(total);
-                            document.getElementById('cover').style.display = "none";
-                        } else {
-                            console.log(httpRequest.statusText);
-                        }
-                    }
-                }
-                //console.log(serviceURI);
-                document.getElementById('cover').style.display = "visible";
-                httpRequest.open('GET', serviceURI, false);
-                httpRequest.send();*/
 
                 var loading = $("#cover");
+
                 $(document).ajaxStart(function () {
                     loading.show();
                 });
@@ -134,15 +112,17 @@
                 $(document).ajaxStop(function () {
                     loading.hide();
                 });
+
                 $.ajax({
                     type: "GET",
                     dataType: "json",
                     url: serviceURI,
-                    async: false,
+                    //async: false,
                     success: function (jsonData) {
                         total = jsonData.total;
-                        generate_grid(jsonData);
+                        generateGrid(jsonData);
                         createSearchResults(total);
+                        updateButton(total);
                     }
                 });
 
@@ -151,12 +131,15 @@
             function createSearchResults(total) {
 
                 var results = document.getElementById('searchResults');
+
                 var current = (parseInt(max, 10) + parseInt(offset, 10));
+
                 if (current > total) {
                     var difference = current - total;
                     current = current - difference;
                 }
                 var start = parseInt(offset, 10);
+
                 if (start == 0) {
                     start = 1;
                 }
@@ -164,7 +147,7 @@
                 results.innerHTML = searchMessage;
             }
 
-            function generate_grid(data) {
+            function generateGrid(data) {
 
                 var images = data.images;
 
@@ -278,7 +261,22 @@
                 return Math.round( Math.ceil( total / max));
             }
 
-            var btn_next = document.getElementById("btn_next");
+            function updateButton(updatedTotal) {
+                var btn_next = document.getElementById("btn_next");
+                var btn_prev = document.getElementById("btn_prev");
+
+                if (offset == 0) {
+                    btn_prev.style.visibility = "hidden";
+                }
+
+                var maxPlusOffset = parseInt(max, 10) + parseInt(offset, 10);
+
+                if (maxPlusOffset >= updatedTotal) {
+                    btn_next.style.visibility = "hidden";
+                }
+            }
+
+            /*var btn_next = document.getElementById("btn_next");
             var btn_prev = document.getElementById("btn_prev");
 
             if (offset == 0) {
@@ -289,7 +287,7 @@
 
             if (maxPlusOffset >= total) {
                 btn_next.style.visibility = "hidden";
-            }
+            }*/
 
         </script>
         <script
