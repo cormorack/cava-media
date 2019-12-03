@@ -139,17 +139,14 @@ class Utilities {
 
         String uri = post.guid
 
-        if(!post?.getMetaValue(S3_INFO)?.metaValue) {
+        AWS aws = AWS.findByPost(post)
 
-            log.error("No ${S3_INFO} found")
+        if (!aws || !aws.path) {
+            log.error("No AWS reference found")
             return uri
         }
 
-        String serializedData = getSerializedData(post.getMetaValue(S3_INFO).metaValue, "key")
-
-        if (serializedData) return BASE_URL + serializedData
-
-        else return uri
+        return BASE_URL + aws.path
     }
 
     /**
@@ -166,18 +163,14 @@ class Utilities {
             return data
         }
 
-        if (!post?.getMetaValue(S3_INFO)?.metaValue) {
-            log.error("No ${S3_INFO} found")
+        AWS aws = AWS.findByPost(post)
+
+        if (!aws || !aws.path) {
+            log.error("No AWS reference found")
             return data
         }
 
-        String s3Data = getSerializedData(post.getMetaValue(S3_INFO).metaValue, "key")
-
-        if (!s3Data) {
-            return data
-        }
-
-        String s3Id = extractID(s3Data)
+        String s3Id = extractID(aws.path)
 
         if (!s3Id) {
             return data

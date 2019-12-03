@@ -8,7 +8,9 @@ class Post {
 
     Set<Meta> metas
 
-    static hasMany = [metas: Meta]
+    Set<AWS> awsSet
+
+    static hasMany = [metas: Meta, awsSet: AWS]
 
     static mapping = {
         table "wp_posts"
