@@ -22,9 +22,14 @@ class UrlMappings {
             type = "video"
         }
 
-        "/" {
+        "/docs" {
             controller = "apiDoc"
             action = "getDocuments"
+        }
+
+        "/" {
+            controller = "media"
+            action = "index"
         }
 
         "/api/v1/media"(controller: "media", action: "index", method: "GET")
