@@ -5,6 +5,7 @@ import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import org.apache.commons.lang.StringEscapeUtils
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.math.NumberUtils
 
 @Slf4j
 class Utilities {
@@ -35,7 +36,7 @@ class Utilities {
      */
     static Boolean isNumeric(String str) {
 
-        return org.apache.commons.lang.math.NumberUtils.isNumber(str)
+        return NumberUtils.isNumber(str)
     }
 
     /**
@@ -43,19 +44,24 @@ class Utilities {
      * @param posts
      * @return a String of geoJson
      */
-    static String buildJson(List posts) {
+    static String buildJson(List posts, boolean geoReferenced=true) {
 
         def json = StringBuilder.newInstance()
 
-        json << '{ "type": "FeatureCollection", "features": ['
+        if (geoReferenced) json << '{"type": "FeatureCollection", "features": ['
+
+        else json << '['
 
         posts.eachWithIndex { post, index ->
 
-            json << buildFeature(post)
+            json << buildFeature(post, geoReferenced)
 
             if(index + 1 < posts.size()) json << ","
         }
-        json << "]}"
+
+        if (geoReferenced) json << "]}"
+
+        else json << "]"
 
         return json.toString()
     }
@@ -63,9 +69,10 @@ class Utilities {
     /**
      * Constructs an individual geoJson Feature that varies depending on whether the Post is an image or video
      * @param post
+     * @param geoReferenced
      * @return String
      */
-    static String buildFeature(Post post) {
+    static String buildFeature(Post post, boolean geoReferenced) {
 
         boolean isVideo = false
 
@@ -75,9 +82,17 @@ class Utilities {
 
         String uri = post.guid
 
-        String thumb, lat, lon, vUrl, vPoster = ""
+        String thumb, lat, lon, vUrl, vPoster, tinyThumb, description, dateString = ""
 
-        if (post.getMetaValue("latitude") && post.getMetaValue("longitude")) {
+        dateString = DateUtils.convertFromTimeStamp(post.date).toString()
+
+        if (post.excerpt) description = post.excerpt
+
+        if (!post.excerpt) description = post.content
+
+        description = StringEscapeUtils.escapeHtml(description).replaceAll("\r\n|\n\r|\n|\r|\t","")
+
+        if (geoReferenced && post.getMetaValue("latitude") && post.getMetaValue("longitude")) {
 
             lat = post.getMetaValue("latitude").metaValue
 
@@ -87,6 +102,7 @@ class Utilities {
         if (!isVideo) {
             uri = constructURL(post)
             thumb = constructThumbnail(post, "medium_large")
+            tinyThumb = constructThumbnail(post, "thumbnail")
         }
 
         // If it's a video, add the video-specific Metas
@@ -101,21 +117,49 @@ class Utilities {
 
         def jb = new JsonBuilder()
 
-        Map feature = jb {
-            type "Feature"
-            geometry {
-                type "Point"
-                if (lat && lon) {
-                    coordinates([lon, lat])
+        if (geoReferenced) {
+
+            Map feature = jb {
+                if (geoReferenced) {
+                    type "Feature"
+                    geometry {
+                        type "Point"
+                        if (lat && lon) {
+                            coordinates([lon, lat])
+                        }
+                    }
+                    properties {
+                        title post.title
+                        type post.mimeType
+                        excerpt description
+                        url uri
+                        date dateString
+                        if (!isVideo) {
+                            thumbnail thumb
+                        }
+                        if (isVideo) {
+                            if (vUrl) {
+                                videoURL vUrl
+                            }
+                            if (vPoster) {
+                                videoPoster vPoster
+                            }
+                        }
+                    }
                 }
             }
-            properties {
+        }
+        else {
+
+            def json = jb {
                 title post.title
                 type post.mimeType
-                excerpt StringEscapeUtils.escapeHtml(post.excerpt)
+                excerpt description
                 url uri
+                date dateString
                 if (!isVideo) {
                     thumbnail thumb
+                    tinyThumbnail tinyThumb
                 }
                 if (isVideo) {
                     if (vUrl) {

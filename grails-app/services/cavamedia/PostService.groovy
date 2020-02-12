@@ -19,6 +19,7 @@ class PostService {
      * @param q: query string
      * @param type: can be either video or image
      * @param geoReferenced: can be either true or false
+     * @param tag: filter by tag
      * @return java.util.List
      */
     List getMedia(
@@ -28,7 +29,8 @@ class PostService {
             String orderBy = "asc",
             String q = "",
             String type = "",
-            String geoReferenced = "true"
+            String geoReferenced = "true",
+            String tag = ""
         ) {
 
         orderBy = setOrderBy(orderBy)
@@ -86,12 +88,17 @@ class PostService {
                 }
             }
 
-            if(q) {
+            if (q) {
                 Post instance = new Post()
                 or {
                     instance.searchableProps.each {
                         ilike(it, "%${q}%")
                     }
+                }
+            }
+            if (tag) {
+                terms {
+                    eq("slug", tag)
                 }
             }
             order(sortBy, orderBy)

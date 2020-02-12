@@ -20,6 +20,17 @@ public class DateUtils {
 		filename = filename + sdf.format(today);
 		return filename;
 	}
+
+	/**
+	 *
+	 * @param timestamp
+	 * @return
+	 */
+	public static java.util.Date convertFromTimeStamp(java.sql.Timestamp timestamp) {
+
+		long milliseconds = timestamp.getTime() + (timestamp.getNanos() / 1000000);
+		return new java.util.Date(milliseconds);
+	}
 	
 	public static String stripHtml(String html) {
 

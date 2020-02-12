@@ -37,7 +37,7 @@ environments {
         if(System.properties['grails.serverURL']) {
             grails.serverURL = System.properties['grails.serverURL']
         } else {
-            grails.serverURL = "https://media.interactiveoceans.washington.edu/CavaMedia"
+            grails.serverURL = "https://api.interactiveoceans.washington.edu/media"
         }
         println "serverURL is ${grails.serverURL}"
     }
@@ -57,17 +57,16 @@ environments {
 swagger {
     info {
         description = "InteractiveOceans Media API Documentation"
-        version = "1.0.0"
+        version = "1.0.1"
         title = "InteractiveOceans Media"
-        termsOfServices = "http://app.interactiveoceans.washington.edu"
+        termsOfServices = "https://api.interactiveoceans.washington.edu"
         contact {
             name = "Contact Us"
-            url = "http://app.interactiveoceans.washington.edu"
-            email = "contact@gmail.com"
+            url = "https://interactiveoceans.washington.edu/contact/"
         }
         license {
             name = "licence under ..."
-            url = "http://app.interactiveoceans.washington.edu"
+            url = "https://api.interactiveoceans.washington.edu"
         }
     }
     schemes = [io.swagger.models.Scheme.HTTP]

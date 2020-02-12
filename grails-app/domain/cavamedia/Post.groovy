@@ -10,7 +10,9 @@ class Post {
 
     Set<AWS> awsSet
 
-    static hasMany = [metas: Meta, awsSet: AWS]
+    Set<Term> terms
+
+    static hasMany = [metas: Meta, awsSet: AWS, terms: Term]
 
     static mapping = {
         table "wp_posts"
@@ -23,6 +25,7 @@ class Post {
         mimeType column: "post_mime_type"
         status column: "post_status"
         content column: "post_content"
+        terms joinTable: [name: "wp_term_relationships", key: 'object_id' ]
         cache true
     }
 
