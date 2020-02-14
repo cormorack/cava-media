@@ -3,7 +3,6 @@ package cavamedia
 import de.ailis.pherialize.MixedArray
 import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
-import org.apache.commons.lang.StringEscapeUtils
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.math.NumberUtils
 
@@ -40,9 +39,9 @@ class Utilities {
     }
 
     /**
-     * Builds a geoJson string
+     * Builds a json or geoJson string depending on the value of geoReferenced
      * @param posts
-     * @return a String of geoJson
+     * @return a String of json
      */
     static String buildJson(List posts, boolean geoReferenced=true) {
 
@@ -54,7 +53,7 @@ class Utilities {
 
         posts.eachWithIndex { post, index ->
 
-            json << buildFeature(post, geoReferenced)
+            json << buildMedia(post, geoReferenced)
 
             if(index + 1 < posts.size()) json << ","
         }
@@ -67,111 +66,122 @@ class Utilities {
     }
 
     /**
-     * Constructs an individual geoJson Feature that varies depending on whether the Post is an image or video
+     * Constructs a Media object whose content varies depending on whether the Post is an image or video
      * @param post
      * @param geoReferenced
      * @return String
      */
-    static String buildFeature(Post post, boolean geoReferenced) {
+    static String buildMedia(Post post, boolean geoReferenced) {
 
-        boolean isVideo = false
+        Media media = new Media(uri: post.guid, title: post.title, type: post.type)
 
         if (post.mimeType == "video/quicktime" || post.mimeType == "video/mp4") {
-            isVideo = true
+            media.isVideo = true
         }
 
-        String uri = post.guid
+        media.dateString = DateUtils.convertFromTimeStamp(post.date).toString()
 
-        String thumb, lat, lon, vUrl, vPoster, tinyThumb, description, dateString = ""
+        if (post.excerpt) media.excerpt = post.excerpt
 
-        dateString = DateUtils.convertFromTimeStamp(post.date).toString()
+        if (!post.excerpt) media.excerpt = post.content
 
-        if (post.excerpt) description = post.excerpt
-
-        if (!post.excerpt) description = post.content
-
-        description = StringEscapeUtils.escapeHtml(description).replaceAll("\r\n|\n\r|\n|\r|\t","")
+        media.excerpt = DateUtils.cleanText(media.excerpt)
 
         if (geoReferenced && post.getMetaValue("latitude") && post.getMetaValue("longitude")) {
 
-            lat = post.getMetaValue("latitude").metaValue
-
-            lon = post.getMetaValue("longitude").metaValue
+            media.lat = post.getMetaValue("latitude").metaValue
+            media.lon = post.getMetaValue("longitude").metaValue
         }
 
-        if (!isVideo) {
-            uri = constructURL(post)
-            thumb = constructThumbnail(post, "medium_large")
-            tinyThumb = constructThumbnail(post, "thumbnail")
+        if (!media.isVideo) {
+            media.uri = constructURL(post)
+            media.thumb = constructThumbnail(post, "medium_large")
+            media.tinyThumb = constructThumbnail(post, "thumbnail")
         }
 
-        // If it's a video, add the video-specific Metas
-        if (isVideo) {
+        if (media.isVideo) {
             if (post.getMetaValue(VIDEO_URL)) {
-                vUrl = post.getMetaValue(VIDEO_URL).metaValue
+                media.vUrl = post.getMetaValue(VIDEO_URL).metaValue
             }
             if (post.getMetaValue(VIDEO_IMAGE)) {
-                vPoster = post.getMetaValue(VIDEO_IMAGE).metaValue
+                media.vPoster = post.getMetaValue(VIDEO_IMAGE).metaValue
             }
         }
+        if (geoReferenced) return buildMediaGeoJson(media, post)
 
-        def jb = new JsonBuilder()
+        else return buildMediaJson(media, post)
+    }
 
-        if (geoReferenced) {
+    /**
+     *
+     * @param media
+     * @param post
+     * @return
+     */
+    static String buildMediaGeoJson(Media media, Post post) {
 
-            Map feature = jb {
-                if (geoReferenced) {
-                    type "Feature"
-                    geometry {
-                        type "Point"
-                        if (lat && lon) {
-                            coordinates([lon, lat])
-                        }
-                    }
-                    properties {
-                        title post.title
-                        type post.mimeType
-                        excerpt description
-                        url uri
-                        date dateString
-                        if (!isVideo) {
-                            thumbnail thumb
-                        }
-                        if (isVideo) {
-                            if (vUrl) {
-                                videoURL vUrl
-                            }
-                            if (vPoster) {
-                                videoPoster vPoster
-                            }
-                        }
-                    }
+        JsonBuilder jb = new JsonBuilder()
+
+        Map json = jb {
+            type "Feature"
+            geometry {
+                type "Point"
+                if (media.lat && media.lon) {
+                    coordinates([media.lon, media.lat])
                 }
             }
-        }
-        else {
-
-            def json = jb {
+            properties {
                 title post.title
                 type post.mimeType
-                excerpt description
-                url uri
-                date dateString
-                if (!isVideo) {
-                    thumbnail thumb
-                    tinyThumbnail tinyThumb
+                excerpt media.excerpt
+                url media.uri
+                date media.dateString
+                if (!media.isVideo) {
+                    thumbnail media.thumb
                 }
-                if (isVideo) {
-                    if (vUrl) {
-                        videoURL vUrl
+                if (media.isVideo) {
+                    if (media.vUrl) {
+                        videoURL media.vUrl
                     }
-                    if (vPoster) {
-                        videoPoster vPoster
+                    if (media.vPoster) {
+                        videoPoster media.vPoster
                     }
                 }
             }
+        } as Map
+        return jb.toString()
+    }
+
+    /**
+     *
+     * @param media
+     * @param post
+     * @return
+     */
+    static String buildMediaJson(Media media, Post post) {
+
+        JsonBuilder jb = new JsonBuilder()
+
+        def json = jb {
+            title post.title
+            type post.mimeType
+            excerpt media.excerpt
+            url media.uri
+            date media.dateString
+            if (!media.isVideo) {
+                thumbnail media.thumb
+                tinyThumbnail media.tinyThumb
+            }
+            if (media.isVideo) {
+                if (vUrl) {
+                    videoURL media.vUrl
+                }
+                if (vPoster) {
+                    videoPoster media.vPoster
+                }
+            }
         }
-        jb.toString()
+        return jb.toString()
     }
 
     /**

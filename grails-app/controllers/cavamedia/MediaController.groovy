@@ -3,7 +3,7 @@ package cavamedia
 import grails.converters.JSON
 import io.swagger.annotations.*
 
-@Api(value = "/api/v1", tags = ["Media"], description = "Media (images and videos)")
+@Api(value = "/api/v1", tags = ["Media"], description = "Interactive Oceans Media (images and videos)")
 class MediaController extends BaseController {
 
     static namespace = 'v1'
@@ -38,7 +38,7 @@ class MediaController extends BaseController {
                     name = "max",
                     paramType = "query",
                     required = false,
-                    value = "Max amount for paging. The default is 8.  The maximum is 100.",
+                    value = "Max amount for paging. The default and maximum are 100.",
                     dataType = "string"),
 
             @ApiImplicitParam(
@@ -87,7 +87,7 @@ class MediaController extends BaseController {
                     name = "tag",
                     paramType = "query",
                     required = false,
-                    value = "Enables searching by tag slug.",
+                    value = "Enables searching by tag slug (i.e. axial-caldera).",
                     dataType = "string")
     ])
     def index() {
