@@ -138,6 +138,7 @@ class Utilities {
                 date media.dateString
                 if (!media.isVideo) {
                     thumbnail media.thumb
+                    tinyThumbnail media.tinyThumb
                 }
                 if (media.isVideo) {
                     if (media.vUrl) {
