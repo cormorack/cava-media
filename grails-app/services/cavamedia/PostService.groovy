@@ -2,6 +2,7 @@ package cavamedia
 
 import grails.transaction.Transactional
 import grails.util.Holders
+import org.hibernate.FetchMode as FM
 
 @Transactional(readOnly = true)
 class PostService {
@@ -40,16 +41,13 @@ class PostService {
         geoReferenced = setGeoReferenced(geoReferenced)
 
         def query = {
-
             if (geoReferenced == "true") {
                 metas {
                     eq("metaKey", "latitude")
                     ne("metaValue", "")
                 }
             }
-
             if (type) {
-
                 if (type == "image") {
                     or {
                         eq("mimeType", "image/png")
@@ -59,7 +57,6 @@ class PostService {
                     /*imageOrClause.delegate = delegate
                     imageOrClause.call()*/
                 }
-
                 if (type == "video") {
                     or {
                         eq("mimeType", "video/quicktime")
@@ -68,9 +65,7 @@ class PostService {
                     /*videoOrClause.delegate = delegate
                     videoOrClause.call()*/
                 }
-
             } else {
-
                 or {
                     or {
                         eq("mimeType", "video/quicktime")
@@ -87,7 +82,6 @@ class PostService {
                     imageOrClause.call()*/
                 }
             }
-
             if (q) {
                 Post instance = new Post()
                 or {
@@ -101,6 +95,12 @@ class PostService {
                     eq("slug", tag)
                 }
             }
+            /*metas {
+                fetchMode("post", FM.JOIN)
+            }
+            awsSet {
+                fetchMode("post", FM.JOIN)
+            }*/
             order(sortBy, orderBy)
             maxResults(max)
             firstResult(offset)
@@ -117,7 +117,6 @@ class PostService {
                 eq("mimeType", "image/jpg")
             }
         }
-
     }
 
     def videoOrClause = {
@@ -127,7 +126,6 @@ class PostService {
                 eq("mimeType", "video/mp4")
             }
         }
-
     }
 
     /**

@@ -3,6 +3,7 @@ package cavamedia
 import grails.test.mixin.TestFor
 import grails.test.mixin.Mock
 import spock.lang.Specification
+import static javax.servlet.http.HttpServletResponse.SC_OK
 
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
@@ -23,6 +24,26 @@ class MediaControllerSpec extends Specification {
         controller.index()
 
         then:
-        response.contentType == "text/json"
+        response.contentType == "application/json;charset=UTF-8"
+    }
+
+    void "test index"() {
+        given:
+        controller.postService = Mock(PostService)
+
+        when:
+        request.method = 'GET'
+        String m = controller.index()
+
+        then:
+        response.contentType == "application/json;charset=UTF-8"
+
+        and:
+        response.status == SC_OK
+
+        and:
+        1 * controller.postService.getMedia(
+                100, 0, 'date', 'desc', null, null, 'true', null
+        )
     }
 }

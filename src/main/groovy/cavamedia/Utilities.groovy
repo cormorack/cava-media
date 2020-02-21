@@ -174,10 +174,10 @@ class Utilities {
                 tinyThumbnail media.tinyThumb
             }
             if (media.isVideo) {
-                if (vUrl) {
+                if (media.vUrl) {
                     videoURL media.vUrl
                 }
-                if (vPoster) {
+                if (media.vPoster) {
                     videoPoster media.vPoster
                 }
             }

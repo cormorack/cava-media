@@ -1,6 +1,5 @@
 package cavamedia
 
-import grails.converters.JSON
 import io.swagger.annotations.*
 
 @Api(value = "/api/v1", tags = ["Media"], description = "Interactive Oceans Media (images and videos)")
@@ -114,6 +113,5 @@ class MediaController extends BaseController {
         boolean geoRef = params.geoReferenced == "true"
 
         render Utilities.buildJson(posts, geoRef)
-        //render posts as JSON
     }
 }

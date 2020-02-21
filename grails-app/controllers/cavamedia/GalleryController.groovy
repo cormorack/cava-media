@@ -43,7 +43,7 @@ class GalleryController extends BaseController {
                 params.geoReferenced
         )
 
-        response.setContentType("text/json")
+        response.setContentType("application/json;charset=UTF-8")
 
         if (!videos) {
             render "{[]}"
@@ -76,7 +76,7 @@ class GalleryController extends BaseController {
                 params.geoReferenced
         )
 
-        response.setContentType("text/json")
+        response.setContentType("application/json;charset=UTF-8")
 
         if (!videos) {
             render "{[]}"
@@ -85,9 +85,9 @@ class GalleryController extends BaseController {
 
         List videoList = Utilities.buildFullVideoList(videos)
 
-        Map paramMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
+        Map dataMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
 
-        respond paramMap
+        respond dataMap
     }
 
     /**
@@ -111,7 +111,7 @@ class GalleryController extends BaseController {
                 params.geoReferenced
         )
 
-        response.setContentType("text/json")
+        response.setContentType("application/json;charset=UTF-8")
 
         if (!images) {
             render "{[]}"
@@ -120,8 +120,8 @@ class GalleryController extends BaseController {
 
         List imageList = Utilities.buildImageList(images)
 
-        Map paramMap = [images: imageList, total: images.getTotalCount(), offset: params.offset, max: params.max]
+        Map dataMap = [images: imageList, total: images.getTotalCount(), offset: params.offset, max: params.max]
 
-        respond paramMap
+        respond dataMap
     }
 }
