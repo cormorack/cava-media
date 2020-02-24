@@ -14,8 +14,10 @@ class Utilities {
     static final String VIDEO_URL = "_jwppp-video-url-1"
     static final String S3_INFO = "amazonS3_info"
     static final String WP_METADATA = "_wp_attachment_metadata"
+    static final String WP_FEATURED_MEDIA = "featured_media"
     static final String IO_ID = "ioID"
     static final String DEFAULT_IMAGE = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
+    static final String IO_URL = "https://interactiveoceans.washington.edu/"
 
     /**
      * Used to clean up file names.  Makes the name lower case and strips problematic characters
@@ -66,6 +68,27 @@ class Utilities {
     }
 
     /**
+     *
+     * @param post
+     * @param featuredMedia
+     * @return
+     */
+    static String buildJson(Post post, Post featuredMedia) {
+
+        JsonBuilder jb = new JsonBuilder()
+
+        def j = jb {
+            title post.title
+            excerpt DateUtils.cleanText(post.excerpt ?: post.content)
+            url "${IO_URL}${post.type}/${post.name}"
+            thumbnail constructThumbnail(featuredMedia, "medium_large")
+            tinyThumbnail constructThumbnail(featuredMedia, "thumbnail")
+        }
+
+        return "[${jb.toString()}]"
+    }
+
+    /**
      * Constructs a Media object whose content varies depending on whether the Post is an image or video
      * @param post
      * @param geoReferenced
@@ -107,9 +130,13 @@ class Utilities {
                 media.vPoster = post.getMetaValue(VIDEO_IMAGE).metaValue
             }
         }
-        if (geoReferenced) return buildMediaGeoJson(media, post)
+        if (geoReferenced) {
+            return buildMediaGeoJson(media, post)
+        }
 
-        else return buildMediaJson(media, post)
+        else  {
+            return buildMediaJson(media, post)
+        }
     }
 
     /**
@@ -202,6 +229,14 @@ class Utilities {
         }
 
         return BASE_URL + aws.path
+    }
+
+    static Post getFeaturedMedia(Post post) {
+
+        if (!post?.getMetaValue(WP_FEATURED_MEDIA)?.metaValue) {
+            log.error("No ${WP_FEATURED_MEDIA} found")
+            return null
+        }
     }
 
     /**

@@ -32,6 +32,8 @@ class UrlMappings {
             action = "index"
         }
 
+        "/post/summary/$id?"(controller: "media", action: "summary")
+
         "/api/v1/media"(controller: "media", action: "index", method: "GET")
 
         "/apidoc/$action?/$id?"(controller: "apiDoc", action: "getDocuments")

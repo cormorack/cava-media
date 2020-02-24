@@ -4,7 +4,7 @@ class Post {
 
     Date date
 
-    String title, excerpt, type, mimeType, guid, status, content
+    String title, excerpt, type, mimeType, guid, status, content, name
 
     Set<Meta> metas
 
@@ -25,6 +25,7 @@ class Post {
         mimeType column: "post_mime_type"
         status column: "post_status"
         content column: "post_content"
+        name column: "post_name"
         terms joinTable: [name: "wp_term_relationships", key: 'object_id' ]
         cache true
     }

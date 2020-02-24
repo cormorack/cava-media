@@ -12,6 +12,15 @@ class PostService {
     Integer maxPerPage = config.maxPerPage
 
     /**
+     *
+     * @param id
+     * @return
+     */
+    Post getPost(Long id) {
+        Post post = Post.get(id)
+    }
+
+    /**
      * Returns a list of Posts from the DB.  Includes parameters for searching, paging, and sorting.
      * @param max: defaults to the configuration value
      * @param offset: defaults to 0

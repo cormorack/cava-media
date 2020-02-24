@@ -106,12 +106,49 @@ class MediaController extends BaseController {
         response.setContentType("application/json;charset=UTF-8")
 
         if (!posts) {
-            render "{[]}"
+            render "[]"
             return
         }
 
         boolean geoRef = params.geoReferenced == "true"
 
         render Utilities.buildJson(posts, geoRef)
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    def summary(Long id) {
+
+        Post post = postService.getPost(id)
+
+        response.setContentType("application/json;charset=UTF-8")
+
+        if (!post) {
+            render "[]"
+            return
+        }
+
+        Long featureId = 0
+
+        Meta featured = post.getMetaValue("_thumbnail_id")
+
+        if (!featured) {
+            render "[]"
+            return
+        }
+
+        featureId = featured.metaValue.toInteger()
+
+        Post featuredMedia = postService.getPost(featureId)
+
+        if (!featuredMedia) {
+            render "[]"
+            return
+        }
+
+        render Utilities.buildJson(post, featuredMedia)
     }
 }
