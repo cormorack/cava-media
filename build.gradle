@@ -47,6 +47,7 @@ dependencies {
     compile 'org.grails:grails-datastore-rest-client:5.0.0.RC2'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile 'org.grails.plugins:html-cleaner:3.0.0.1'
     
     console "org.grails:grails-console"
     

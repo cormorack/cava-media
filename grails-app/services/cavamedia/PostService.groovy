@@ -20,6 +20,18 @@ class PostService {
         Post post = Post.get(id)
     }
 
+    Post getFeaturedMedia(Long postId) {
+
+        /*def idQuery = Post.where {
+            id == postId
+            metas { id == idQuery && metaKey == "_thumbnail_id" }
+        }
+        def metaQuery = idQuery.where {
+            metas { id == idQuery && metaKey == "_thumbnail_id" }
+        }
+        Post p = idQuery.find()*/
+    }
+
     /**
      * Returns a list of Posts from the DB.  Includes parameters for searching, paging, and sorting.
      * @param max: defaults to the configuration value

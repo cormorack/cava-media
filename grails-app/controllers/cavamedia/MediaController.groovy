@@ -149,6 +149,8 @@ class MediaController extends BaseController {
             return
         }
 
+        //Post post = postService.getFeaturedMedia(id)
+
         render Utilities.buildJson(post, featuredMedia)
     }
 }

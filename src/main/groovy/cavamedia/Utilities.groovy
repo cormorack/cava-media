@@ -5,6 +5,8 @@ import de.ailis.pherialize.Pherialize
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.math.NumberUtils
+import org.grails.plugins.htmlcleaner.HtmlCleaner
+import java.text.BreakIterator
 
 @Slf4j
 class Utilities {
@@ -12,9 +14,7 @@ class Utilities {
     static final String BASE_URL = "https://s3-us-west-2.amazonaws.com/media.ooica.net/"
     static final String VIDEO_IMAGE = "_jwppp-video-image-1"
     static final String VIDEO_URL = "_jwppp-video-url-1"
-    static final String S3_INFO = "amazonS3_info"
     static final String WP_METADATA = "_wp_attachment_metadata"
-    static final String WP_FEATURED_MEDIA = "featured_media"
     static final String IO_ID = "ioID"
     static final String DEFAULT_IMAGE = "https://s3-us-west-2.amazonaws.com/media.ooica.net/wp-content/uploads/2019/02/07214108/ooi-rsn-logo.png"
     static final String IO_URL = "https://interactiveoceans.washington.edu/"
@@ -57,7 +57,7 @@ class Utilities {
 
             json << buildMedia(post, geoReferenced)
 
-            if(index + 1 < posts.size()) json << ","
+            if (index + 1 < posts.size()) json << ","
         }
 
         if (geoReferenced) json << "]}"
@@ -68,7 +68,7 @@ class Utilities {
     }
 
     /**
-     *
+     * Builds a composite JSON object from a Post and its featuredMedia
      * @param post
      * @param featuredMedia
      * @return
@@ -79,13 +79,66 @@ class Utilities {
 
         def j = jb {
             title post.title
-            excerpt DateUtils.cleanText(post.excerpt ?: post.content)
+            excerpt setText(post)
             url "${IO_URL}${post.type}/${post.name}"
             thumbnail constructThumbnail(featuredMedia, "medium_large")
             tinyThumbnail constructThumbnail(featuredMedia, "thumbnail")
+            imageUrl constructURL(featuredMedia)
         }
 
         return "[${jb.toString()}]"
+    }
+
+    /**
+     * Creates or filters text. Any HTML is stripped out.  Text length is constrained to 600 characters or less.
+     * @param post
+     * @return
+     */
+    static String setText(Post post) {
+
+        String defaultText = "Description not available."
+
+        HtmlCleaner htmlCleaner = grails.util.Holders.applicationContext.getBean('htmlCleaner') as HtmlCleaner
+
+        if (post.excerpt) {
+            return htmlCleaner.cleanHtml(post.excerpt, 'none')
+        }
+        else if (!post.excerpt && post.content) {
+
+            String description = htmlCleaner.cleanHtml(post.content, 'none')
+
+            description = description.size() > 600 ? truncate(description, 600) : description
+
+            if (description.size() > 0)  {
+                return description
+            }
+            else return defaultText
+        }
+        else return defaultText
+    }
+
+    /**
+     * Truncates String text according the integer size.  The truncation respects word boundaries.
+     * @param content
+     * @param contentLength
+     * @return
+     */
+    static String truncate(String content, int contentLength ) {
+
+        String result
+
+        if(content.size() > contentLength) {
+
+            BreakIterator bi = BreakIterator.getWordInstance()
+            bi.setText(content)
+
+            def first_after = bi.following(contentLength)
+            result = content.substring(0, first_after) + "..."
+
+        } else {
+            result = content
+        }
+        return result
     }
 
     /**
@@ -229,14 +282,6 @@ class Utilities {
         }
 
         return BASE_URL + aws.path
-    }
-
-    static Post getFeaturedMedia(Post post) {
-
-        if (!post?.getMetaValue(WP_FEATURED_MEDIA)?.metaValue) {
-            log.error("No ${WP_FEATURED_MEDIA} found")
-            return null
-        }
     }
 
     /**
