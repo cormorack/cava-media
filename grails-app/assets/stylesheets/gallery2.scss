@@ -8,20 +8,70 @@ body {
   background-color: #ededed;
 }
 
+#tagcloud {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul li {
+    display: inline-block;
+    margin: 0px 3px 3px 0px;
+    padding: 0;
+  }
+
+  ul li a {
+    display: inline-block;
+    max-width: 170px;
+    line-height: 28px;
+    padding: 0 .8em;
+    background-color: #fff;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    -webkit-transition: .2s;
+    transition: .2s;
+  }
+
+  ul li a:hover {
+    background-color: #3498db;
+    border: 1px solid #3498db;
+    color: #fff;
+  }
+}
+
+#searchResults {
+  padding-bottom: 15px;
+}
+
+.searchResultsWrapper {
+  padding-bottom: 20px;
+}
+
+.my-next {
+  justify-content: right;
+}
+
 // Crop thumbnail images.
 #gallery {
 
   img {
-    height: 40vw;
+    height: 20vw;
     object-fit: cover;
-    padding-bottom: 25px;
+    padding-bottom: 20px;
 
     @media (min-width: $bootstrap-md) {
       height: 25vw;
     }
 
     @media (min-width: $bootstrap-lg) {
-      height: 18vw;
+      height: 12vw;
     }
   }
 }

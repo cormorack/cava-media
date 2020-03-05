@@ -11,76 +11,86 @@
     </head>
 
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-4">
-                    <div id="searchResults"></div>
-                </div>
-                <div class="col-8">
-                    <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
-                        <div class="input-group">
-                            <input class="form-control border-secondary py-2" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
-                                <g:link
-                                    class="btn btn-secondary"
-                                    role="button" controller="${controllerName}"
-                                    action="${actionName}">Clear
-                                </g:link>
-                            </div>
-                        </div>
-                    </g:form>
-                </div>
-            </div>
-        </div>
-
         <div class="container" data-iframe-height>
-            <div id="cover" style="display:none; z-index: 10">
-                <asset:image src="loader.gif" width="300px" height="300px"/>
-            </div>
-            %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
-            <div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>
+            <div class="row">
+                <div class="col-8">
+                    <div id="cover" style="display:none; z-index: 10">
+                        <asset:image src="loader.gif" width="300px" height="300px"/>
+                    </div>
+                    %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
+                    <div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>
 
-            <!-- Modal -->
+                    <!-- Modal -->
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true" >
-                <div class="modal-dialog modal-full" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="carouselExample" class="carousel slide" data-ride="carousel">
-                                <div id="carouselModal" class="carousel-inner"></div>
-                                <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                                <ol id="carouseList" class="carousel-indicators"></ol>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true" >
+                        <div class="modal-dialog modal-full" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="carouselExample" class="carousel slide" data-ride="carousel">
+                                        <div id="carouselModal" class="carousel-inner"></div>
+                                        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                        <ol id="carouseList" class="carousel-indicators"></ol>
+                                    </div>
+                                </div>
+                                %{--<div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>--}%
                             </div>
                         </div>
-                        %{--<div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>--}%
                     </div>
+                    %{--<div class="my-previous"><a href="javascript:prevPage()" id="btn_prev" class="btn btn-secondary">Back </a></div>--}%
+                    %{--<div class="my-next"> <a href="javascript:nextPage()" id="btn_next" class="btn btn-secondary">Next </a></div>--}%
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
+                            <li class="page-item"><a id="btn_next" class="page-link" href="javascript:nextPage()">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="searchResultsWrapper">
+                        <div id="searchResults"></div>
+                            <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
+                                <div class="input-group">
+                                    <input class="form-control border-secondary py-2" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                        <g:link
+                                                class="btn btn-secondary"
+                                                role="button" controller="${controllerName}"
+                                                action="${actionName}">Reset
+                                        </g:link>
+                                    </div>
+                                </div>
+                            </g:form>
+                        </div>
+                    </div>
+                    <div class="row" id="tagcloud"></div>
                 </div>
             </div>
-            <a href="javascript:prevPage()" id="btn_prev" class="btn btn-secondary">Back </a>
-            <a href="javascript:nextPage()" id="btn_next" class="btn btn-secondary">Next </a>
         </div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
+        %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
         <asset:javascript src="bootstrap4.js"/>
         %{--<asset:javascript src="fullScreen.js"/>--}%
         <script type="text/javascript">
 
             var query = getParam('q');
-            var max = (getParam('max') != null) ? getParam('max') : 12;
+            var tag = getParam('tag');
+            var max = (getParam('max') != null) ? getParam('max') : 28;
             max = parseInt(max, 10);
 
             var offset = (getParam('offset') != null) ? getParam('offset') : 0;
@@ -91,9 +101,13 @@
             var serviceURL = '${serverURL}';
             var serviceURI = serviceURL + '/gallery/findAllImages.json?max=' + max + '&offset=' + offset;
             var searchMessage = '';
+            var tagMessage = "";
 
             if (query) {
                 serviceURI = serviceURI  + '&q=' + query;
+            }
+            if (tag) {
+                serviceURI = serviceURI  + '&tag=' + tag;
             }
 
             function getParam(name) {
@@ -117,9 +131,9 @@
                     type: "GET",
                     dataType: "json",
                     url: serviceURI,
-                    //async: false,
                     success: function (jsonData) {
                         total = jsonData.total;
+                        createTagCloud(jsonData);
                         generateGrid(jsonData);
                         createSearchResults(total);
                         updateButton(total);
@@ -144,6 +158,7 @@
                     start = 1;
                 }
                 searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' images';
+                if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
                 results.innerHTML = searchMessage;
             }
 
@@ -167,14 +182,18 @@
 
                 var columnDiv = document.createElement('div');
                 columnDiv.setAttribute('class', 'col-6 col-md-4 col-lg-3');
+                /*columnDiv.setAttribute('class', '');*/
 
                 var imageDiv = document.createElement('img');
                 imageDiv.setAttribute('class', 'w-100');
                 imageDiv.setAttribute('src', image.image);
+                //imageDiv.setAttribute('data-toggle', 'tooltip');
+                //imageDiv.setAttribute('data-placement', 'top');
                 imageDiv.setAttribute('data-target', '#carouselExample');
                 imageDiv.setAttribute('data-slide-to', counter.toString());
                 //imageDiv.setAttribute('data-toggle-fullscreen', '');
                 imageDiv.setAttribute('alt', image.title);
+                imageDiv.setAttribute('title', image.title);
                 columnDiv.appendChild(imageDiv);
                 document.getElementById('gallery').appendChild(columnDiv);
             }
@@ -188,6 +207,36 @@
                     listItem.setAttribute('class', 'active');
                 }
                 document.getElementById('carouseList').appendChild(listItem);
+            }
+
+            function createTagCloud(data) {
+
+                var tags = data.tags;
+                var tagList = document.createElement('ul');
+
+                for (var i = 0; i < tags.length; i++) {
+
+                    var listItem = document.createElement('li');
+                    var tagLink = document.createElement('a');
+                    var linkText = document.createTextNode(tags[i].name);
+                    tagLink.appendChild(linkText);
+                    var tagURL = serviceURL + '/gallery/image?tag='
+                    tagLink.setAttribute('href', tagURL + tags[i].slug);
+                    listItem.appendChild(tagLink);
+                    tagList.appendChild(listItem);
+                    setTagMessage(tags[i]);
+                }
+                document.getElementById('tagcloud').appendChild(tagList);
+            }
+
+            function setTagMessage(tagObject) {
+                if (tagMessage === "" || tagMessage == undefined) {
+                    if (tag != undefined) {
+                        if (tag.toUpperCase() == tagObject.slug.toUpperCase()) {
+                            tagMessage = tagObject.name.toUpperCase();
+                        }
+                    }
+                }
             }
             
             function createModal(image, counter) {
@@ -253,7 +302,7 @@
                     window.location.host +
                     window.location.pathname +
                     '?' +
-                    $.param({'max':max,'offset':offset, 'q':query});
+                    $.param({'max':max,'offset':offset, 'q':query, 'tag':tag});
             }
 
             function numPages() {
@@ -276,18 +325,11 @@
                 }
             }
 
-            /*var btn_next = document.getElementById("btn_next");
-            var btn_prev = document.getElementById("btn_prev");
-
-            if (offset == 0) {
-                btn_prev.style.visibility = "hidden";
-            }
-
-            var maxPlusOffset = parseInt(max, 10) + parseInt(offset, 10);
-
-            if (maxPlusOffset >= total) {
-                btn_next.style.visibility = "hidden";
-            }*/
+            /*jQuery( document ).ready(function( $ ) {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                })
+            });*/
 
         </script>
         <script

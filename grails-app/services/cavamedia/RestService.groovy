@@ -33,6 +33,26 @@ class RestService {
     private final String streamURL = "http://stream.ocean.washington.edu/streamService/newSaveFile"
 
     /**
+     * Makes a GET request to a URL
+     * @param url a URL String
+     * @return a grails.plugins.rest.client.RestResponse
+     */
+    def getURL(String url) {
+
+        disableSSLCheck()
+
+        RestBuilder rest = new RestBuilder()
+        RestResponse resp = null
+
+        try {
+            resp = rest.get(url)
+        } catch (Exception e) {
+            log.error(e.printStackTrace())
+        }
+        return resp
+    }
+
+    /**
      * Uploads videos to the streaming server. If successful, then uploads the poster image to WP
      * and adds the video metadata to WP
      * @param post

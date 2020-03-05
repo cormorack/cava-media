@@ -463,7 +463,7 @@ class Utilities {
 
             values.put("id", post.id)
             values.put("title", post.title)
-            values.put("description", DateUtils.cleanText(post.content))
+            values.put("description", setText(post))
             values.put("image", thumb)
             values.put("file", uri)
 

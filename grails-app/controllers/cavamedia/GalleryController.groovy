@@ -3,6 +3,7 @@ package cavamedia
 class GalleryController extends BaseController {
 
     def postService
+    def tagService
 
     /**
      * Renders the gallery page
@@ -73,7 +74,8 @@ class GalleryController extends BaseController {
                 params.order,
                 params.q,
                 params.type,
-                params.geoReferenced
+                params.geoReferenced,
+                params.tag
         )
 
         response.setContentType("application/json;charset=UTF-8")
@@ -108,7 +110,8 @@ class GalleryController extends BaseController {
                 params.order,
                 params.q,
                 params.type,
-                params.geoReferenced
+                params.geoReferenced,
+                params.tag
         )
 
         response.setContentType("application/json;charset=UTF-8")
@@ -120,7 +123,15 @@ class GalleryController extends BaseController {
 
         List imageList = Utilities.buildImageList(images)
 
-        Map dataMap = [images: imageList, total: images.getTotalCount(), offset: params.offset, max: params.max]
+        List tagList = tagService.getTags()
+
+        Map dataMap = [
+                images: imageList,
+                total: images.getTotalCount(),
+                offset: params.offset,
+                max: params.max,
+                tags: tagList
+        ]
 
         respond dataMap
     }
