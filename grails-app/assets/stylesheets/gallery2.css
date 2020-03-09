@@ -34,6 +34,11 @@ body {
   border: 1px solid #3498db;
   color: #fff;
 }
+#tagcloud .highlight {
+  background-color: rgba(15, 59, 95, 0.7);
+  border: 1px solid #49505a;
+  color: #fff;
+}
 
 #searchResults {
   padding-bottom: 15px;

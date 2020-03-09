@@ -50,8 +50,6 @@
                             </div>
                         </div>
                     </div>
-                    %{--<div class="my-previous"><a href="javascript:prevPage()" id="btn_prev" class="btn btn-secondary">Back </a></div>--}%
-                    %{--<div class="my-next"> <a href="javascript:nextPage()" id="btn_next" class="btn btn-secondary">Next </a></div>--}%
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
@@ -62,7 +60,7 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="searchResultsWrapper">
-                        <div id="searchResults"></div>
+                            <div id="searchResults"></div>
                             <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
                                 <div class="input-group">
                                     <input class="form-control border-secondary py-2" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
@@ -182,7 +180,6 @@
 
                 var columnDiv = document.createElement('div');
                 columnDiv.setAttribute('class', 'col-6 col-md-4 col-lg-3');
-                /*columnDiv.setAttribute('class', '');*/
 
                 var imageDiv = document.createElement('img');
                 imageDiv.setAttribute('class', 'w-100');
@@ -222,20 +219,22 @@
                     tagLink.appendChild(linkText);
                     var tagURL = serviceURL + '/gallery/image?tag='
                     tagLink.setAttribute('href', tagURL + tags[i].slug);
+                    if (tag != undefined) {
+                        if (tag.toUpperCase() == tags[i].slug.toUpperCase()) {
+                            tagLink.setAttribute('class', 'highlight');
+                            setTagMessage(tags[i]);
+                        }
+                    }
                     listItem.appendChild(tagLink);
                     tagList.appendChild(listItem);
-                    setTagMessage(tags[i]);
+
                 }
                 document.getElementById('tagcloud').appendChild(tagList);
             }
 
             function setTagMessage(tagObject) {
                 if (tagMessage === "" || tagMessage == undefined) {
-                    if (tag != undefined) {
-                        if (tag.toUpperCase() == tagObject.slug.toUpperCase()) {
-                            tagMessage = tagObject.name.toUpperCase();
-                        }
-                    }
+                    tagMessage = tagObject.name.toUpperCase();
                 }
             }
             
