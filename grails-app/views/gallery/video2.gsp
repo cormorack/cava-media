@@ -23,7 +23,7 @@
                     </nav>
                 </div>
                 <div class="col-4">
-                    %{--<div class="row">
+                    <div class="row">
                         <div class="searchResultsWrapper">
                             <div id="searchResults"></div>
                             <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
@@ -41,7 +41,7 @@
                             </g:form>
                         </div>
                     </div>
-                    <div class="row" id="tagcloud"></div>--}%
+                    <div class="row" id="tagcloud"></div>
                 </div>
             </div>
         </div>

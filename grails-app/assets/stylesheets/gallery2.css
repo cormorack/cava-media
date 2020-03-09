@@ -52,6 +52,33 @@ body {
   justify-content: right;
 }
 
+.header-bar {
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px;
+  font-size: 18px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.title-text {
+  color: #fff;
+  text-align: left;
+  font-size: 16px;
+  padding: 10px;
+  position: absolute;
+  bottom: -20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out 0.1s;
+  -webkit-transition: all 0.2s ease-in-out 0.1s;
+  -ms-transition: all 0.2s ease-in-out 0.1s;
+  -o-transition: all 0.2s ease-in-out 0.1s;
+}
+
 #gallery img {
   height: 20vw;
   object-fit: cover;
