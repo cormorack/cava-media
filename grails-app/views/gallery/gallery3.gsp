@@ -7,7 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <asset:stylesheet href="bootstrap4.css"/>
         <asset:stylesheet href="gallery2.css"/>
-        <title>Image Gallery</title>
+        <title>Video Gallery</title>
+        <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
+        <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
     </head>
 
     <body>
@@ -17,39 +19,26 @@
                     <div id="cover" style="display:none; z-index: 10">
                         <asset:image src="loader.gif" width="300px" height="300px"/>
                     </div>
-                    %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
-                    <div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>
+                    <div class="row" id="gallery" data-toggle="modal" data-target="#videoModal"></div>
 
                     <!-- Modal -->
-
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true" >
-                        <div class="modal-dialog modal-full" role="document">
+                    <div class="modal fade" id="videoModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                <div class="modal-header bg-dark border-dark">
+                                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                                 </div>
-                                <div class="modal-body">
-                                    <div id="carouselExample" class="carousel slide" data-ride="carousel">
-                                        <div id="carouselModal" class="carousel-inner"></div>
-                                        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                        <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                        <ol id="carouseList" class="carousel-indicators"></ol>
-                                    </div>
+                                <div class="modal-body bg-dark p-0">
+                                    <!-- BS4 Responsive Embed (https://parrot-tutorial.com/bootstrap4/util_embed.html) -->
+                                    %{--<div class="embed-responsive embed-responsive-16by9">
+                                        <iframe class="embed-responsive-item" allowfullscreen></iframe>
+                                    </div>--}%
                                 </div>
-                                %{--<div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>--}%
                             </div>
                         </div>
                     </div>
+
+
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
@@ -82,6 +71,7 @@
         </div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
         %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <asset:javascript src="bootstrap4.js"/>
         %{--<asset:javascript src="fullScreen.js"/>--}%
         <script type="text/javascript">
@@ -97,7 +87,7 @@
             var total = 0;
             var current_page = 1;
             var serviceURL = '${serverURL}';
-            var serviceURI = serviceURL + '/gallery/findAllImages.json?max=' + max + '&offset=' + offset;
+            var serviceURI = serviceURL + '/gallery/findAllVideos.json?max=' + max + '&offset=' + offset;
             var searchMessage = '';
             var tagMessage = "";
 
@@ -155,14 +145,14 @@
                 if (start == 0) {
                     start = 1;
                 }
-                searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' images';
+                searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' videos';
                 if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
                 results.innerHTML = searchMessage;
             }
 
             function generateGrid(data) {
 
-                var images = data.images;
+                var images = data.playlist;
 
                 for (var i = 0; i < images.length; i++) {
 
@@ -170,7 +160,7 @@
 
                     createGallery(image, i);
 
-                    createStepNav(image, i);
+                    //createStepNav(image, i);
 
                     createModal(image, i);
                 }
@@ -184,8 +174,6 @@
                 var imageDiv = document.createElement('img');
                 imageDiv.setAttribute('class', 'w-100');
                 imageDiv.setAttribute('src', image.image);
-                //imageDiv.setAttribute('data-toggle', 'tooltip');
-                //imageDiv.setAttribute('data-placement', 'top');
                 imageDiv.setAttribute('data-target', '#carouselExample');
                 imageDiv.setAttribute('data-slide-to', counter.toString());
                 //imageDiv.setAttribute('data-toggle-fullscreen', '');
@@ -195,16 +183,6 @@
                 document.getElementById('gallery').appendChild(columnDiv);
             }
 
-            function createStepNav(image, counter) {
-
-                var listItem = document.createElement('li');
-                listItem.setAttribute('data-target', '#carouselExample');
-                listItem.setAttribute('data-slide-to', counter.toString());
-                if (counter == 0) {
-                    listItem.setAttribute('class', 'active');
-                }
-                document.getElementById('carouseList').appendChild(listItem);
-            }
 
             function createTagCloud(data) {
 
@@ -217,7 +195,7 @@
                     var tagLink = document.createElement('a');
                     var linkText = document.createTextNode(tags[i].name);
                     tagLink.appendChild(linkText);
-                    var tagURL = serviceURL + '/gallery/image?tag='
+                    var tagURL = serviceURL + '/gallery/video?tag='
                     tagLink.setAttribute('href', tagURL + tags[i].slug);
                     if (tag != undefined) {
                         if (tag.toUpperCase() == tags[i].slug.toUpperCase()) {

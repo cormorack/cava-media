@@ -80,14 +80,19 @@ class GalleryController extends BaseController {
 
         response.setContentType("application/json;charset=UTF-8")
 
-        if (!videos) {
-            render "{[]}"
-            return
-        }
+        List videoList = []
 
-        List videoList = Utilities.buildFullVideoList(videos)
+        if (videos) videoList = Utilities.buildFullVideoList(videos)
 
-        Map dataMap = [playlist: videoList, total: videos.getTotalCount(), offset: params.offset, max:params.max]
+        List tagList = tagService.getTags()
+
+        Map dataMap = [
+                playlist: videoList,
+                total: videos.getTotalCount(),
+                offset: params.offset,
+                max:params.max,
+                tags: tagList
+        ]
 
         respond dataMap
     }
@@ -116,12 +121,9 @@ class GalleryController extends BaseController {
 
         response.setContentType("application/json;charset=UTF-8")
 
-        if (!images) {
-            render "{[]}"
-            return
-        }
+        List imageList = []
 
-        List imageList = Utilities.buildImageList(images)
+        if (images) imageList = Utilities.buildImageList(images)
 
         List tagList = tagService.getTags()
 

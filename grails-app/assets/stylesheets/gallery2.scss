@@ -44,6 +44,12 @@ body {
     border: 1px solid #3498db;
     color: #fff;
   }
+
+  .highlight {
+    background-color: rgba(15, 59, 95, 0.7);
+    border: 1px solid #49505a;
+    color: #fff;
+  }
 }
 
 #searchResults {
@@ -56,6 +62,34 @@ body {
 
 .my-next {
   justify-content: right;
+}
+
+.header-bar {
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px;
+  font-size: 18px;
+  justify-content: center;
+
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.title-text {
+  color: #fff;
+  text-align: left;
+  font-size: 16px;
+  padding: 10px;
+  position: absolute;
+  bottom: -20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .2s ease-in-out .1s;
+  -webkit-transition: all .2s ease-in-out .1s;
+  -ms-transition: all .2s ease-in-out .1s;
+  -o-transition: all .2s ease-in-out .1s;
 }
 
 // Crop thumbnail images.
