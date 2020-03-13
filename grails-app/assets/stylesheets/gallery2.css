@@ -98,11 +98,9 @@ body {
 .carousel-item img {
   width: 100vw;
   object-fit: cover;
-}
-@media (min-width: 576px) {
-  .carousel-item img {
+  /*@media (min-width: $bootstrap-sm) {
     height: 40vw;
-  }
+  }*/
 }
 
 .modal-full {

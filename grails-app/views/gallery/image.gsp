@@ -63,12 +63,23 @@
                             <div id="searchResults"></div>
                             <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
                                 <div class="input-group">
-                                    <input class="form-control border-secondary py-2" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+                                    <input
+                                            class="form-control form-control-sm border-secondary py-2"
+                                            type="text"
+                                            id="q"
+                                            name="q"
+                                            value="${params?.q?.encodeAsHTML()}"/>
+                                    <select class="form-control form-control-sm" id="selectMax" name="max">
+                                        <option>28</option>
+                                        <option>48</option>
+                                        <option>96</option>
+                                    </select>
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                        <button class="btn btn-secondary btn-sm" type="submit">Search</button>
                                         <g:link
-                                                class="btn btn-secondary"
-                                                role="button" controller="${controllerName}"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                role="button"
+                                                controller="${controllerName}"
                                                 action="${actionName}">Reset
                                         </g:link>
                                     </div>
@@ -82,6 +93,7 @@
         </div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
         %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
+        %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
         <asset:javascript src="bootstrap4.js"/>
         %{--<asset:javascript src="fullScreen.js"/>--}%
         <script type="text/javascript">
@@ -184,13 +196,15 @@
                 var imageDiv = document.createElement('img');
                 imageDiv.setAttribute('class', 'w-100');
                 imageDiv.setAttribute('src', image.image);
-                //imageDiv.setAttribute('data-toggle', 'tooltip');
-                //imageDiv.setAttribute('data-placement', 'top');
+                imageDiv.setAttribute('data-toggle', 'tooltip');
+                imageDiv.setAttribute('id', 'tip' + counter);
+                imageDiv.setAttribute('data-placement', 'top');
                 imageDiv.setAttribute('data-target', '#carouselExample');
                 imageDiv.setAttribute('data-slide-to', counter.toString());
                 //imageDiv.setAttribute('data-toggle-fullscreen', '');
                 imageDiv.setAttribute('alt', image.title);
                 imageDiv.setAttribute('title', image.title);
+                imageDiv.setAttribute('target', '_blank');
                 columnDiv.appendChild(imageDiv);
                 document.getElementById('gallery').appendChild(columnDiv);
             }
@@ -324,11 +338,13 @@
                 }
             }
 
-            /*jQuery( document ).ready(function( $ ) {
-                $('[data-toggle="tooltip"]').tooltip({
-                    container : 'body'
-                })
-            });*/
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+                $("#selectMax").val(max).attr('selected', 'selected');
+            })
+            $('#tip5').tooltip({
+                trigger: 'hover'
+            })
 
         </script>
         <script
