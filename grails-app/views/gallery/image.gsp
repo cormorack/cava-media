@@ -7,6 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <asset:stylesheet href="bootstrap4.css"/>
         <asset:stylesheet href="gallery2.css"/>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <asset:stylesheet href="pagination.css"/>
         <title>Image Gallery</title>
     </head>
 
@@ -50,12 +52,13 @@
                             </div>
                         </div>
                     </div>
-                    <nav aria-label="Page navigation">
+                   %{-- <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
                             <li class="page-item"><a id="btn_next" class="page-link" href="javascript:nextPage()">Next</a></li>
                         </ul>
-                    </nav>
+                    </nav>--}%
+                    <div id="pagination-fancy"></div>
                 </div>
                 <div class="col-4">
                     <div class="row">
@@ -92,9 +95,11 @@
             </div>
         </div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
         %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
         <asset:javascript src="bootstrap4.js"/>
+        <asset:javascript src="pagination.js"/>
         %{--<asset:javascript src="fullScreen.js"/>--}%
         <script type="text/javascript">
 
@@ -146,7 +151,8 @@
                         createTagCloud(jsonData);
                         generateGrid(jsonData);
                         createSearchResults(total);
-                        updateButton(total);
+                        //updateButton(total);
+                        setPaging(total);
                     }
                 });
 
@@ -286,7 +292,7 @@
                 document.getElementById('carouselModal').appendChild(modalItem);
             }
 
-            function prevPage() {
+            /*function prevPage() {
 
                 if (current_page == 1) {
                     current_page--;
@@ -336,15 +342,64 @@
                 if (maxPlusOffset >= updatedTotal) {
                     btn_next.style.visibility = "hidden";
                 }
-            }
+            }*/
 
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
                 $("#selectMax").val(max).attr('selected', 'selected');
             })
-            $('#tip5').tooltip({
+            /*$('#tip5').tooltip({
                 trigger: 'hover'
-            })
+            })*/
+
+            function setPaging(jsonTotal) {
+
+                var itemsCount = jsonTotal;
+                var itemsOnPage = max;
+                var pagingURL = window.location.protocol +
+                "//" +
+                window.location.host +
+                window.location.pathname +
+                '?' +
+                $.param({'max':max, 'q':query, 'tag':tag});
+
+                var myPagination = new Pagination({
+
+                    // Where to render this component
+                    container: $("#pagination-fancy"),
+
+                    // Called when user change page by this component
+                    // contains one parameter with page number
+                    /*pageClickCallback: function () {
+                    },*/
+
+                    // The URL to which is browser redirected after user change page by this component
+                    pageClickUrl: pagingURL + "&page={{page}}",
+
+                    //pageClickUrl: function(num) { return "?page=" + num; },
+
+                    // If true, pageClickCallback is called immediately after component render (after make method call)
+                    callPageClickCallbackOnInit: false,
+
+                    // The number of visible buttons in pagination panel
+                    maxVisibleElements: 20,
+
+                    // Shows slider for fast navigation between pages
+                    showSlider: false,
+
+                    // Shows text input box for direct navigation to specified page
+                    showInput: false,
+
+                    // The content of tooltip displayed on text input box.
+                    inputTitle: 'Go to page',
+
+                    // If false, standard mode is used (show arrows on the edges, border page numbers, shorting dots and page numbers around current page).
+                    // If true, standard mode is enhanced, so page number between border number and middle area is also displayed.
+                    enhancedMode: true
+
+                });
+                myPagination.make(itemsCount, itemsOnPage, getParam("page"), offset);
+            };
 
         </script>
         <script
