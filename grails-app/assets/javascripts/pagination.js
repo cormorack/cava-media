@@ -8,8 +8,6 @@ var Pagination = /** @class */ (function () {
         this.maxVisibleElements = 13;
         this.offset = 0;
         this.max = 0;
-        this.doIncrement = false;
-        this.doDecrement = false;
         if (options.maxVisibleElements) {
             this.maxVisibleElements = options.maxVisibleElements;
             if (this.maxVisibleElements % 2 === 0) {
@@ -104,15 +102,9 @@ var Pagination = /** @class */ (function () {
 
         if (pageNumber == 1) {
             this.offset = 0;
-            this.doIncrement = false;
         }
-        else if (this.doIncrement == true) {
+        else {
             this.offset = (pageNumber -1) * this.max;
-            this.doIncrement = false;
-        }
-        else if (this.doDecrement == true) {
-            this.offset = (pageNumber -2) * this.max;
-            this.doDecrement = false;
         }
 
         var pageLi = document.createElement("li");
@@ -128,7 +120,6 @@ var Pagination = /** @class */ (function () {
         var hrefUrl = pageClickUrl ? this.createPageClickUrl(pageNumber) : "#";
         $pageLink.attr("href", hrefUrl);
         pageLi.appendChild(pageLink);
-
         return pageLi;
     };
 
@@ -189,8 +180,7 @@ var Pagination = /** @class */ (function () {
             centerRightPage = pageCount - 1;
             centerLeftPage = centerRightPage - centerCount;
         }
-        //$paginationUl.append(previousPageLi);
-        this.doDecrement = true;
+        $paginationUl.append(previousPageLi);
         createAndAppendPageElement(1);
         if (showDotsLeft) {
             $paginationUl.append(this.createDotsPageElement());
@@ -208,7 +198,6 @@ var Pagination = /** @class */ (function () {
             }
         }
         for (var i = centerLeftPage; i <= centerRightPage; i++) {
-            this.doIncrement = true;
             createAndAppendPageElement(i);
         }
         if (isRightEnhancement) {
@@ -218,9 +207,8 @@ var Pagination = /** @class */ (function () {
         if (showDotsRight) {
             $paginationUl.append(this.createDotsPageElement());
         }
-        this.doIncrement = true;
         createAndAppendPageElement(pageCount);
-        //$paginationUl.append(nextPageLi);
+        $paginationUl.append(nextPageLi);
     };
 
     Pagination.prototype.updateVisiblePageElements = function () {
