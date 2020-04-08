@@ -22,7 +22,7 @@ var Pagination = /** @class */ (function () {
         }
     }
 
-    Pagination.prototype.make = function (itemsCount, itemsOnPage, defaultPageNumber, offset) {
+    Pagination.prototype.make = function (itemsCount, itemsOnPage, defaultPageNumber, max, offset) {
         if (defaultPageNumber === void 0) { defaultPageNumber = 1; }
         defaultPageNumber = Number(defaultPageNumber);
         if (!defaultPageNumber) {
@@ -30,7 +30,7 @@ var Pagination = /** @class */ (function () {
         }
         this.offset = Number(offset);
 
-        this.max = itemsCount;
+        this.max = max;
 
         this.pageCount = Math.ceil(itemsCount / itemsOnPage);
 

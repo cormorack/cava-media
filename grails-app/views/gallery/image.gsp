@@ -398,7 +398,7 @@
                     enhancedMode: true
 
                 });
-                myPagination.make(itemsCount, itemsOnPage, getParam("page"), offset);
+                myPagination.make(itemsCount, itemsOnPage, getParam("page"), max, offset);
             };
 
         </script>
