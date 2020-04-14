@@ -52,12 +52,6 @@
                             </div>
                         </div>
                     </div>
-                   %{-- <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
-                            <li class="page-item"><a id="btn_next" class="page-link" href="javascript:nextPage()">Next</a></li>
-                        </ul>
-                    </nav>--}%
                     <div id="pagination-fancy"></div>
                 </div>
                 <div class="col-4">
@@ -291,58 +285,6 @@
 
                 document.getElementById('carouselModal').appendChild(modalItem);
             }
-
-            /*function prevPage() {
-
-                if (current_page == 1) {
-                    current_page--;
-                    offset = offset - max;
-                    changePage(current_page);
-                }
-            }
-
-            function nextPage() {
-
-                if (current_page < numPages()) {
-                    current_page++;
-                    offset = offset + max;
-                    changePage(current_page);
-                }
-            }
-
-            function changePage(page) {
-
-                if (page < 1) page = 1;
-                if (page > numPages()) page = numPages();
-
-                window.location.href =
-                    window.location.protocol +
-                    "//" +
-                    window.location.host +
-                    window.location.pathname +
-                    '?' +
-                    $.param({'max':max,'offset':offset, 'q':query, 'tag':tag});
-            }
-
-            function numPages() {
-
-                return Math.round( Math.ceil( total / max));
-            }
-
-            function updateButton(updatedTotal) {
-                var btn_next = document.getElementById("btn_next");
-                var btn_prev = document.getElementById("btn_prev");
-
-                if (offset == 0) {
-                    btn_prev.style.visibility = "hidden";
-                }
-
-                var maxPlusOffset = parseInt(max, 10) + parseInt(offset, 10);
-
-                if (maxPlusOffset >= updatedTotal) {
-                    btn_next.style.visibility = "hidden";
-                }
-            }*/
 
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()

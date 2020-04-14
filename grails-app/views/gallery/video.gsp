@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <asset:stylesheet href="bootstrap4.css"/>
     <asset:stylesheet href="gallery2.css"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
     <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
     <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
@@ -37,12 +39,13 @@
                 </div>
             </div>
 
-            <nav aria-label="Page navigation">
+            %{--<nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
                     <li class="page-item"><a id="btn_next" class="page-link" href="javascript:nextPage()">Next</a></li>
                 </ul>
-            </nav>
+            </nav>--}%
+            <div id="pagination-fancy"></div>
         </div>
         <div class="col-4">
             <div class="row">
@@ -50,12 +53,23 @@
                     <div id="searchResults"></div>
                     <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
                         <div class="input-group">
-                            <input class="form-control border-secondary py-2" type="text" id="q" name="q" value="${params?.q?.encodeAsHTML()}"/>
+                            <input
+                                    class="form-control form-control-sm border-secondary py-2"
+                                    type="text"
+                                    id="q"
+                                    name="q"
+                                    value="${params?.q?.encodeAsHTML()}"/>
+                            <select class="form-control form-control-sm" id="selectMax" name="max">
+                                <option>28</option>
+                                <option>48</option>
+                                <option>96</option>
+                            </select>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <button class="btn btn-secondary btn-sm" type="submit">Search</button>
                                 <g:link
-                                        class="btn btn-secondary"
-                                        role="button" controller="${controllerName}"
+                                        class="btn btn-outline-secondary btn-sm"
+                                        role="button"
+                                        controller="${controllerName}"
                                         action="${actionName}">Reset
                                 </g:link>
                             </div>
@@ -68,9 +82,11 @@
     </div>
 </div>
 <asset:javascript src="jquery-3.3.1.min.js"/>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+%{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
 <asset:javascript src="bootstrap4.js"/>
+<asset:javascript src="pagination.js"/>
 %{--<asset:javascript src="fullScreen.js"/>--}%
 <script type="text/javascript">
 
@@ -122,10 +138,9 @@
                 createTagCloud(jsonData);
                 generateGrid(jsonData);
                 createSearchResults(total);
-                updateButton(total);
+                setPaging(total);
             }
         });
-
     })();
 
     function createSearchResults(total) {
@@ -211,57 +226,59 @@
         }
     }
 
-    function prevPage() {
+    function setPaging(jsonTotal) {
 
-        if (current_page == 1) {
-            current_page--;
-            offset = offset - max;
-            changePage(current_page);
-        }
-    }
-
-    function nextPage() {
-
-        if (current_page < numPages()) {
-            current_page++;
-            offset = offset + max;
-            changePage(current_page);
-        }
-    }
-
-    function changePage(page) {
-
-        if (page < 1) page = 1;
-        if (page > numPages()) page = numPages();
-
-        window.location.href =
-            window.location.protocol +
+        var itemsCount = jsonTotal;
+        var itemsOnPage = max;
+        var pagingURL = window.location.protocol +
             "//" +
             window.location.host +
             window.location.pathname +
             '?' +
-            $.param({'max':max,'offset':offset, 'q':query, 'tag':tag});
-    }
+            $.param({'max':max, 'q':query, 'tag':tag});
 
-    function numPages() {
+        var myPagination = new Pagination({
 
-        return Math.round( Math.ceil( total / max));
-    }
+            // Where to render this component
+            container: $("#pagination-fancy"),
 
-    function updateButton(updatedTotal) {
-        var btn_next = document.getElementById("btn_next");
-        var btn_prev = document.getElementById("btn_prev");
+            // Called when user change page by this component
+            // contains one parameter with page number
+            /*pageClickCallback: function () {
+            },*/
 
-        if (offset == 0) {
-            btn_prev.style.visibility = "hidden";
-        }
+            // The URL to which is browser redirected after user change page by this component
+            pageClickUrl: pagingURL + "&page={{page}}",
 
-        var maxPlusOffset = parseInt(max, 10) + parseInt(offset, 10);
+            //pageClickUrl: function(num) { return "?page=" + num; },
 
-        if (maxPlusOffset >= updatedTotal) {
-            btn_next.style.visibility = "hidden";
-        }
-    }
+            // If true, pageClickCallback is called immediately after component render (after make method call)
+            callPageClickCallbackOnInit: false,
+
+            // The number of visible buttons in pagination panel
+            maxVisibleElements: 20,
+
+            // Shows slider for fast navigation between pages
+            showSlider: false,
+
+            // Shows text input box for direct navigation to specified page
+            showInput: false,
+
+            // The content of tooltip displayed on text input box.
+            inputTitle: 'Go to page',
+
+            // If false, standard mode is used (show arrows on the edges, border page numbers, shorting dots and page numbers around current page).
+            // If true, standard mode is enhanced, so page number between border number and middle area is also displayed.
+            enhancedMode: true
+
+        });
+        myPagination.make(itemsCount, itemsOnPage, getParam("page"), max, offset);
+    };
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        $("#selectMax").val(max).attr('selected', 'selected');
+    });
 
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
