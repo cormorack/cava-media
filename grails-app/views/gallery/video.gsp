@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <asset:stylesheet href="bootstrap4.css"/>
     <asset:stylesheet href="gallery2.css"/>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
     <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-8">
             <div id="cover" style="display:none; z-index: 10">
-                <asset:image src="loader.gif" width="300px" height="300px"/>
+                <asset:image src="io-load-animation.png" width="200px" height="200px"/>
             </div>
             <div class="row" id="gallery"></div>
 
@@ -38,13 +38,6 @@
                     </div>
                 </div>
             </div>
-
-            %{--<nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li class="page-item"><a id="btn_prev" class="page-link" href="javascript:prevPage()">Previous</a></li>
-                    <li class="page-item"><a id="btn_next" class="page-link" href="javascript:nextPage()">Next</a></li>
-                </ul>
-            </nav>--}%
             <div id="pagination-fancy"></div>
         </div>
         <div class="col-4">
@@ -82,7 +75,7 @@
     </div>
 </div>
 <asset:javascript src="jquery-3.3.1.min.js"/>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<asset:javascript src="jqueryUI.js" />
 %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
 %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
 <asset:javascript src="bootstrap4.js"/>

@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <asset:stylesheet href="bootstrap4.css"/>
         <asset:stylesheet href="gallery2.css"/>
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <asset:stylesheet href="jqueryUI.css" />
         <asset:stylesheet href="pagination.css"/>
         <title>Image Gallery</title>
     </head>
@@ -16,8 +16,8 @@
         <div class="container" data-iframe-height>
             <div class="row">
                 <div class="col-8">
-                    <div id="cover" style="display:none; z-index: 10">
-                        <asset:image src="loader.gif" width="300px" height="300px"/>
+                    <div id="cover" style="display:none; z-index: 10; text-align: center;">
+                        <asset:image src="io-load-animation.png" width="200px" height="200px"/>
                     </div>
                     %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
                     <div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>
@@ -33,7 +33,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <div id="carouselExample" class="carousel slide" data-ride="carousel">
+                                    <div id="carouselExample" class="carousel slide" data-ride="false">
                                         <div id="carouselModal" class="carousel-inner"></div>
                                         <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -61,11 +61,11 @@
                             <g:form method="get" action="${actionName}" controller="${controllerName}" class="navbar-form navbar-left" role="search">
                                 <div class="input-group">
                                     <input
-                                            class="form-control form-control-sm border-secondary py-2"
-                                            type="text"
-                                            id="q"
-                                            name="q"
-                                            value="${params?.q?.encodeAsHTML()}"/>
+                                        class="form-control form-control-sm border-secondary py-2"
+                                        type="text"
+                                        id="q"
+                                        name="q"
+                                        value="${params?.q?.encodeAsHTML()}"/>
                                     <select class="form-control form-control-sm" id="selectMax" name="max">
                                         <option>28</option>
                                         <option>48</option>
@@ -74,10 +74,10 @@
                                     <div class="input-group-append">
                                         <button class="btn btn-secondary btn-sm" type="submit">Search</button>
                                         <g:link
-                                                class="btn btn-outline-secondary btn-sm"
-                                                role="button"
-                                                controller="${controllerName}"
-                                                action="${actionName}">Reset
+                                            class="btn btn-outline-secondary btn-sm"
+                                            role="button"
+                                            controller="${controllerName}"
+                                            action="${actionName}">Reset
                                         </g:link>
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
             </div>
         </div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+        <asset:javascript src="jqueryUI.js" />
         %{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
         %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
         <asset:javascript src="bootstrap4.js"/>
@@ -124,7 +124,7 @@
                     return decodeURIComponent(name[1]);
             }
 
-            (function() {
+            (function () {
 
                 var loading = $("#cover");
 
@@ -145,7 +145,6 @@
                         createTagCloud(jsonData);
                         generateGrid(jsonData);
                         createSearchResults(total);
-                        //updateButton(total);
                         setPaging(total);
                     }
                 });
@@ -241,7 +240,6 @@
                     }
                     listItem.appendChild(tagLink);
                     tagList.appendChild(listItem);
-
                 }
                 document.getElementById('tagcloud').appendChild(tagList);
             }

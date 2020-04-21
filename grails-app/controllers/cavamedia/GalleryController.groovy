@@ -129,7 +129,7 @@ class GalleryController extends BaseController {
 
         Map dataMap = [
                 images: imageList,
-                total: images.getTotalCount(),
+                total: images?.getTotalCount(),
                 offset: params.offset,
                 max: params.max,
                 tags: tagList
