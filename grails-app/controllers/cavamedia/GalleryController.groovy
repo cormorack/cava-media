@@ -24,6 +24,8 @@ class GalleryController extends BaseController {
      */
     def video() {}
 
+    def media() {}
+
     /**
      * Returns videos that DO NOT have images as JSON
      * @return
@@ -124,6 +126,42 @@ class GalleryController extends BaseController {
         List imageList = []
 
         if (images) imageList = Utilities.buildImageList(images)
+
+        List tagList = tagService.getTags()
+
+        Map dataMap = [
+                images: imageList,
+                total: images?.getTotalCount(),
+                offset: params.offset,
+                max: params.max,
+                tags: tagList
+        ]
+
+        respond dataMap
+    }
+
+    def findAllMedia() {
+
+        params.geoReferenced = "false"
+
+        setParams(params)
+
+        List images = postService.getMedia(
+                params.max.toInteger(),
+                params.offset.toInteger(),
+                params.sort,
+                params.order,
+                params.q,
+                params.type,
+                params.geoReferenced,
+                params.tag
+        )
+
+        response.setContentType("application/json;charset=UTF-8")
+
+        List imageList = []
+
+        if (images) imageList = Utilities.buildMediaList(images)
 
         List tagList = tagService.getTags()
 

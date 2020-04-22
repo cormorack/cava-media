@@ -22,6 +22,11 @@ class UrlMappings {
             type = "video"
         }
 
+        "/gallery/media" {
+            controller = "gallery"
+            action = "media"
+        }
+
         "/docs" {
             controller = "apiDoc"
             action = "getDocuments"

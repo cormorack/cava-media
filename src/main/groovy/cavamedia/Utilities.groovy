@@ -444,6 +444,49 @@ class Utilities {
         return videoList
     }
 
+    static List buildMediaList(List media) {
+
+        List mediaList = []
+
+        for (Post post in media) {
+
+            String uri, thumb = ""
+
+            Map values = [:]
+
+            values.put("id", post.id)
+            values.put("title", post.title)
+            values.put("description", setText(post))
+            values.put("type", post.mimeType)
+
+            if (post.mimeType == "video/quicktime" || post.mimeType == "video/mp4") {
+
+                if (!post.getMetaValue(VIDEO_URL)) {
+                    continue
+                }
+
+                thumb = post.getMetaValue(VIDEO_IMAGE)?.metaValue ?: DEFAULT_IMAGE
+                uri = post.getMetaValue(VIDEO_URL).metaValue
+
+                List l = []
+
+                l.add(post.getMetaValue(VIDEO_URL).metaValue)
+
+                values.put("sources", l.collect { [file: it] })
+
+            } else {
+                uri = constructURL(post)
+                thumb = constructThumbnail(post, "medium") ?: DEFAULT_IMAGE
+            }
+
+            values.put("image", thumb)
+            values.put("file", uri)
+
+            mediaList.add(values)
+        }
+        return mediaList
+    }
+
     /**
      *
      * @param images
