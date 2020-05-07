@@ -113,7 +113,7 @@
     <body>
         <div id='menu'></div>
         <div id='map'></div>
-        <button id='grotto'>Zoom to Grotto</button>
+        <button id='grotto'>Zoom to Einstein’s Grotto</button>
         <script>
             mapboxgl.accessToken = 'pk.eyJ1Ijoic2R0aG9tYXMiLCJhIjoiY2l6a2Njc3VyMDIzYjMzb2R5cmtndjk5YiJ9.vXN6i1-qOJpU1aA5EUR9bQ';
 
