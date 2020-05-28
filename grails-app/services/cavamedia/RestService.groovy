@@ -126,15 +126,10 @@ class RestService {
 
         String pathOnServer = context.getRealPath(fullPath)
 
-        if (!pathOnServer) {
-            log.error("The placeholder video file was not found on the server")
-            return false
-        }
-
         File jFile = new File(pathOnServer)
 
         if (!jFile || !jFile.exists()) {
-            log.error("The placeholder video file could not instantiated on the server")
+            log.error("The correct placeholder video file could not be instantiated at ${pathOnServer}")
             return false
         }
 
@@ -144,7 +139,7 @@ class RestService {
         File tmpFile = new File(context.getRealPath("${datedPath}.${extension}"))
 
         if (!tmpFile) {
-            log.error("tmpFile is null")
+            log.error("The temporary video could not be instantiated")
             return false
         }
 
