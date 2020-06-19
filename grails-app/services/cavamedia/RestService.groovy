@@ -6,18 +6,19 @@ import grails.transaction.Transactional
 import grails.util.Holders
 import grails.util.Environment
 import org.springframework.beans.factory.annotation.Value
-
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.servlet.ServletContext
+import java.util.concurrent.*
 
 @Transactional(readOnly = true)
 class RestService {
 
     def config = Holders.config
+    ExecutorService executor = Executors.newSingleThreadExecutor()
 
     /**
      * The username and password are set as environmental variables in production
@@ -58,20 +59,19 @@ class RestService {
      * @param post
      * @param values
      * @param context
-     * @return boolean value
+     * @return String value
      */
-    boolean doUploadProcess(Upload upload, ServletContext context) {
+    String doUploadProcess(Upload upload, ServletContext context) {
+
+        String message = ""
 
         if (!addToStreamingServer(upload)) {
-            log.error("The videos could not be uploaded to the streaming server")
-            return false
-        }
 
-        if (!uploadVideo(context, upload)) {
-            log.error("The videos could not be uploaded to the WP API")
-            return false
+            message = "The videos could not be uploaded to the streaming server."
+            log.error(message)
+            return message
         }
-        return true
+        return uploadVideo(context, upload)
     }
 
     /**
@@ -106,15 +106,18 @@ class RestService {
      * @param post
      * @param context
      * @param values
-     * @return calls updateFile() to add the video metadata (a boolean value)
+     * @return calls updateFile() to add the video metadata (a String value)
      */
-    boolean uploadVideo(ServletContext context, Upload upload) {
+    String uploadVideo(ServletContext context, Upload upload) {
+
+        String message = ""
 
         File bFile = upload.desktopVideo
 
         if (!bFile) {
-            log.error("The desktop video could not be accessed")
-            return
+            message = "The desktop video could not be accessed"
+            log.error(message)
+            return message
         }
 
         // Get an existing placeholder video (.mov or .mp4) based on the file's extension
@@ -129,8 +132,9 @@ class RestService {
         File jFile = new File(pathOnServer)
 
         if (!jFile || !jFile.exists()) {
-            log.error("The correct placeholder video file could not be instantiated at ${pathOnServer}")
-            return false
+            message = "The correct placeholder video file could not be instantiated at ${pathOnServer}"
+            log.error(message)
+            return message
         }
 
         // Create a new placeholder video with a unique filename
@@ -139,8 +143,9 @@ class RestService {
         File tmpFile = new File(context.getRealPath("${datedPath}.${extension}"))
 
         if (!tmpFile) {
-            log.error("The temporary video could not be instantiated")
-            return false
+            message = "The temporary video could not be instantiated"
+            log.error(message)
+            return message
         }
 
         InputStream srcStream = jFile.newDataInputStream()
@@ -161,8 +166,9 @@ class RestService {
         tmpFile.delete()
 
         if (!resp?.json?.id) {
-            log.error("A valid JSON identifier was not found in the response: " + resp?.json)
-            return false
+            message = "A valid JSON identifier was not found in the response: " + resp?.json
+            log.error(message)
+            return message
         }
 
         return updateFile(resp.json.id, upload)
@@ -173,9 +179,11 @@ class RestService {
      * @param post
      * @param id
      * @param values
-     * @return boolean value
+     * @return String value
      */
-    boolean updateFile(Integer id, Upload upload) {
+    String updateFile(Integer id, Upload upload) {
+
+        String message = "Link not found"
 
         Integer fileId = id
 
@@ -207,7 +215,6 @@ class RestService {
             jwShortcode = '[jwp-video="1"]' + "\n" + upload.content
         }
 
-
         Closure json = {
             title = upload.title
             description = jwShortcode ?: upload.content
@@ -226,10 +233,15 @@ class RestService {
             return false
         }*/
         if (!resp?.status) {
-            log.error(resp?.json?.toString())
-            return false
+            message = resp?.json?.toString()
+            log.error(message)
+            return message
         }
-        return true
+
+        if (resp.json.permalink_template) {
+            message = "${resp.json.permalink_template}"
+        }
+        return message
     }
 
     /**
