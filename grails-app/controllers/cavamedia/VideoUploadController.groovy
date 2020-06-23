@@ -1,5 +1,6 @@
 package cavamedia
 
+import grails.converters.JSON
 import grails.util.Environment
 import grails.util.Holders
 import javax.servlet.ServletContext
@@ -18,11 +19,7 @@ class VideoUploadController {
     /**
      * Forwards to the video upload page
      */
-    def videoForm() {
-        //println request.getRemoteAddr()
-        //println request.getHeader("X-FORWARDED-FOR")
-        //println request.getRemoteHost()
-    }
+    def videoForm() {}
 
     /**
      * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API.
@@ -83,7 +80,7 @@ class VideoUploadController {
                     mfile.transferTo(renamedFile)
 
                 } catch (Exception e) {
-                    log.error("An error occurred in ${controllerName}.${actionName} because of ${e.getCause()}")
+                    log.error("An error occurred in ${controllerName}.${actionName} because of ${e}")
                     flash.message = "The video could not be uploaded"
                     render(view: 'videoForm')
                     return
@@ -96,14 +93,18 @@ class VideoUploadController {
                 setUpload(upload, it, relativeName, renamedFile)
             }
 
-            if (!restService.doUploadProcess(upload, context)) {
+            String message = restService.doUploadProcess(upload, context)
 
-                flash.message = "Your video(s) could not be uploaded!"
+            withFormat {
+                html {
+                    flash.message = message
+                    render view: "uploaded"
+                }
+                json {
+                    Map m = ['link': message]
+                    render m as JSON
+                }
             }
-
-            flash.message = "Your video(s) have been uploaded."
-
-            render view: "uploaded"
         }
     }
 
@@ -119,21 +120,21 @@ class VideoUploadController {
 
         String url = config.videoPrefix + relativeName + config.videoSuffix
 
-        if (file.equals("desktopVideo")) {
+        if (file == "desktopVideo") {
 
             upload.desktopVideoURL = url
 
             upload.desktopVideo = renamedFile
         }
 
-        if (file.equals("phoneVideo")) {
+        if (file == "phoneVideo") {
 
             upload.phoneVideoURL = url
 
             upload.phoneVideo = renamedFile
         }
 
-        if (file.equals("posterImage")) {
+        if (file == "posterImage") {
 
             upload.posterImage = renamedFile
         }
