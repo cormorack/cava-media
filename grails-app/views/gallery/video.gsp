@@ -15,9 +15,9 @@
 </head>
 
 <body>
-<div class="container" data-iframe-height>
+<div class="container-image" data-iframe-height>
     <div class="row">
-        <div class="col-8">
+        <div class="col-8 ig-spacer">
             <div id="cover" style="display:none; z-index: 10">
                 <asset:image src="io-load-animation.png" width="200px" height="200px"/>
             </div>
@@ -76,7 +76,7 @@
 </div>
 <asset:javascript src="jquery-3.3.1.min.js"/>
 <asset:javascript src="jqueryUI.js" />
-%{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
+<script src="https://unpkg.com/@popperjs/core@2"></script>
 %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
 <asset:javascript src="bootstrap4.js"/>
 <asset:javascript src="pagination.js"/>
