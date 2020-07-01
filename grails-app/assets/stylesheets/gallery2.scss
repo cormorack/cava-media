@@ -52,6 +52,11 @@ body {
   }
 }
 
+.col-8.ig-spacer {
+  margin-right: 15px;
+  max-width: 60%;
+}
+
 #searchResults {
   padding-bottom: 15px;
 }
@@ -98,7 +103,7 @@ body {
   img {
     height: 20vw;
     object-fit: cover;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 
     @media (min-width: $bootstrap-md) {
       height: 25vw;
@@ -187,9 +192,9 @@ body {
   background: #000;
 }*/
 
-.container {
+.container-image {
     width: 100%;
-    padding-right: 15px;
+    padding-right: 0px;
     padding-left: 0px;
     margin-right: 0px;
     margin-left: 0px;
@@ -208,6 +213,7 @@ body {
     position: relative;
     width: 100%;
     min-height: 1px;
-    padding-right: 11px;
-    padding-left: 11px;
+    padding-right: 4px;
+    padding-left: 4px;
+    padding-top: 0px;
 }

@@ -1,20 +1,23 @@
 @charset "UTF-8";
 body {
-  background-color: #ededed; }
+  background-color: #ededed;
+}
 
 #tagcloud ul {
   margin: 0;
   padding: 0;
-  list-style: none; }
+  list-style: none;
+}
 #tagcloud ul li {
   display: inline-block;
   margin: 0px 3px 3px 0px;
-  padding: 0; }
+  padding: 0;
+}
 #tagcloud ul li a {
   display: inline-block;
   max-width: 170px;
   line-height: 28px;
-  padding: 0 .8em;
+  padding: 0 0.8em;
   background-color: #fff;
   border: 1px solid #cfcfcf;
   border-radius: 3px;
@@ -24,27 +27,36 @@ body {
   color: #333;
   font-size: 13px;
   text-decoration: none;
-  -webkit-transition: .2s;
-  transition: .2s; }
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
 #tagcloud ul li a:hover {
   background-color: #3498db;
   border: 1px solid #3498db;
-  color: #fff; }
+  color: #fff;
+}
 #tagcloud .highlight {
   background-color: rgba(15, 59, 95, 0.7);
   border: 1px solid #49505a;
-  color: #fff; }
+  color: #fff;
+}
+
+.col-8.ig-spacer {
+  margin-right: 15px;
+  max-width: 60%;
+}
 
 #searchResults {
-  padding-bottom: 15px; }
+  padding-bottom: 15px;
+}
 
 .searchResultsWrapper {
-  padding-bottom: 20px; }
+  padding-bottom: 20px;
+}
 
 .my-next {
-  -webkit-box-pack: right;
-      -ms-flex-pack: right;
-          justify-content: right; }
+  justify-content: right;
+}
 
 .header-bar {
   background-color: #000;
@@ -52,16 +64,11 @@ body {
   font-size: 16px;
   padding: 10px;
   font-size: 18px;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  justify-content: center;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 10px 20px; }
+  align-items: center;
+  padding: 10px 20px;
+}
 
 .title-text {
   color: #fff;
@@ -72,59 +79,72 @@ body {
   bottom: -20px;
   opacity: 0;
   pointer-events: none;
-  transition: all .2s ease-in-out .1s;
-  -webkit-transition: all .2s ease-in-out .1s;
-  -ms-transition: all .2s ease-in-out .1s;
-  -o-transition: all .2s ease-in-out .1s; }
+  transition: all 0.2s ease-in-out 0.1s;
+  -webkit-transition: all 0.2s ease-in-out 0.1s;
+  -ms-transition: all 0.2s ease-in-out 0.1s;
+  -o-transition: all 0.2s ease-in-out 0.1s;
+}
 
 #gallery img {
   height: 20vw;
-  -o-object-fit: cover;
-     object-fit: cover;
-  padding-bottom: 20px; }
-  @media (min-width: 768px) {
-    #gallery img {
-      height: 25vw; } }
-  @media (min-width: 992px) {
-    #gallery img {
-      height: 12vw; } }
+  object-fit: cover;
+  padding-bottom: 10px;
+}
+@media (min-width: 768px) {
+  #gallery img {
+    height: 25vw;
+  }
+}
+@media (min-width: 992px) {
+  #gallery img {
+    height: 12vw;
+  }
+}
 
 .carousel-item img {
   width: 100vw;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   /*@media (min-width: $bootstrap-sm) {
     height: 40vw;
-  }*/ }
+  }*/
+}
 
 .modal-full {
-  min-width: 78%; }
+  min-width: 78%;
+}
 
 .carousel-indicators {
   top: auto;
   bottom: auto;
-  position: relative; }
+  position: relative;
+}
 
 .modal-footer {
-  padding: .25rem; }
+  padding: 0.25rem;
+}
 
 .modal-header {
-  padding: .25rem;
-  border-bottom: 0; }
+  padding: 0.25rem;
+  border-bottom: 0;
+}
 
 .modal-content {
   background-color: rgba(0, 0, 0, 0);
-  border: 0; }
+  border: 0;
+}
 
 .modalCaption {
-  color: #f7f7f7; }
+  color: #f7f7f7;
+}
 
 #exampleModal {
-  background-color: rgba(0, 0, 0, 0.71); }
+  background-color: rgba(0, 0, 0, 0.71);
+}
 
 .close {
   color: #f7f7f7;
-  text-shadow: none; }
+  text-shadow: none;
+}
 
 /*.modal-full {
   width: 98% !important;
@@ -145,12 +165,13 @@ body {
 .container {
   background: #000;
 }*/
-.container {
+.container-image {
       width: 100%;
-      padding-right: 15px;
+      padding-right: 0px;
       padding-left: 0px;
       margin-right: 0px;
-      margin-left: 0px; }
+      margin-left: 0px;
+}
 
 .row {
       display: -ms-flexbox;
@@ -158,13 +179,16 @@ body {
       -ms-flex-wrap: wrap;
       flex-wrap: wrap;
       margin-right: 0;
-      margin-left: -15px; }
+      margin-left: -15px;
+}
 
 .col-6, .col-lg-3, .col-md-4 {
   position: relative;
   width: 100%;
   min-height: 1px;
-  padding-right: 11px;
-  padding-left: 11px; }
+  padding-right: 4px;
+  padding-left: 4px;
+  padding-top: 0px;
+}
 
 /*# sourceMappingURL=gallery2.css.map */
