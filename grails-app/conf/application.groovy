@@ -73,7 +73,7 @@ swagger {
             url = "https://api.interactiveoceans.washington.edu"
         }
     }
-    schemes = [io.swagger.models.Scheme.HTTP]
+    schemes = [io.swagger.models.Scheme.HTTPS, io.swagger.models.Scheme.HTTP]
     //consumes = ["application/json"]
 }
 
