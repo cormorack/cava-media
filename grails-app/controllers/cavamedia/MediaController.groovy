@@ -1,8 +1,9 @@
 package cavamedia
 
+import grails.converters.JSON
 import io.swagger.annotations.*
 
-@Api(value = "/api/v1", tags = ["Media"], description = "Interactive Oceans Media (images and videos)")
+@Api(value = "/api/v1", tags = ["Media"])
 class MediaController extends BaseController {
 
     static namespace = 'v1'
@@ -10,7 +11,7 @@ class MediaController extends BaseController {
     def postService
 
     /**
-     * Returns json or geoJson derived from WP_Posts that have coordinates and image or video mime types.
+     * Returns a List of json or geoJson objects derived from WP_Posts that have coordinates and image or video mime types.
      * The type parameter can be used to filter for images or videos.  If no parameter is supplied,
      * both types are returned.
      * @param type
@@ -116,10 +117,33 @@ class MediaController extends BaseController {
     }
 
     /**
-     *
+     * Returns a JSON representation of a WP Post with its associated Featured Media, if it has one
      * @param id
      * @return
      */
+    @ApiOperation(
+            value = "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
+            nickname = "media/{id}",
+            produces = "application/json",
+            httpMethod = "GET",
+            response = java.lang.String.class
+    )
+    @ApiResponses([
+            @ApiResponse(
+                    code = 405,
+                    message = "Method Not Allowed. Only GET is allowed"),
+
+            @ApiResponse(
+                    code = 404,
+                    message = "Method Not Found")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(name = "id",
+                    paramType = "path",
+                    required = true,
+                    value = "Post Id",
+                    dataType = "long")
+    ])
     def summary(Long id) {
 
         Post post = postService.getPost(id)
@@ -127,29 +151,22 @@ class MediaController extends BaseController {
         response.setContentType("application/json;charset=UTF-8")
 
         if (!post) {
-            render "[]"
+            response.status = 404
+            Map error = ["message":"Post ${id} not found"]
+            render error as JSON
             return
         }
 
         Long featureId = 0
-
+        Post featuredMedia = null
         Meta featured = post.getMetaValue("_thumbnail_id")
 
-        if (!featured) {
-            render "[]"
-            return
+        if (featured) {
+            featureId = featured.metaValue.toInteger()
+            if (featureId) {
+                featuredMedia = postService.getPost(featureId)
+            }
         }
-
-        featureId = featured.metaValue.toInteger()
-
-        Post featuredMedia = postService.getPost(featureId)
-
-        if (!featuredMedia) {
-            render "[]"
-            return
-        }
-
-        //Post post = postService.getFeaturedMedia(id)
 
         render Utilities.buildJson(post, featuredMedia)
     }

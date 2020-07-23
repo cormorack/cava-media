@@ -85,7 +85,7 @@ ext {
 }
 
 task prepareDocker(type: Copy, dependsOn: assemble) {
-    description = 'Copy files from src/main/docker and application jar to Docker temporal build directory'
+    description = 'Copy files from src/main/docker and application jar to Docker temporary build directory'
     group = 'Docker'
 
     from 'src/main/docker'

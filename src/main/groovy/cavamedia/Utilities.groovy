@@ -2,6 +2,7 @@ package cavamedia
 
 import de.ailis.pherialize.MixedArray
 import de.ailis.pherialize.Pherialize
+import grails.util.Holders
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.math.NumberUtils
@@ -47,22 +48,30 @@ class Utilities {
      */
     static String buildJson(List posts, boolean geoReferenced=true) {
 
-        def json = StringBuilder.newInstance()
+        StringBuilder json = StringBuilder.newInstance()
 
-        if (geoReferenced) json << '{"type": "FeatureCollection", "features": ['
-
-        else json << '['
+        if (geoReferenced) {
+            json << '{"type": "FeatureCollection", "features": ['
+        }
+        else {
+            json << '['
+        }
 
         posts.eachWithIndex { post, index ->
 
             json << buildMedia(post, geoReferenced)
 
-            if (index + 1 < posts.size()) json << ","
+            if (index + 1 < posts.size()) {
+                json << ","
+            }
         }
 
-        if (geoReferenced) json << "]}"
-
-        else json << "]"
+        if (geoReferenced) {
+            json << "]}"
+        }
+        else {
+            json << "]"
+        }
 
         return json.toString()
     }
@@ -77,20 +86,23 @@ class Utilities {
 
         JsonBuilder jb = new JsonBuilder()
 
-        def j = jb {
+        Map j = jb {
+            id post.id
             title post.title
             excerpt setText(post)
             url "${IO_URL}${post.type}/${post.name}"
-            thumbnail constructThumbnail(featuredMedia, "medium_large")
-            tinyThumbnail constructThumbnail(featuredMedia, "thumbnail")
-            imageUrl constructURL(featuredMedia)
-        }
+            if (featuredMedia) {
+                thumbnail constructThumbnail(featuredMedia, "medium_large")
+                tinyThumbnail constructThumbnail(featuredMedia, "thumbnail")
+                imageUrl constructURL(featuredMedia)
+            }
+        } as Map
 
         return "[${jb.toString()}]"
     }
 
     /**
-     * Creates or filters text. Any HTML is stripped out.  Text length is constrained to 600 characters or less.
+     * Creates or filters text. Any HTML or WP shortcodes are stripped out.  Text length is constrained to 600 characters or less.
      * @param post
      * @return
      */
@@ -98,7 +110,7 @@ class Utilities {
 
         String defaultText = "Description not available."
 
-        HtmlCleaner htmlCleaner = grails.util.Holders.applicationContext.getBean('htmlCleaner') as HtmlCleaner
+        HtmlCleaner htmlCleaner = Holders.applicationContext.getBean('htmlCleaner') as HtmlCleaner
 
         if (post.excerpt) {
             return htmlCleaner.cleanHtml(post.excerpt, 'none')
@@ -106,6 +118,8 @@ class Utilities {
         else if (!post.excerpt && post.content) {
 
             String description = htmlCleaner.cleanHtml(post.content, 'none')
+
+            description = description.replaceAll("\\[(.*?)\\]", "")
 
             description = description.size() > 600 ? truncate(description, 600) : description
 
@@ -157,9 +171,13 @@ class Utilities {
 
         media.dateString = DateUtils.convertFromTimeStamp(post.date).toString()
 
-        if (post.excerpt) media.excerpt = post.excerpt
+        if (post.excerpt) {
+            media.excerpt = post.excerpt
+        }
 
-        if (!post.excerpt) media.excerpt = post.content
+        if (!post.excerpt) {
+            media.excerpt = post.content
+        }
 
         media.excerpt = DateUtils.cleanText(media.excerpt)
 
@@ -183,10 +201,10 @@ class Utilities {
                 media.vPoster = post.getMetaValue(VIDEO_IMAGE).metaValue
             }
         }
+
         if (geoReferenced) {
             return buildMediaGeoJson(media, post)
         }
-
         else  {
             return buildMediaJson(media, post)
         }
@@ -211,6 +229,7 @@ class Utilities {
                 }
             }
             properties {
+                id post.id
                 title post.title
                 type post.mimeType
                 excerpt media.excerpt
@@ -244,6 +263,7 @@ class Utilities {
         JsonBuilder jb = new JsonBuilder()
 
         def json = jb {
+            id post.id
             title post.title
             type post.mimeType
             excerpt media.excerpt
@@ -343,14 +363,21 @@ class Utilities {
 
         a = url.split("uploads")[1]
 
-        if (a) b = a.substring(a.indexOf("/"), +9)
+        if (a) {
+            b = a.substring(a.indexOf("/"), +9)
+        }
 
-        if (b) c = a - b
+        if (b) {
+            c = a - b
+        }
 
-        if (c) d = c.split("/")[0]
+        if (c) {
+            d = c.split("/")[0]
+        }
 
-        if (d) return b.drop(1) + d
-
+        if (d) {
+            return b.drop(1) + d
+        }
         else return ""
     }
 
@@ -444,6 +471,11 @@ class Utilities {
         return videoList
     }
 
+    /**
+     *
+     * @param media
+     * @return
+     */
     static List buildMediaList(List media) {
 
         List mediaList = []

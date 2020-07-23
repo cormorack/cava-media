@@ -12,7 +12,7 @@ class PostService {
     Integer maxPerPage = config.maxPerPage
 
     /**
-     *
+     * Looks up and returns a Post by ID
      * @param id
      * @return
      */

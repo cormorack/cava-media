@@ -125,7 +125,9 @@ class GalleryController extends BaseController {
 
         List imageList = []
 
-        if (images) imageList = Utilities.buildImageList(images)
+        if (images) {
+            imageList = Utilities.buildImageList(images)
+        }
 
         List tagList = tagService.getTags()
 
@@ -161,7 +163,9 @@ class GalleryController extends BaseController {
 
         List imageList = []
 
-        if (images) imageList = Utilities.buildMediaList(images)
+        if (images) {
+            imageList = Utilities.buildMediaList(images)
+        }
 
         List tagList = tagService.getTags()
 

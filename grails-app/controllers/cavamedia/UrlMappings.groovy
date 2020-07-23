@@ -41,6 +41,8 @@ class UrlMappings {
 
         "/api/v1/media"(controller: "media", action: "index", method: "GET")
 
+        "/api/v1/media/$id"(controller: "media", action: "summary", method: "GET")
+
         "/apidoc/$action?/$id?"(controller: "apiDoc", action: "getDocuments")
 
         "/$controller/$action?/$id?(.$format)?"{

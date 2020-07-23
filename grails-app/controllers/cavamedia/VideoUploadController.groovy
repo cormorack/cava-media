@@ -22,8 +22,9 @@ class VideoUploadController {
     def videoForm() {}
 
     /**
-     * Uploads the videos to the streaming server.  Adds metadata and the poster image to WP via its REST API.
-     * Checks the uploaded file size and file type.
+     * Checks the uploaded file size and file type. Then uploads the videos to the streaming server and adds metadata
+     * and the poster image to WP via its REST API.
+     *
      * @param upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
@@ -75,7 +76,9 @@ class VideoUploadController {
 
                 try {
 
-                    if (!renamedFile.parentFile.exists()) renamedFile.parentFile.mkdirs()
+                    if (!renamedFile.parentFile.exists()) {
+                        renamedFile.parentFile.mkdirs()
+                    }
 
                     mfile.transferTo(renamedFile)
 
@@ -141,7 +144,7 @@ class VideoUploadController {
     }
 
     /**
-     * Checks file types against the config values
+     * Checks the uploaded file type against the config values
      * @param mfile
      * @return boolean value
      */
