@@ -1,4 +1,4 @@
-package cavamedia
+package media
 
 class BootStrap {
 

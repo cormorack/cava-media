@@ -3,10 +3,14 @@ package cavamedia
 import grails.converters.JSON
 import grails.util.Environment
 import grails.util.Holders
+import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.*
+
 import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 
+@Hidden
 class VideoUploadController {
 
     def config = Holders.config
@@ -19,6 +23,7 @@ class VideoUploadController {
     /**
      * Forwards to the video upload page
      */
+    @ApiOperation(hidden = true)
     def videoForm() {}
 
     /**
@@ -28,6 +33,7 @@ class VideoUploadController {
      * @param upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
+    @ApiOperation(hidden = true)
     def uploadVideo(Upload upload) {
 
         if (!checkParams()) {

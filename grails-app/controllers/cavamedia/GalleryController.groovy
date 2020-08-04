@@ -1,5 +1,9 @@
 package cavamedia
 
+import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Hidden
+
+@Hidden
 class GalleryController extends BaseController {
 
     def postService
@@ -8,28 +12,34 @@ class GalleryController extends BaseController {
     /**
      * Renders the gallery page
      */
+    @ApiOperation(hidden = true)
     def index() {
         render view: 'image'
     }
 
+    @ApiOperation(hidden = true)
     def map() {}
 
     /**
      * Renders the gallery page
      */
+    @ApiOperation(hidden = true)
     def image() {}
 
     /**
      * Renders the video page
      */
+    @ApiOperation(hidden = true)
     def video() {}
 
+    @ApiOperation(hidden = true)
     def media() {}
 
     /**
      * Returns videos that DO NOT have images as JSON
      * @return
      */
+    @ApiOperation(hidden = true)
     def findVideos() {
 
         params.geoReferenced = "false"
@@ -62,6 +72,7 @@ class GalleryController extends BaseController {
      * Returns a list of videos formatted as JW Player JSON
      * @return
      */
+    @ApiOperation(hidden = true)
     def findAllVideos() {
 
         params.geoReferenced = "false"
@@ -103,6 +114,7 @@ class GalleryController extends BaseController {
      * Returns a list of images as JSON
      * @return
      */
+    @ApiOperation(hidden = true)
     def findAllImages() {
 
         params.geoReferenced = "false"
@@ -142,6 +154,7 @@ class GalleryController extends BaseController {
         respond dataMap
     }
 
+    @ApiOperation(hidden = true)
     def findAllMedia() {
 
         params.geoReferenced = "false"

@@ -1,6 +1,7 @@
 package cavamedia
 
-import grails.transaction.Transactional
+//import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import grails.plugin.cache.*
 import grails.util.Holders
 import grails.util.Environment

@@ -2,7 +2,8 @@ package cavamedia
 
 import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
-import grails.transaction.Transactional
+//import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import grails.util.Holders
 import grails.util.Environment
 import org.springframework.beans.factory.annotation.Value

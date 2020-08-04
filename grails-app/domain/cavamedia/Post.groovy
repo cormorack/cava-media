@@ -1,10 +1,22 @@
 package cavamedia
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
+
+@ApiModel(description = "Partial representation of a WP Post")
 class Post {
 
     Date date
 
-    String title, excerpt, type, mimeType, guid, status, content, name
+    @ApiModelProperty(notes = "Title of the Post", name="title", dataType = "String")
+    String title
+    String excerpt
+    String type
+    String mimeType
+    String guid
+    String status
+    String content
+    String name
 
     Set<Meta> metas
 

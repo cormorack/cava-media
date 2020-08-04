@@ -1,11 +1,15 @@
 package cavamedia
 
 import grails.util.Holders
+import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Hidden
 
+@Hidden
 class BaseController {
 
     def config = Holders.config
 
+    @ApiOperation(hidden = true)
     def index() { }
 
     /**

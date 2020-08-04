@@ -4,14 +4,8 @@ grails:
         pattern: '/**'
     profile: web
     codegen:
-        defaultPackage: cavamedia
-    spring:
-        transactionManagement:
-            proxies: false
+        defaultPackage: media
     gorm:
-        # Whether to autowire entities. 
-        # Disabled by default for performance reasons.
-        autowire: false         
         reactor:
             # Whether to translate GORM events into Reactor events
             # Disabled by default for performance reasons
@@ -23,21 +17,31 @@ info:
         grailsVersion: '@info.app.grailsVersion@'
 spring:
     http:
-        multipart:
-            enabled: true
-            max-file-size: 300MB
-            max-request-size: 300MB
+
+    jmx:
+        unique-names: true
     main:
         banner-mode: "off"
     groovy:
         template:
             check-template-location: false
-
-# Spring Actuator Endpoints are Disabled by Default
-endpoints:
-    enabled: false
-    jmx:
-        enabled: true
+    devtools:
+        restart:
+            additional-exclude:
+                - '*.gsp'
+                - '**/*.gsp'
+                - '*.gson'
+                - '**/*.gson'
+                - 'logback.groovy'
+                - '*.properties'
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 300MB
+            max-request-size: 300MB
+management:
+    endpoints:
+        enabled-by-default: false
 
 ---
 grails:
@@ -92,22 +96,23 @@ grails:
             htmlcodec: xml
             codecs:
                 expression: html
-                scriptlets: html
+                scriptlet: html
                 taglib: none
                 staticparts: none
-endpoints:
-    jmx:
-        unique-names: true
+management:
+    endpoints:
+        jmx:
+            unique-names: true
 
----
 hibernate:
     format_sql: true
-    cache:
-        queries: false
-        use_second_level_cache: true
-        use_query_cache: true
-        region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
-
+#    cache:
+#        queries: false
+#        use_second_level_cache: true
+#        use_query_cache: false
+#        #region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+#        provider_class: net.sf.ehcache.hibernate.EhCacheProvider
+#        region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
 dataSource:
     pooled: true
     jmxExport: true
@@ -136,4 +141,3 @@ environments:
             readOnly: true
             dbCreate: none
             jndiName: java:comp/env/Cava
-

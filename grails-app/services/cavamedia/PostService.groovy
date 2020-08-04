@@ -1,6 +1,8 @@
 package cavamedia
 
-import grails.transaction.Transactional
+//import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
+
 import grails.util.Holders
 import org.hibernate.FetchMode as FM
 

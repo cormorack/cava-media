@@ -1,4 +1,4 @@
-package cavamedia
+package media
 
 class UrlMappings {
 
@@ -28,13 +28,13 @@ class UrlMappings {
         }
 
         "/docs" {
-            controller = "apiDoc"
-            action = "getDocuments"
+            controller = "media"
+            action = "docs"
         }
 
         "/" {
             controller = "media"
-            action = "index"
+            action = "docs"
         }
 
         "/post/summary/$id?"(controller: "media", action: "summary")

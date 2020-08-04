@@ -1,9 +1,9 @@
 
-FROM openjdk:8 as buildwar
+FROM openjdk:11 as buildwar
 
 # Set customizable env vars defaults.
 # Set Grails version
-ENV GRAILS_VERSION 3.2.11
+ENV GRAILS_VERSION 4.0.3
 
 # Install Grails
 WORKDIR /opt
@@ -30,7 +30,8 @@ RUN grails -version
 RUN bash /tmp/CavaMedia/docker/setup.sh
 
 # Install Tomcat
-FROM tomcat:7.0.88-jre8
+#FROM tomcat:7.0.88-jre8
+FROM tomcat:8-jre11
 
 # Setup DB Credentials
 ENV USERNAME ''

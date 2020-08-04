@@ -10,6 +10,9 @@ class MediaController extends BaseController {
 
     def postService
 
+    @ApiOperation(hidden = true)
+    def docs() {}
+
     /**
      * Returns a List of json or geoJson objects derived from WP_Posts that have coordinates and image or video mime types.
      * The type parameter can be used to filter for images or videos.  If no parameter is supplied,
@@ -142,9 +145,18 @@ class MediaController extends BaseController {
                     paramType = "path",
                     required = true,
                     value = "Post Id",
-                    dataType = "long")
+                    dataType = "integer")
     ])
-    def summary(Long id) {
+    def summary() {
+
+        Integer id = params?.id?.toInteger()
+
+        if (!id) {
+            response.status = 400
+            Map error = ["message":"missing id parameter"]
+            render error as JSON
+            return
+        }
 
         Post post = postService.getPost(id)
 
@@ -162,7 +174,7 @@ class MediaController extends BaseController {
         Meta featured = post.getMetaValue("_thumbnail_id")
 
         if (featured) {
-            featureId = featured.metaValue.toInteger()
+            featureId = featured?.metaValue?.toInteger()
             if (featureId) {
                 featuredMedia = postService.getPost(featureId)
             }
