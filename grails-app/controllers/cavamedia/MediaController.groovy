@@ -186,3 +186,4 @@ class MediaController extends BaseController {
     @ApiOperation(hidden = true)
     def docs() {}
 }
+
