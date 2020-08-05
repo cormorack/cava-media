@@ -130,6 +130,6 @@ assets {
 }
 
 war {
-    version ""
+    project.version = ""
     baseName rootProject.name
 }
