@@ -19,7 +19,7 @@ class MediaController extends BaseController {
      */
     @ApiOperation(
             value = "Returns JSON or geoJSON representations of WP_Posts",
-            nickname = "",
+            nickname = "media",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -123,7 +123,7 @@ class MediaController extends BaseController {
      */
     @ApiOperation(
             value = "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
-            nickname = "/{id}",
+            nickname = "media/{id}",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
