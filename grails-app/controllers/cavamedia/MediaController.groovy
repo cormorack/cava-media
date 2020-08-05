@@ -3,15 +3,12 @@ package cavamedia
 import grails.converters.JSON
 import io.swagger.annotations.*
 
-@Api(value = "/api/v1", tags = ["Media"])
+@Api(value = "/media/api/v1", tags = ["Media"])
 class MediaController extends BaseController {
 
     static namespace = 'v1'
 
     def postService
-
-    @ApiOperation(hidden = true)
-    def docs() {}
 
     /**
      * Returns a List of json or geoJson objects derived from WP_Posts that have coordinates and image or video mime types.
@@ -21,8 +18,8 @@ class MediaController extends BaseController {
      * @return a geoJson string
      */
     @ApiOperation(
-            value = "Returns json or geoJson derived from WP_Posts",
-            nickname = "media",
+            value = "Returns JSON or geoJSON representations of WP_Posts",
+            nickname = "",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -126,7 +123,7 @@ class MediaController extends BaseController {
      */
     @ApiOperation(
             value = "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
-            nickname = "media/{id}",
+            nickname = "/{id}",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -153,7 +150,7 @@ class MediaController extends BaseController {
 
         if (!id) {
             response.status = 400
-            Map error = ["message":"missing id parameter"]
+            Map error = ["message": "missing id parameter"]
             render error as JSON
             return
         }
@@ -164,7 +161,7 @@ class MediaController extends BaseController {
 
         if (!post) {
             response.status = 404
-            Map error = ["message":"Post ${id} not found"]
+            Map error = ["message": "Post ${id} not found"]
             render error as JSON
             return
         }
@@ -182,4 +179,10 @@ class MediaController extends BaseController {
 
         render Utilities.buildJson(post, featuredMedia)
     }
+
+    /**
+     * Forwards to the docs page
+     */
+    @ApiOperation(hidden = true)
+    def docs() {}
 }
