@@ -3,7 +3,7 @@ package cavamedia
 import grails.converters.JSON
 import io.swagger.annotations.*
 
-@Api(value = "api/v1", tags = ["Media"])
+@Api(value = "/api/v1", tags = ["Media"])
 class MediaController extends BaseController {
 
     static namespace = 'v1'
