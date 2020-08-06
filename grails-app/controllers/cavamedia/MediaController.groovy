@@ -3,7 +3,7 @@ package cavamedia
 import grails.converters.JSON
 import io.swagger.annotations.*
 
-@Api(value = "/media/api/v1", tags = ["Media"])
+@Api(value = "/media/", tags = ["Media"])
 class MediaController extends BaseController {
 
     static namespace = 'v1'
@@ -19,7 +19,7 @@ class MediaController extends BaseController {
      */
     @ApiOperation(
             value = "Returns JSON or geoJSON representations of WP_Posts",
-            nickname = "media",
+            nickname = "api",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -123,7 +123,7 @@ class MediaController extends BaseController {
      */
     @ApiOperation(
             value = "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
-            nickname = "media/{id}",
+            nickname = "api/{id}",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -146,13 +146,16 @@ class MediaController extends BaseController {
     ])
     def summary() {
 
-        Integer id = params?.id?.toInteger()
+        Integer id = 0
+
+        if (params.id) {
+            id = params?.id?.toInteger()
+        }
 
         if (!id) {
             response.status = 400
             Map error = ["message": "missing id parameter"]
             render error as JSON
-            return
         }
 
         Post post = postService.getPost(id)

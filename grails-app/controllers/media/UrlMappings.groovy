@@ -34,14 +34,18 @@ class UrlMappings {
 
         "/" {
             controller = "media"
-            action = "docs"
+            action = "index"
         }
 
         "/post/summary/$id?"(controller: "media", action: "summary")
 
-        "/api/v1/media"(controller: "media", action: "index", method: "GET")
+        "/api"(controller: "media", action: "index", method: "GET")
 
-        "/api/v1/media/$id"(controller: "media", action: "summary", method: "GET")
+        "/api/$id"(controller: "media", action: "summary", method: "GET")
+
+        "/media/api"(controller: "media", action: "index", method: "GET")
+
+        "/media/api/$id"(controller: "media", action: "summary", method: "GET")
 
         "/apidoc/$action?/$id?"(controller: "apiDoc", action: "getDocuments")
 
