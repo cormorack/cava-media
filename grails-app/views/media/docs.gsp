@@ -5,7 +5,7 @@
 
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css" >
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui.css">
         <style>
             html {
                 box-sizing: border-box;
@@ -27,7 +27,8 @@
     <body>
         <div id="swagger-ui"></div>
         <asset:javascript src="jquery-3.3.1.min.js"/>
-        <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"> </script>
+        <script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-standalone-preset.js"></script>
+        <script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-bundle.js"></script>
         <script type="text/javascript">
 
             var data = {};
@@ -39,7 +40,12 @@
                     "title": "Media Service",
                     "description": "Media service for Interactive Oceans.",
                     "version": "1.0"
-                }
+                },
+                "servers": [
+                    {
+                        "url": swaggerURI
+                    }
+                ]
             };
 
             window.onload = function() {
@@ -56,7 +62,16 @@
                             dom_id: '#swagger-ui',
                             showExtensions: true,
                             showCommonExtensions: true,
-                            spec: data
+                            url: swaggerURI,
+                            spec: data,
+                            presets: [
+                                SwaggerUIBundle.presets.apis,
+                                SwaggerUIStandalonePreset
+                            ],
+                            plugins: [
+                                SwaggerUIBundle.plugins.DownloadUrl
+                            ],
+                            layout: "StandaloneLayout"
                         });
                     }
                 });
