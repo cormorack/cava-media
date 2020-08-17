@@ -10,6 +10,13 @@ grails:
             # Whether to translate GORM events into Reactor events
             # Disabled by default for performance reasons
             events: false
+    cache:
+        cacheManager: GrailsConcurrentLinkedMapCacheManager
+        caches:
+            api:
+                maxCapacity: 5000
+            maps:
+                maxCapacity: 6000
 info:
     app:
         name: '@info.app.name@'

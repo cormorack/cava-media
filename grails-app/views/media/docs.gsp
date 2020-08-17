@@ -32,48 +32,23 @@
         <script type="text/javascript">
 
             var data = {};
-            var swaggerURI = '${serverURL}/swagger/api.json';
-
-            var newSpec = {
-                "openapi": "3.0.2",
-                "info": {
-                    "title": "Media Service",
-                    "description": "Media service for Interactive Oceans.",
-                    "version": "1.0"
-                },
-                "servers": [
-                    {
-                        "url": swaggerURI
-                    }
-                ]
-            };
+            var swaggerURI = '${serverURL}/files/api.json';
 
             window.onload = function() {
-                $.ajax({
-                    type: "GET",
-                    dataType: "json",
+                SwaggerUIBundle({
+                    deepLinking: true,
+                    dom_id: '#swagger-ui',
+                    showExtensions: true,
+                    showCommonExtensions: true,
                     url: swaggerURI,
-                    success: function (jsonData) {
-                        data = jsonData;
-                        delete data["swagger"];
-                        $.extend(data, newSpec);
-                        SwaggerUIBundle({
-                            deepLinking: true,
-                            dom_id: '#swagger-ui',
-                            showExtensions: true,
-                            showCommonExtensions: true,
-                            url: swaggerURI,
-                            spec: data,
-                            presets: [
-                                SwaggerUIBundle.presets.apis,
-                                SwaggerUIStandalonePreset
-                            ],
-                            plugins: [
-                                SwaggerUIBundle.plugins.DownloadUrl
-                            ],
-                            layout: "StandaloneLayout"
-                        });
-                    }
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIStandalonePreset
+                    ],
+                    plugins: [
+                        SwaggerUIBundle.plugins.DownloadUrl
+                    ],
+                    layout: "StandaloneLayout"
                 });
             };
         </script>

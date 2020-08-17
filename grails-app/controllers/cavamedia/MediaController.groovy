@@ -1,7 +1,14 @@
 package cavamedia
 
 import grails.converters.JSON
+import grails.plugin.cache.Cacheable
+import grails.util.Environment
+import grails.util.Holders
 import io.swagger.annotations.*
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+
+import javax.servlet.ServletContext
 
 @Api(value = "/media/", tags = ["Media"])
 class MediaController extends BaseController {
@@ -9,6 +16,7 @@ class MediaController extends BaseController {
     static namespace = 'v1'
 
     def postService
+    def config = Holders.config
 
     /**
      * Returns a List of json or geoJson objects derived from WP_Posts that have coordinates and image or video mime types.
@@ -184,9 +192,76 @@ class MediaController extends BaseController {
     }
 
     /**
-     * Forwards to the docs page
+     * Forwards to the docs page.
      */
     @ApiOperation(hidden = true)
-    def docs() {}
+    def docs() {
+        ServletContext context = getServletContext()
+        String apiValue = setApiValue(context)
+    }
+
+    /**
+     * Looks up the api URL, writes a JSON file to disk and then caches the JSON value as a string.
+     * The JSON is modified to replace the Swagger attribute with the Open API attribute and add the info data.
+     * The JSON value is then cached so the whole operation only occurs once after the the method is first invoked.
+     * @param context
+     * @return JSON String value
+     */
+    @Cacheable('api')
+    private String setApiValue(ServletContext context) {
+
+        String api = "{'message':'api not found'}"
+
+        String serverURL = "${url()}/swagger/api.json"
+
+        def slurped = new JsonSlurper().parse(serverURL.toURL())
+
+        if (!slurped) {
+            return api
+        }
+
+        slurped.remove("swagger")
+
+        slurped << [openapi: "3.0.2"]
+
+        JsonBuilder builder = new JsonBuilder()
+
+        def root = builder.info {
+            description "InteractiveOceans Media API Documentation"
+            version "1.0.1"
+            title"InteractiveOceans Media"
+            termsOfServices "https://api.interactiveoceans.washington.edu"
+            /*contact {
+                name ("Contact Us")
+                url ("https://interactiveoceans.washington.edu/contact/")
+            }
+            license {
+                name ("licence under ...")
+                url ("https://api.interactiveoceans.washington.edu")
+            }*/
+        }
+
+        slurped.info = root.info
+
+        api = new JsonBuilder(slurped).toPrettyString()
+
+        File file = new File(context.getRealPath("/files/api.json")).write(api)
+    }
+
+    /**
+     * Returns the grails.serverURL property based on the runtime environment
+     * @return
+     */
+    private String url() {
+
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                return config.grails.serverURL
+                break
+            case Environment.PRODUCTION:
+                return config.grails.serverURL
+                break
+        }
+    }
 }
 
