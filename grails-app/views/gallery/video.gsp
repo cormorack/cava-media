@@ -10,8 +10,8 @@
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
-    <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
-    <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
+    <script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/media.ooica.net/js/jwplayer8/jwplayer.js"></script>
+    <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
 </head>
 
 <body>

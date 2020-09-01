@@ -1,9 +1,16 @@
 package cavamedia
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.ApiResponses
 import io.swagger.v3.oas.annotations.Hidden
+import grails.converters.JSON
 
-@Hidden
+//@Hidden
+@Api(value = "/gallery/", tags = ["Gallery"])
 class GalleryController extends BaseController {
 
     def postService
@@ -72,7 +79,65 @@ class GalleryController extends BaseController {
      * Returns a list of videos formatted as JW Player JSON
      * @return
      */
-    @ApiOperation(hidden = true)
+    @ApiOperation(
+            value = "Returns a JSON list of videos formatted for the JW Player",
+            nickname = "findAllVideos",
+            produces = "application/json",
+            httpMethod = "GET",
+            response = java.lang.String.class
+    )
+    @ApiResponses([
+            @ApiResponse(
+                    code = 405,
+                    message = "Method Not Allowed. Only GET is allowed"),
+
+            @ApiResponse(
+                    code = 404,
+                    message = "Method Not Found")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(
+                    name = "max",
+                    paramType = "query",
+                    required = false,
+                    value = "Max amount for paging. The default and maximum are 100.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "offset",
+                    paramType = "query",
+                    required = false,
+                    value = "Offset amount for paging. The default is 0.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "sort",
+                    paramType = "query",
+                    required = false,
+                    value = "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "order",
+                    paramType = "query",
+                    required = false,
+                    value = "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "q",
+                    paramType = "query",
+                    required = false,
+                    value = "Query string for searching.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "tag",
+                    paramType = "query",
+                    required = false,
+                    value = "Enables searching by tag slug (i.e. axial-caldera).",
+                    dataType = "string")
+    ])
     def findAllVideos() {
 
         params.geoReferenced = "false"
@@ -91,11 +156,11 @@ class GalleryController extends BaseController {
                 params.tag
         )
 
-        response.setContentType("application/json;charset=UTF-8")
-
         List videoList = []
 
-        if (videos) videoList = Utilities.buildFullVideoList(videos)
+        if (videos) {
+            videoList = Utilities.buildFullVideoList(videos)
+        }
 
         List tagList = tagService.getTags()
 
@@ -107,14 +172,73 @@ class GalleryController extends BaseController {
                 tags: tagList
         ]
 
-        respond dataMap
+        render dataMap as JSON
     }
 
     /**
      * Returns a list of images as JSON
      * @return
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
+    @ApiOperation(
+            value = "Returns a JSON list of images",
+            nickname = "findAllMedia",
+            produces = "application/json",
+            httpMethod = "GET",
+            response = java.lang.String.class
+    )
+    @ApiResponses([
+            @ApiResponse(
+                    code = 405,
+                    message = "Method Not Allowed. Only GET is allowed"),
+
+            @ApiResponse(
+                    code = 404,
+                    message = "Method Not Found")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(
+                    name = "max",
+                    paramType = "query",
+                    required = false,
+                    value = "Max amount for paging. The default and maximum are 100.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "offset",
+                    paramType = "query",
+                    required = false,
+                    value = "Offset amount for paging. The default is 0.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "sort",
+                    paramType = "query",
+                    required = false,
+                    value = "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "order",
+                    paramType = "query",
+                    required = false,
+                    value = "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "q",
+                    paramType = "query",
+                    required = false,
+                    value = "Query string for searching.",
+                    dataType = "string"),
+
+            @ApiImplicitParam(
+                    name = "tag",
+                    paramType = "query",
+                    required = false,
+                    value = "Enables searching by tag slug (i.e. axial-caldera).",
+                    dataType = "string")
+    ])
     def findAllImages() {
 
         params.geoReferenced = "false"
@@ -133,8 +257,6 @@ class GalleryController extends BaseController {
                 params.tag
         )
 
-        response.setContentType("application/json;charset=UTF-8")
-
         List imageList = []
 
         if (images) {
@@ -151,7 +273,7 @@ class GalleryController extends BaseController {
                 tags: tagList
         ]
 
-        respond dataMap
+        render dataMap as JSON
     }
 
     @ApiOperation(hidden = true)
@@ -172,8 +294,6 @@ class GalleryController extends BaseController {
                 params.tag
         )
 
-        response.setContentType("application/json;charset=UTF-8")
-
         List imageList = []
 
         if (images) {
@@ -190,6 +310,6 @@ class GalleryController extends BaseController {
                 tags: tagList
         ]
 
-        respond dataMap
+        render dataMap as JSON
     }
 }

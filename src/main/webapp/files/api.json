@@ -1,5 +1,145 @@
 {
     "paths": {
+        "/gallery/findAllVideos": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Returns a list of videos formatted for the JW Player",
+                "operationId": "findAllVideos",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Max amount for paging. The default and maximum are 100.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset amount for paging. The default is 0.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Query string for searching.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Enables searching by tag slug (i.e. axial-caldera).",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/gallery/findAllMedia": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Returns a JSON list of images",
+                "operationId": "findAllMedia",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Max amount for paging. The default and maximum are 100.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset amount for paging. The default is 0.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Query string for searching.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Enables searching by tag slug (i.e. axial-caldera).",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/media/api/{id}": {
             "get": {
                 "tags": [
