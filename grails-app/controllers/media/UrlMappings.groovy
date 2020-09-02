@@ -18,6 +18,8 @@ class UrlMappings {
 
         "/gallery/images"(controller: "gallery", action: "findAllImages", method: "GET")
 
+        "/media/gallery/images"(controller: "gallery", action: "findAllImages", method: "GET")
+
         "/gallery/video" {
             controller = "gallery"
             action = "video"
@@ -25,6 +27,8 @@ class UrlMappings {
         }
 
         "/gallery/videos"(controller: "gallery", action: "findAllVideos", method: "GET")
+
+        "/media/gallery/videos"(controller: "gallery", action: "findAllVideos", method: "GET")
 
         "/gallery/media" {
             controller = "gallery"

@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Hidden
 import grails.converters.JSON
 
 //@Hidden
-@Api(value = "/gallery/", tags = ["Gallery"])
+@Api(value = "/media/gallery/", tags = ["Gallery"])
 class GalleryController extends BaseController {
 
     def postService
@@ -81,7 +81,7 @@ class GalleryController extends BaseController {
      */
     @ApiOperation(
             value = "Returns a JSON list of videos formatted for the JW Player",
-            nickname = "findAllVideos",
+            nickname = "videos",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class
@@ -179,10 +179,9 @@ class GalleryController extends BaseController {
      * Returns a list of images as JSON
      * @return
      */
-    //@ApiOperation(hidden = true)
     @ApiOperation(
             value = "Returns a JSON list of images",
-            nickname = "findAllMedia",
+            nickname = "images",
             produces = "application/json",
             httpMethod = "GET",
             response = java.lang.String.class

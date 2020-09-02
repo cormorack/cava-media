@@ -1,12 +1,12 @@
 {
     "paths": {
-        "/gallery/findAllVideos": {
+        "/media/gallery/videos": {
             "get": {
                 "tags": [
                     "Gallery"
                 ],
-                "summary": "Returns a list of videos formatted for the JW Player",
-                "operationId": "findAllVideos",
+                "summary": "Returns a JSON list of videos formatted for the JW Player",
+                "operationId": "videos",
                 "produces": [
                     "application/json"
                 ],
@@ -70,13 +70,13 @@
                 }
             }
         },
-        "/gallery/findAllMedia": {
+        "/media/gallery/images": {
             "get": {
                 "tags": [
                     "Gallery"
                 ],
                 "summary": "Returns a JSON list of images",
-                "operationId": "findAllMedia",
+                "operationId": "images",
                 "produces": [
                     "application/json"
                 ],
