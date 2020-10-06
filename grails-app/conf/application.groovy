@@ -34,7 +34,7 @@ environments {
         cavaWpPassword = ""
         cavaWpUser = ""
         cavaHost = "interactiveoceans.washington.edu"
-        tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=100"
+        tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
             grails.serverURL = System.properties['grails.serverURL']
@@ -48,7 +48,7 @@ environments {
         cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
         cavaWpUser = "io"
         cavaHost = "localhost:8080"
-        tagURL = "http://localhost:8888/wp-json/wp/v2/tags?per_page=100"
+        tagURL = "http://localhost:8888/wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
             grails.serverURL = System.properties['grails.serverURL']
