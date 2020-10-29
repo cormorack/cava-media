@@ -258,6 +258,123 @@
                     }
                 }
             }
+        },
+        "/videoUpload/uploadVideo": {
+            "post": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "Uploads a file",
+                "operationId": "uploadVideo",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "upload",
+                        "description": "upload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Upload"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "desktopVideo",
+                        "description": "Video File",
+                        "required": true,
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "posterImage",
+                        "description": "Poster Image",
+                        "required": false,
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "formData",
+                        "description": "Video Title",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "content",
+                        "in": "formData",
+                        "description": "Video Description",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only POST is allowed"
+                    },
+                    "200": {
+                        "description": "The POST call was successful"
+                    }
+                }
+            }
+        },
+        "/videoUpload/videoUpload/videoForm": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "videoForm",
+                "operationId": "/videoUpload/videoForm",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Upload": {
+            "type": "object",
+            "properties": {
+                "desktopVideoURL": {
+                    "type": "string"
+                },
+                "phoneVideoURL": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "desktopVideo": {
+                    "type": "file"
+                },
+                "phoneVideo": {
+                    "type": "file"
+                },
+                "posterImage": {
+                    "type": "file"
+                }
+            }
         }
     },
     "openapi": "3.0.2",

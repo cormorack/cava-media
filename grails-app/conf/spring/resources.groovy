@@ -1,8 +1,10 @@
+import cavamedia.AccessHiddenSpecFilter
 import io.swagger.models.SecurityRequirement
 import io.swagger.models.Swagger
 //import io.swagger.models.auth.ApiKeyAuthDefinition
 //import io.swagger.models.auth.In
 import swagger.grails.SwaggerCache
+import io.swagger.config.FilterFactory
 
 def sInfo = {
     description = "InteractiveOceans Media API Documentation"
@@ -32,4 +34,10 @@ beans = {
     swaggerCache(SwaggerCache) { bean ->
         swagger = ref('swagger')
     }
+
+    //FilterFactory.setFilter(new AccessHiddenSpecFilter());
+    /*filterFactory(FilterFactory) { bean ->
+        filter = new AccessHiddenSpecFilter()
+        //bean.setFilter(new AccessHiddenSpecFilter())
+    }*/
 }

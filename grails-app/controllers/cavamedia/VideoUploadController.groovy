@@ -3,14 +3,21 @@ package cavamedia
 import grails.converters.JSON
 import grails.util.Environment
 import grails.util.Holders
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
-import io.swagger.v3.oas.annotations.*
-
+import io.swagger.annotations.ApiParam
+import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.ApiResponses
+// import io.swagger.v3.oas.annotations.*
+import org.springframework.http.MediaType
 import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 
-@Hidden
+//@Hidden
+@Api(value = "/videoUpload/", tags = ["Video"])
 class VideoUploadController {
 
     def config = Holders.config
@@ -23,21 +30,64 @@ class VideoUploadController {
     /**
      * Forwards to the video upload page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def videoForm() {}
 
     /**
      * Checks the uploaded file size and file type. Then uploads the videos to the streaming server and adds metadata
      * and the poster image to WP via its REST API.
      *
-     * @param upload (a simple DTO)
+     * @param Upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
-    @ApiOperation(hidden = true)
-    def uploadVideo(Upload upload) {
+    //@ApiOperation(hidden = true)
+    @ApiOperation(
+            value = "Uploads a file",
+            nickname = "uploadVideo",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = "application/json",
+            httpMethod = "POST"
+    )
+    @ApiResponses([
+            @ApiResponse(
+                    code = 200,
+                    message = "The POST call was successful"),
+            @ApiResponse(
+                    code = 405,
+                    message = "Method Not Allowed. Only POST is allowed"),
+            @ApiResponse(
+                    code = 404,
+                    message = "Method Not Found")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(
+                    name = 'desktopVideo',
+                    paramType = 'body',
+                    required = true,
+                    value = "Video File",
+                    dataType = "java.io.File"),
+            @ApiImplicitParam(
+                    name = 'posterImage',
+                    paramType = 'body',
+                    required = false,
+                    value = "Poster Image",
+                    dataType = "java.io.File"),
+            @ApiImplicitParam(
+                    name = "title",
+                    paramType = "form",
+                    required = true,
+                    value = "Video Title",
+                    dataType = "string"),
+            @ApiImplicitParam(
+                    name = "content",
+                    paramType = "form",
+                    required = true,
+                    value = "Video Description",
+                    dataType = "string")
+    ])
+    def uploadVideo( @ApiParam(hidden = true) Upload upload) {
 
         if (!checkParams()) {
-
             flash.message = "A required field is missing"
             render(view:'videoForm')
             return
@@ -85,7 +135,6 @@ class VideoUploadController {
                     if (!renamedFile.parentFile.exists()) {
                         renamedFile.parentFile.mkdirs()
                     }
-
                     mfile.transferTo(renamedFile)
 
                 } catch (Exception e) {
