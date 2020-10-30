@@ -132,9 +132,9 @@
                     console.log(map.getZoom())
                 });*/
 
-                var videoURL = '${serverURL}/api/v1/media?type=video';
+                var videoURL = '${serverURL}/media?type=video';
 
-                var imageURL = '${serverURL}/api/v1/media?type=image';
+                var imageURL = '${serverURL}/media?type=image';
 
                 map.addSource('imageData', { type: 'geojson', data: imageURL});
 
@@ -273,7 +273,7 @@
                     });
                 });
 
-                var toggleableLayerIds = [ 'videos', 'images', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto', 'axial-caldera'];
+                var toggleableLayerIds = [ 'videos', 'images', 'blue-base-bathymetry', 'base-bathymetry', 'oregon-bathymetry' ,'axial-bathymetry', 'grotto', 'axial-caldera'];
 
                 for (var i = 0; i < toggleableLayerIds.length; i++) {
 
@@ -305,10 +305,11 @@
                 }
 
                 var layers = [
+                    {'layerKey': 'blue-base-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/blue-basemap.tiff'},
                     {'layerKey': 'base-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/RCA-MAP-CO.tif'},
                     {'layerKey': 'axial-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/AxialCaldera-SlopeBase.tiff'},
                     {'layerKey': 'oregon-bathymetry', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/HydrateEndeavourTiled.tiff'},
-                    {'layerKey': 'grotto', 'layerURL':'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS.tiff'},
+                    //{'layerKey': 'grotto', 'layerURL':'https://rca-map-layers.s3-us-west-2.amazonaws.com/R1463_4m_EG_GCS.tiff'},
                     {'layerKey': 'axial-caldera', 'layerURL': 'https://rca-map-layers.s3-us-west-2.amazonaws.com/axial-inside-caldera-2.tiff'}
                 ];
 
