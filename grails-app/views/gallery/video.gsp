@@ -25,7 +25,7 @@
 
             <!-- Modal -->
             <div class="modal fade" id="videoModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-full modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-dark border-dark">
                             <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
