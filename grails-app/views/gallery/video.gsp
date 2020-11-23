@@ -10,8 +10,8 @@
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
-    <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
-    <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
+    <script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/media.ooica.net/js/jwplayer8/jwplayer.js"></script>
+    <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
 
             <!-- Modal -->
             <div class="modal fade" id="videoModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-full modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-dark border-dark">
                             <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
