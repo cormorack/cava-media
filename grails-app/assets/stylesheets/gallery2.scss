@@ -1,0 +1,219 @@
+// Use Bootstrap breakpoints for consistency.
+$bootstrap-sm: 576px;
+$bootstrap-md: 768px;
+$bootstrap-lg: 992px;
+$bootstrap-xl: 1200px;
+
+body {
+  background-color: #ededed;
+}
+
+#tagcloud {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul li {
+    display: inline-block;
+    margin: 0px 3px 3px 0px;
+    padding: 0;
+  }
+
+  ul li a {
+    display: inline-block;
+    max-width: 170px;
+    line-height: 28px;
+    padding: 0 .8em;
+    background-color: #fff;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    -webkit-transition: .2s;
+    transition: .2s;
+  }
+
+  ul li a:hover {
+    background-color: #3498db;
+    border: 1px solid #3498db;
+    color: #fff;
+  }
+
+  .highlight {
+    background-color: rgba(15, 59, 95, 0.7);
+    border: 1px solid #49505a;
+    color: #fff;
+  }
+}
+
+.col-8.ig-spacer {
+  margin-right: 15px;
+  max-width: 60%;
+}
+
+#searchResults {
+  padding-bottom: 15px;
+}
+
+.searchResultsWrapper {
+  padding-bottom: 20px;
+}
+
+.my-next {
+  justify-content: right;
+}
+
+.header-bar {
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px;
+  font-size: 18px;
+  justify-content: center;
+
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.title-text {
+  color: #fff;
+  text-align: left;
+  font-size: 16px;
+  padding: 10px;
+  position: absolute;
+  bottom: -20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .2s ease-in-out .1s;
+  -webkit-transition: all .2s ease-in-out .1s;
+  -ms-transition: all .2s ease-in-out .1s;
+  -o-transition: all .2s ease-in-out .1s;
+}
+
+// Crop thumbnail images.
+#gallery {
+
+  img {
+    height: 20vw;
+    object-fit: cover;
+    padding-bottom: 10px;
+
+    @media (min-width: $bootstrap-md) {
+      height: 25vw;
+    }
+
+    @media (min-width: $bootstrap-lg) {
+      height: 12vw;
+    }
+  }
+}
+
+
+// Crop images in lightbox.
+.carousel-item {
+
+  img {
+    //height: 60vw;
+    width: 100vw;
+    object-fit: cover;
+
+    /*@media (min-width: $bootstrap-sm) {
+      height: 40vw;
+    }*/
+  }
+}
+
+.modal-full {
+  min-width: 78%;
+}
+
+.modal-full .modal-content {
+  //width: 75vw;
+}
+
+.carousel-indicators {
+  top: auto;
+  bottom: auto;
+  position: relative;
+}
+
+.modal-footer {
+  padding: .25rem;
+}
+
+.modal-header {
+  padding: .25rem;
+  border-bottom: 0;
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+}
+
+.modalCaption {
+  color: #f7f7f7;
+}
+
+#exampleModal {
+  background-color: rgba(0, 0, 0, 0.71);
+}
+
+.close {
+  color: #f7f7f7;
+  text-shadow: none;
+}
+
+/*.modal-full {
+  width: 98% !important;
+  height: 92% !important;
+  min-width: 98% !important;
+  min-height: 92% !important;
+  max-width: 98% !important;
+  max-height: 92% !important;
+  padding: 0 !important;
+}
+
+.modal-full-content {
+  height: 99% !important;
+  min-height: 99% !important;
+  max-height: 99% !important;
+}*/
+
+/*
+.container {
+  background: #000;
+}*/
+
+.container-image {
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: 0;
+    margin-left: -15px
+}
+
+.col-6, .col-lg-3, .col-md-4 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 4px;
+    padding-left: 4px;
+    padding-top: 0px;
+}
