@@ -1,0 +1,28 @@
+name: Cava Media Service PR Build
+
+on:
+  pull_request:
+    ignore-paths:
+      - docker/**/*
+      - README.md
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        java: ['1.8', '11.0.4']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/cache@v1 
+        with:
+          path: ~/.gradle/caches  
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }} 
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Build with Gradle
+        run: ./gradlew assemble 
