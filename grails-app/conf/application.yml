@@ -1,0 +1,150 @@
+---
+grails:
+    resources:
+        pattern: '/**'
+    profile: web
+    codegen:
+        defaultPackage: media
+    gorm:
+        reactor:
+            # Whether to translate GORM events into Reactor events
+            # Disabled by default for performance reasons
+            events: false
+    cache:
+        cacheManager: GrailsConcurrentLinkedMapCacheManager
+        caches:
+            api:
+                maxCapacity: 5000
+            maps:
+                maxCapacity: 6000
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+spring:
+    http:
+
+    jmx:
+        unique-names: true
+    main:
+        banner-mode: "off"
+    groovy:
+        template:
+            check-template-location: false
+    devtools:
+        restart:
+            additional-exclude:
+                - '*.gsp'
+                - '**/*.gsp'
+                - '*.gson'
+                - '**/*.gson'
+                - 'logback.groovy'
+                - '*.properties'
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 300MB
+            max-request-size: 300MB
+management:
+    endpoints:
+        enabled-by-default: false
+
+---
+grails:
+    mime:
+        disable:
+            accept:
+                header:
+                    userAgents:
+                        - Gecko
+                        - WebKit
+                        - Presto
+                        - Trident
+        types:
+            all: '*/*'
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            form: application/x-www-form-urlencoded
+            html:
+              - text/html
+              - application/xhtml+xml
+            js: text/javascript
+            json:
+              - application/json
+              - text/json
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            rss: application/rss+xml
+            text: text/plain
+            hal:
+              - application/hal+json
+              - application/hal+xml
+            xml:
+              - text/xml
+              - application/xml
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+        upload:
+            # 300 * 1024 * 1024
+            maxFileSize: 419430400
+            maxRequestSize: 419430400
+    converters:
+        encoding: UTF-8
+    views:
+        default:
+            codec: html
+        gsp:
+            encoding: UTF-8
+            htmlcodec: xml
+            codecs:
+                expression: html
+                scriptlet: html
+                taglib: none
+                staticparts: none
+management:
+    endpoints:
+        jmx:
+            unique-names: true
+
+hibernate:
+    format_sql: true
+#    cache:
+#        queries: false
+#        use_second_level_cache: true
+#        use_query_cache: false
+#        #region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+#        provider_class: net.sf.ehcache.hibernate.EhCacheProvider
+#        region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+dataSource:
+    pooled: true
+    jmxExport: true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+environments:
+    development:
+        dataSource:
+            logSql: true
+            readOnly: true
+            username: cavauser
+            password: iHazN0i0@
+            url: jdbc:mysql://localhost:8889/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+            #jndiName: java:comp/env/Cava
+            #url: jdbc:mysql://host.docker.internal:8889/cavaweb
+    test:
+        dataSource:
+            logSql: true
+            readOnly: true
+            username: cavauser
+            password: iHazN0i0@
+            url: jdbc:mysql://localhost:8889/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+    production:
+        dataSource:
+            readOnly: true
+            dbCreate: none
+            jndiName: java:comp/env/Cava

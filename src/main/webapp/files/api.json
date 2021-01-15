@@ -1,0 +1,387 @@
+{
+    "paths": {
+        "/media/gallery/videos": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Returns a JSON list of videos formatted for the JW Player",
+                "operationId": "videos",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Max amount for paging. The default and maximum are 100.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset amount for paging. The default is 0.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Query string for searching.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Enables searching by tag slug (i.e. axial-caldera).",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/media/gallery/images": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Returns a JSON list of images",
+                "operationId": "images",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Max amount for paging. The default and maximum are 100.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset amount for paging. The default is 0.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Query string for searching.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Enables searching by tag slug (i.e. axial-caldera).",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/media/api/{id}": {
+            "get": {
+                "tags": [
+                    "Media"
+                ],
+                "summary": "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
+                "operationId": "api/{id}",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post Id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/media/api": {
+            "get": {
+                "tags": [
+                    "Media"
+                ],
+                "summary": "Returns JSON or geoJSON representations of WP_Posts",
+                "operationId": "api",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Max amount for paging. The default and maximum are 100.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset amount for paging. The default is 0.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Result sorting method. It can be either 'date' or 'title'.  The default is 'date'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Result ordering method. It can be either 'asc' or 'desc'.  The default is 'asc'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Query string for searching.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Can be used to filter media by type.  Options are 'image' or 'video'.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "geoReferenced",
+                        "in": "query",
+                        "description": "Option for returning geo-referenced media.  Options are 'true' or 'false'.  The default is true.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Enables searching by tag slug (i.e. axial-caldera).",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only GET is allowed"
+                    },
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/videoUpload/uploadVideo": {
+            "post": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "Uploads a file",
+                "operationId": "uploadVideo",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "upload",
+                        "description": "upload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Upload"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "desktopVideo",
+                        "description": "Video File",
+                        "required": true,
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "posterImage",
+                        "description": "Poster Image",
+                        "required": false,
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "formData",
+                        "description": "Video Title",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "content",
+                        "in": "formData",
+                        "description": "Video Description",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only POST is allowed"
+                    },
+                    "200": {
+                        "description": "The POST call was successful"
+                    }
+                }
+            }
+        },
+        "/videoUpload/videoUpload/videoForm": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "videoForm",
+                "operationId": "/videoUpload/videoForm",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Upload": {
+            "type": "object",
+            "properties": {
+                "desktopVideoURL": {
+                    "type": "string"
+                },
+                "phoneVideoURL": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "desktopVideo": {
+                    "type": "file"
+                },
+                "phoneVideo": {
+                    "type": "file"
+                },
+                "posterImage": {
+                    "type": "file"
+                }
+            }
+        }
+    },
+    "openapi": "3.0.2",
+    "info": {
+        "description": "InteractiveOceans Media API Documentation",
+        "version": "1.0.1",
+        "title": "InteractiveOceans Media",
+        "termsOfServices": "https://api.interactiveoceans.washington.edu"
+    }
+}
