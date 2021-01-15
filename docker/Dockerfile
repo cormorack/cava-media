@@ -53,6 +53,8 @@ ENV WPPASSWORD ''
 
 ENV SERVER_URL ''
 
+ENV ISSUES ''
+
 # Setup Tomcat configuration files
 COPY docker/context.xml $CATALINA_HOME/conf/context.xml
 

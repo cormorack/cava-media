@@ -33,5 +33,6 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
         }
     }
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
+    //logger("io.micronaut.http", TRACE)
 }
 root(ERROR, ['STDOUT'])
