@@ -3,7 +3,7 @@ ARG OPENJDK_IMAGE_VERSION=11
 ARG TOMCAT_IMAGE_VERSION=8-jre11
 ARG GRAILS_VERSION=4.0.3
 
-FROM openjdk:$JAVA_VERSION as buildwar
+FROM openjdk:$OPENJDK_IMAGE_VERSION as buildwar
 
 # Set customizable env vars defaults.
 # Set Grails version
@@ -35,7 +35,7 @@ RUN bash /tmp/CavaMedia/docker/setup.sh
 
 # Install Tomcat
 #FROM tomcat:7.0.88-jre8
-FROM tomcat:$TOMCAT_VERSION
+FROM tomcat:$TOMCAT_IMAGE_VERSION
 
 # Setup DB Credentials
 ENV USERNAME ''
