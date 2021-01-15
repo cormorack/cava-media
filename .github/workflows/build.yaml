@@ -56,8 +56,12 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./${{ env.IMAGE_NAME }}
+          context: .
+          file: ./docker/Dockerfile
           push: true
+          build-args: |
+            OPENJDK_IMAGE_VERSION=${{ env.OPENJDK_IMAGE_VERSION }}
+            TOMCAT_IMAGE_VERSION=${{ env.TOMCAT_IMAGE_VERSION }}
           tags: |
             ${{ env.IMAGE_SPEC }}
             ${{ env.IMAGE_SPEC_LATEST }}
