@@ -1,5 +1,8 @@
 
-FROM openjdk:11 as buildwar
+ARG OPENJDK_IMAGE_VERSION=11
+ARG TOMCAT_IMAGE_VERSION=8-jre11
+
+FROM openjdk:$OPENJDK_IMAGE_VERSION as buildwar
 
 # Set customizable env vars defaults.
 # Set Grails version
@@ -20,7 +23,7 @@ ENV GRAILS_HOME /opt/grails
 ENV PATH $GRAILS_HOME/bin:$PATH
 
 # Copy the app into Docker
-COPY src/backend/CavaMedia /tmp/CavaMedia
+COPY . /tmp/CavaMedia
 
 WORKDIR /tmp/CavaMedia
 
@@ -31,7 +34,7 @@ RUN bash /tmp/CavaMedia/docker/setup.sh
 
 # Install Tomcat
 #FROM tomcat:7.0.88-jre8
-FROM tomcat:8-jre11
+FROM tomcat:$TOMCAT_IMAGE_VERSION
 
 # Setup DB Credentials
 ENV USERNAME ''
@@ -51,13 +54,13 @@ ENV WPPASSWORD ''
 ENV SERVER_URL ''
 
 # Setup Tomcat configuration files
-COPY src/backend/CavaMedia/docker/context.xml $CATALINA_HOME/conf/context.xml
+COPY docker/context.xml $CATALINA_HOME/conf/context.xml
 
-COPY src/backend/CavaMedia/docker/server.xml $CATALINA_HOME/conf/server.xml
+COPY docker/server.xml $CATALINA_HOME/conf/server.xml
 
-COPY src/backend/CavaMedia/docker/web.xml $CATALINA_HOME/conf/web.xml
+COPY docker/web.xml $CATALINA_HOME/conf/web.xml
 
-COPY src/backend/CavaMedia/docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
+COPY docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
 
 RUN chmod +x $CATALINA_HOME/bin/setenv.sh
 
