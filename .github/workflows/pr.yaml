@@ -4,6 +4,13 @@ on:
   pull_request:
     paths-ignore:
       - README.md
+
+env:
+  DOCKER_ORG: cormorack
+  OPENJDK_IMAGE_VERSION: 11
+  TOMCAT_IMAGE_VERSION: 8-jre11
+  GRAILS_VERSION: 4.0.3
+
 jobs:
   java-build:
     runs-on: ubuntu-20.04
@@ -35,7 +42,7 @@ jobs:
       - name: Set Job Environment Variables
         run: |
           DOCKER_TAG=PR
-          IMAGE_SPEC="${DOCKER_ORG}/${{ matrix.IMAGE }}:${DOCKER_TAG}"
+          IMAGE_SPEC="${DOCKER_ORG}/cava-media:${DOCKER_TAG}"
           echo "IMAGE_SPEC=${IMAGE_SPEC}" >> $GITHUB_ENV
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -48,9 +55,9 @@ jobs:
           context: ./docker
           push: false
           build-args: |
-            OPENJDK_IMAGE_VERSION=11
-            TOMCAT_IMAGE_VERSION=8-jre11
-            GRAILS_VERSION=4.0.3
+            OPENJDK_IMAGE_VERSION=${{ env.OPENJDK_IMAGE_VERSION }}
+            TOMCAT_IMAGE_VERSION=${{ env.TOMCAT_IMAGE_VERSION }}
+            GRAILS_VERSION=${{ env.GRAILS_VERSION }}
           tags: |
             ${{ env.IMAGE_SPEC }}
 
