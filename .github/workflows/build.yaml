@@ -33,7 +33,7 @@ jobs:
           echo "IMAGE_SPEC_LATEST=${IMAGE_SPEC_LATEST}" >> $GITHUB_ENV
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
       - name: Set Development Docker Tag
-        if: ${{ github.ref == 'refs/heads/dev' }}"
+        if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
           SHA7="${GITHUB_SHA::7}"
           DOCKER_TAG=dev
