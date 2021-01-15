@@ -9,7 +9,6 @@ env:
   DOCKER_ORG: cormorack
   OPENJDK_IMAGE_VERSION: 11
   TOMCAT_IMAGE_VERSION: 8-jre11
-  GRAILS_VERSION: 4.0.3
 
 jobs:
   java-build:
@@ -34,7 +33,6 @@ jobs:
         # run: ./gradlew check --parallel --continue
         run: ./gradlew assemble
   docker-build:
-    needs: java-build
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -52,12 +50,11 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./docker
+          dockerfile: docker/Dockerfile
           push: false
           build-args: |
             OPENJDK_IMAGE_VERSION=${{ env.OPENJDK_IMAGE_VERSION }}
             TOMCAT_IMAGE_VERSION=${{ env.TOMCAT_IMAGE_VERSION }}
-            GRAILS_VERSION=${{ env.GRAILS_VERSION }}
           tags: |
             ${{ env.IMAGE_SPEC }}
 
