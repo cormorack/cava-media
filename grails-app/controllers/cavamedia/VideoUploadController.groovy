@@ -3,6 +3,10 @@ package cavamedia
 import grails.converters.JSON
 import grails.util.Environment
 import grails.util.Holders
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -10,6 +14,8 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
+import org.springframework.beans.factory.annotation.Value
+
 // import io.swagger.v3.oas.annotations.*
 import org.springframework.http.MediaType
 import javax.servlet.ServletContext
@@ -20,12 +26,63 @@ import org.springframework.web.multipart.MultipartFile
 @Api(value = "/videoUpload/", tags = ["Video"])
 class VideoUploadController {
 
+    @Value('${ISSUES_SECRET}')
+    private String issuesPassword
+
     def config = Holders.config
     def restService
 
     //def beforeInterceptor = [action: this.checkHost()]
 
-    static allowedMethods = [uploadVideo: 'POST']
+    static allowedMethods = [uploadVideo: 'POST', submitIssue: 'POST']
+
+    def createIssue() {}
+
+    /**
+     * Creates a Git Hub Issue
+     * @return
+     */
+    def submitIssue() {
+
+        withForm {
+
+            if (!params.title || !params.body) {
+                flash.message = "A required field is missing"
+                render(view: 'createIssue')
+                return
+            }
+
+            String token = issuesPassword
+            String url = "https://api.github.com"
+            String uriString = "/repos/cormorack/feedback/issues"
+            String message = "Your issue has been submitted."
+
+            Map paramMap = [title: params.title, body: params.body]
+
+            if (params.labels) {
+                List labels = []
+                labels.addAll(params.labels)
+                paramMap.put("labels", labels)
+            }
+
+            Map headerMap = ['Authorization': "token ${token}", 'User-Agent': 'ooi-data-bot']
+
+            HttpClient client = HttpClient.create(url.toURL())
+
+            HttpRequest request = HttpRequest.POST(uriString, paramMap).headers(headerMap)
+
+            HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
+
+            if (resp.status != HttpStatus.CREATED) {
+                message = "An error occurred and your request could not be submitted."
+                log.error("An error occurred when submitting an issue")
+            }
+
+            flash.message = message
+
+            render view: "issueSubmitted"
+        }
+    }
 
     /**
      * Forwards to the video upload page
