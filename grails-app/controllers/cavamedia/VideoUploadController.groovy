@@ -31,10 +31,14 @@ class VideoUploadController {
 
     def config = Holders.config
     def restService
+    def clientService
 
     //def beforeInterceptor = [action: this.checkHost()]
 
-    static allowedMethods = [uploadVideo: 'POST', submitIssue: 'POST']
+    static allowedMethods = [uploadVideo: 'POST', submitIssue: 'POST', issueWebhook: 'POST']
+
+    static final String ISSUES_URL = "https://api.github.com"
+    static final String ISSUES_URI = "/repos/cormorack/feedback/issues"
 
     def createIssue() {}
 
@@ -52,9 +56,6 @@ class VideoUploadController {
                 return
             }
 
-            String token = issuesPassword
-            String url = "https://api.github.com"
-            String uriString = "/repos/cormorack/feedback/issues"
             String message = "Your issue has been submitted."
 
             Map paramMap = [title: params.title, body: params.body]
@@ -65,15 +66,10 @@ class VideoUploadController {
                 paramMap.put("labels", labels)
             }
 
-            Map headerMap = ['Authorization': "token ${token}", 'User-Agent': 'ooi-data-bot']
+            Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-            HttpClient client = HttpClient.create(url.toURL())
+            if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
-            HttpRequest request = HttpRequest.POST(uriString, paramMap).headers(headerMap)
-
-            HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
-
-            if (resp.status != HttpStatus.CREATED) {
                 message = "An error occurred and your request could not be submitted."
                 log.error("An error occurred when submitting an issue")
             }
@@ -82,6 +78,52 @@ class VideoUploadController {
 
             render view: "issueSubmitted"
         }
+    }
+
+    def issueHook() {}
+
+    /**
+     *
+     * @return
+     */
+    def issueWebhook() {
+
+        if (!params.title || !params.body) {
+
+            Map data = ["message": "A required parameter is missing", "data": [] ]
+            Map results = ["succes": false, "data": data]
+            render results as JSON
+            return
+        }
+
+        String issueTitle = params.title
+        String issueBody = params.body
+
+        Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
+
+        Map paramMap = [title: issueTitle, body: issueBody]
+
+        if (params.labels) {
+            List labels = []
+            for (String label in params.labels) {
+                labels.add(label)
+            }
+            paramMap.put("labels", labels)
+        }
+
+        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+
+            log.error("An error occurred when submitting an issue")
+            Map data = ["message": "The operation could not be completed", "data": [] ]
+            Map results = ["succes": false, "data": data]
+            render results as JSON
+            return
+        }
+
+        Map data = ["message": "The form was sent successfully", "data": [] ]
+        Map results = ["succes": true, "data": data]
+
+        render results as JSON
     }
 
     /**
