@@ -45,6 +45,8 @@ class UrlMappings {
             action = "index"
         }
 
+        "/issueWebhook"(controller: "videoUpload", action: "issueWebhook")
+
         "/post/summary/$id?"(controller: "media", action: "summary")
 
         "/api"(controller: "media", action: "index", method: "GET")
