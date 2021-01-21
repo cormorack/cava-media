@@ -5,7 +5,7 @@ on:
     branches:
       - dev
     tags:
-      - 2021.*
+      - '*.*.*'
     paths-ignore:
       - README.md
   workflow_dispatch:

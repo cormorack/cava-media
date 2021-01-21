@@ -102,7 +102,7 @@ class VideoUploadController {
         List labels = [params.labels]
 
         paramMap.put("labels", labels)
-        paramMap.put("body", setDescription(titleString))
+        paramMap.put("body", setDescription())
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
@@ -122,11 +122,11 @@ class VideoUploadController {
     }
 
     /**
-     * Formats and fills the body with the title, name, email, label and description
+     * Formats and fills the body with the name, email, label and body
      * @param title
      * @return formatted String
      */
-    private String setDescription(String title) {
+    private String setDescription() {
 
         String bodyString = """\
         ## Overview

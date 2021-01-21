@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group">
                     <label for="body">Description:</label>
-                    <textarea class="form-control" id="body" name="body" cols="18" rows="4" required="" maxlength="100"></textarea>
+                    <textarea class="form-control" id="body" name="body" cols="18" rows="4" required="" maxlength="500"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Labels:</label>
@@ -92,7 +92,7 @@
                 success: function (data) {
                     $("form#theForm")[0].reset();
                     var para = document.createElement('p');
-                    var paraText = document.createTextNode(data.data.message);
+                    var paraText = document.createTextNode("Thank you for your submission.");
                     para.appendChild(paraText);
                     document.getElementById("output").appendChild(para);
                     alert(data.data.message);
