@@ -95,7 +95,7 @@ class VideoUploadController {
             return
         }
 
-        String titleString = "Title: ${params.labels} issue from ${params.name}"
+        String titleString = "${params.labels} feedback from ${params.name}"
 
         Map paramMap = [title: titleString]
 
@@ -128,15 +128,15 @@ class VideoUploadController {
      */
     private String setDescription(String title) {
 
-        String bodyString = """##  Overview
-        ${title}
-        
-        ## Detail
+        String bodyString = """\
+        ## Overview
+        ${params.body}
+
+        ## Details
         Sender: ${params.name}
         Sender email: ${params.email}
         Question type: ${params.labels}
-        Description: ${params.body}
-        """
+        """.stripIndent()
     }
 
     /**
