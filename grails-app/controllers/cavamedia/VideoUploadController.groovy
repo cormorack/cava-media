@@ -106,14 +106,14 @@ class VideoUploadController {
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-        /*if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
             Map results = ["succes": false, "data": data]
             render results as JSON
             return
-        }*/
+        }
 
         Map data = ["message": "The form was sent successfully", "data": [] ]
         Map results = ["succes": true, "data": data]
