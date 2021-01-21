@@ -69,7 +69,6 @@ class VideoUploadController {
             Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
             if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
-
                 message = "An error occurred and your request could not be submitted."
                 log.error("An error occurred when submitting an issue")
             }
@@ -88,7 +87,7 @@ class VideoUploadController {
      */
     def issueWebhook() {
 
-        if (!params.title || !params.body) {
+        if (!params.body || !params.name || !params.email || !params.labels) {
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
             Map results = ["succes": false, "data": data]
@@ -96,34 +95,48 @@ class VideoUploadController {
             return
         }
 
-        String issueTitle = params.title
-        String issueBody = params.body
+        String titleString = "Title: ${params.labels} issue from ${params.name}"
+
+        Map paramMap = [title: titleString]
+
+        List labels = [params.labels]
+
+        paramMap.put("labels", labels)
+        paramMap.put("body", setDescription(titleString))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-        Map paramMap = [title: issueTitle, body: issueBody]
-
-        if (params.labels) {
-            List labels = []
-            for (String label in params.labels) {
-                labels.add(label)
-            }
-            paramMap.put("labels", labels)
-        }
-
-        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+        /*if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
             Map results = ["succes": false, "data": data]
             render results as JSON
             return
-        }
+        }*/
 
         Map data = ["message": "The form was sent successfully", "data": [] ]
         Map results = ["succes": true, "data": data]
 
         render results as JSON
+    }
+
+    /**
+     * Formats and fills the body with the title, name, email, label and description
+     * @param title
+     * @return formatted String
+     */
+    private String setDescription(String title) {
+
+        String bodyString = """##  Overview
+        ${title}
+        
+        ## Detail
+        Sender: ${params.name}
+        Sender email: ${params.email}
+        Question type: ${params.labels}
+        Description: ${params.body}
+        """
     }
 
     /**
