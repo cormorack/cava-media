@@ -132,7 +132,7 @@ class VideoUploadController {
         ## Overview
         ${params.body}
 
-        ## Detail
+        ## Details
         Sender: ${params.name}
         Sender email: ${params.email}
         Question type: ${params.labels}
