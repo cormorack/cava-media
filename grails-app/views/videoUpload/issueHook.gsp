@@ -10,7 +10,7 @@
 
     <body>
         <div class="container">
-            <h2>Submit an Issue</h2>
+            <h2>Report an Issue</h2>
             <g:form
                     method="post"
                     controller="videoUpload"
@@ -18,43 +18,38 @@
                     name="theForm"
                     id="theForm">
                 <div class="form-group">
-                    <label for="title">Required Title:</label>
-                    <input class="form-control" type="text" id="title" name="title" value="" />
+                    <label for="name">Name:</label>
+                    <input class="form-control" type="text" id="name" name="name" value="" required="" maxlength="50"/>
                 </div>
                 <div class="form-group">
-                    <label for="title">Required Description:</label>
-                    <textarea class="form-control" id="body" name="body" cols="18" rows="4" required=""></textarea>
+                    <label for="name">Email:</label>
+                    <input class="form-control" type="text" id="email" name="email" value="" required=""/>
                 </div>
                 <div class="form-group">
-                    <label>Optional Labels:</label>
+                    <label for="body">Description:</label>
+                    <textarea class="form-control" id="body" name="body" cols="18" rows="4" required="" maxlength="100"></textarea>
                 </div>
-               <div class="form-check">
-                   <input class="form-check-input" type="radio" name="labels" id="Data Portal" value="Data Portal">
-                   <label class="form-check-label" for="Data Portal">
-                       Data Portal
-                   </label>
-               </div>
-               <div class="form-check">
-                   <input class="form-check-input" type="radio" name="labels" id="Website" value="Website">
-                   <label class="form-check-label" for="Website">
-                       Website
-                   </label>
-               </div>
-               <div class="form-check">
-                   <input class="form-check-input" type="radio" name="labels" id="Expeditions" value="Expeditions">
-                   <label class="form-check-label" for="Expeditions">
-                       Expedition
-                   </label>
-               </div>
-                %{--<div class="form-check">
-                    <g:radioGroup
-                        class="form-check-input"
-                        name="labels"
-                        labels="['Data Portal','Website','Expeditions']"
-                        values="['Data Portal','Website','Expedition']">
-                        ${it.radio} <label class="form-check-label" for="${it.label}">${it.label}</label><br />
-                    </g:radioGroup>
-                </div>--}%
+                <div class="form-group">
+                    <label>Labels:</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="labels" id="Website" value="Website" checked>
+                    <label class="form-check-label" for="Website">
+                        Website
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="labels" id="Data Portal" value="Data Portal">
+                    <label class="form-check-label" for="Data Portal">
+                        Data Portal
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="labels" id="Expeditions" value="Expeditions">
+                    <label class="form-check-label" for="Expeditions">
+                        Expedition
+                    </label>
+                </div>
                 <hr />
                <div id="submitbutton">
                    <button type="submit" class="btn btn-secondary" >Submit</button>
@@ -96,12 +91,11 @@
                 contentType: false,
                 success: function (data) {
                     $("form#theForm")[0].reset();
-                    var videoLink = document.createElement('a');
-                    var linkText = document.createTextNode(data.message);
-                    videoLink.appendChild(linkText);
-                    videoLink.setAttribute('href', data.success);
-                    videoLink.setAttribute('target', '_blank');
-                    document.getElementById("output").appendChild(videoLink);
+                    var para = document.createElement('p');
+                    var paraText = document.createTextNode(data.data.message);
+                    para.appendChild(paraText);
+                    document.getElementById("output").appendChild(para);
+                    alert(data.data.message);
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
