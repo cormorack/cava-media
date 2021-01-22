@@ -42,3 +42,7 @@ env:
   value: ""
 restartPolicy: Always
 nodeSelector: {}
+traefik:
+  expose: false
+  entryPoints: 
+    - web

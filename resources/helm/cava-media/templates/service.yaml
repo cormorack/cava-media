@@ -1,5 +1,4 @@
 {{- $serviceName := default (include "cava-media.name" .) -}}
-{{- $servicePath := .Values.path -}}
 {{- $servicePortName := .Values.service.portName -}}
 apiVersion: v1
 kind: Service
