@@ -1,0 +1,10 @@
+title: Interactive Oceans Media Service Helm charts for Kubernetes
+description: This site stores Helm chart tarballs for Interactive Oceans Media Service.
+theme: minima
+url: "https://cormorack.github.io/cava-media/"
+repo_name: cava-media
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - .gitignore
