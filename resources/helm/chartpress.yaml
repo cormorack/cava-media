@@ -1,0 +1,5 @@
+charts:
+  - name: cava-media
+    repo:
+      git: cormorack/cava-media
+      published: https://cormorack.github.io/cava-media/
