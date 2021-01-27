@@ -29,7 +29,7 @@ WORKDIR /tmp/CavaMedia
 RUN grails -version
 
 # Build the WAR
-RUN bash /tmp/CavaMedia/docker/setup.sh
+RUN bash /tmp/CavaMedia/resources/docker/setup.sh
 
 # Install Tomcat
 #FROM tomcat:7.0.88-jre8
