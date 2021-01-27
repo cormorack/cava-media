@@ -55,13 +55,13 @@ ENV SERVER_URL ''
 ENV ISSUES ''
 
 # Setup Tomcat configuration files
-COPY docker/context.xml $CATALINA_HOME/conf/context.xml
+COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
 
-COPY docker/server.xml $CATALINA_HOME/conf/server.xml
+COPY resources/docker/server.xml $CATALINA_HOME/conf/server.xml
 
-COPY docker/web.xml $CATALINA_HOME/conf/web.xml
+COPY resources/docker/web.xml $CATALINA_HOME/conf/web.xml
 
-COPY docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
+COPY resources/docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
 
 RUN chmod +x $CATALINA_HOME/bin/setenv.sh
 
