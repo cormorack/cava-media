@@ -1,12 +1,11 @@
 
 ARG OPENJDK_IMAGE_VERSION=11
 ARG TOMCAT_IMAGE_VERSION=8-jre11
+ARG GRAILS_VERSION=4.0.3
 
 FROM openjdk:$OPENJDK_IMAGE_VERSION as buildwar
 
-# Set customizable env vars defaults.
-# Set Grails version
-ENV GRAILS_VERSION 4.0.3
+ARG GRAILS_VERSION
 
 # Install Grails
 WORKDIR /opt
