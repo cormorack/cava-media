@@ -3,3 +3,11 @@ charts:
     repo:
       git: cormorack/cava-media
       published: https://cormorack.github.io/cava-media/
+    images:
+      cava-media:
+        imageName: cormorack/cava-media
+        contextPath: ../..
+        rebuildOnContextPathChanges: false
+        dockerfilePath: ../docker/Dockerfile
+        valuesPath:
+          - image

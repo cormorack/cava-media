@@ -13,7 +13,7 @@ service:
   servicePortName: http
 image:
   repository: cormorack/cava-media
-  tag: latest
+  tag: "set-by-chartpress"
   pullSecrets: []
   pullPolicy: Always
 replicas: 1

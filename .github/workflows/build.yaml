@@ -1,13 +1,13 @@
 name: Build and Push Images
 
 on:
-  push:
-    branches:
-      - dev
-    tags:
-      - '*.*.*'
-    paths-ignore:
-      - README.md
+  # push:
+  #   branches:
+  #     - dev
+  #   tags:
+  #     - '*.*.*'
+  #   paths-ignore:
+  #     - README.md
   workflow_dispatch:
 
 env:
