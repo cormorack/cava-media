@@ -1,12 +1,11 @@
 
 ARG OPENJDK_IMAGE_VERSION=11
 ARG TOMCAT_IMAGE_VERSION=8-jre11
+ARG GRAILS_VERSION=4.0.3
 
 FROM openjdk:$OPENJDK_IMAGE_VERSION as buildwar
 
-# Set customizable env vars defaults.
-# Set Grails version
-ENV GRAILS_VERSION 4.0.3
+ARG GRAILS_VERSION
 
 # Install Grails
 WORKDIR /opt
@@ -30,7 +29,7 @@ WORKDIR /tmp/CavaMedia
 RUN grails -version
 
 # Build the WAR
-RUN bash /tmp/CavaMedia/docker/setup.sh
+RUN bash /tmp/CavaMedia/resources/docker/setup.sh
 
 # Install Tomcat
 #FROM tomcat:7.0.88-jre8
@@ -56,13 +55,13 @@ ENV SERVER_URL ''
 ENV ISSUES ''
 
 # Setup Tomcat configuration files
-COPY docker/context.xml $CATALINA_HOME/conf/context.xml
+COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
 
-COPY docker/server.xml $CATALINA_HOME/conf/server.xml
+COPY resources/docker/server.xml $CATALINA_HOME/conf/server.xml
 
-COPY docker/web.xml $CATALINA_HOME/conf/web.xml
+COPY resources/docker/web.xml $CATALINA_HOME/conf/web.xml
 
-COPY docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
+COPY resources/docker/setenv.sh $CATALINA_HOME/bin/setenv.sh
 
 RUN chmod +x $CATALINA_HOME/bin/setenv.sh
 

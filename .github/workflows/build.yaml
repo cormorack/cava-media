@@ -1,13 +1,13 @@
 name: Build and Push Images
 
 on:
-  push:
-    branches:
-      - dev
-    tags:
-      - '*.*.*'
-    paths-ignore:
-      - README.md
+  # push:
+  #   branches:
+  #     - dev
+  #   tags:
+  #     - '*.*.*'
+  #   paths-ignore:
+  #     - README.md
   workflow_dispatch:
 
 env:
@@ -17,6 +17,7 @@ env:
   IMAGE_NAME: cava-media
   OPENJDK_IMAGE_VERSION: 11
   TOMCAT_IMAGE_VERSION: 8-jre11
+  GRAILS_VERSION: 4.0.3
 
 jobs:
   docker-build:
@@ -57,11 +58,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./resources/docker/Dockerfile
           push: true
           build-args: |
             OPENJDK_IMAGE_VERSION=${{ env.OPENJDK_IMAGE_VERSION }}
             TOMCAT_IMAGE_VERSION=${{ env.TOMCAT_IMAGE_VERSION }}
+            GRAILS_VERSION=${{ env.GRAILS_VERSION }}
           tags: |
             ${{ env.IMAGE_SPEC }}
             ${{ env.IMAGE_SPEC_LATEST }}

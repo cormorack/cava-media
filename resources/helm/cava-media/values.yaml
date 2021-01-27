@@ -1,0 +1,49 @@
+# Default values for cava-media.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nameOverride: cava-media
+# fullnameOverride: cava-media
+path: /media
+service:
+  targetPort: 8080
+  portName: http
+  type: ClusterIP
+  port: 80
+  containerPort: 5000
+  servicePortName: http
+image:
+  repository: cormorack/cava-media
+  tag: "set-by-chartpress"
+  pullSecrets: []
+  pullPolicy: Always
+replicas: 1
+resources: {}
+env:
+- name: WPUSER
+  value: ""
+- name: WPPASSWORD
+  value: ""
+- name: USERNAME
+  value: ""
+- name: PASSWORD
+  value: ""
+- name: HOST
+  value: ""
+- name: PORT
+  value: ""
+- name: DBNAME
+  value: ""
+- name: MAXFILESIZE
+  value: ""
+- name: JVM_OPTS
+  value: ""
+- name: SERVER_URL
+  value: ""
+- name: ISSUES
+  value: ""
+restartPolicy: Always
+nodeSelector: {}
+traefik:
+  expose: false
+  entryPoints: 
+    - web
