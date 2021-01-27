@@ -1,13 +1,13 @@
 name: Build and Push Images
 
 on:
-  push:
-    branches:
-      - dev
-    tags:
-      - '*.*.*'
-    paths-ignore:
-      - README.md
+  # push:
+  #   branches:
+  #     - dev
+  #   tags:
+  #     - '*.*.*'
+  #   paths-ignore:
+  #     - README.md
   workflow_dispatch:
 
 env:
@@ -58,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./resources/docker/Dockerfile
           push: true
           build-args: |
             OPENJDK_IMAGE_VERSION=${{ env.OPENJDK_IMAGE_VERSION }}
