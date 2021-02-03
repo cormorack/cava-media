@@ -3,7 +3,7 @@
 {{- $servicePort := .Values.service.port -}}
 {{- $servicePath := .Values.path -}}
 # https://doc.traefik.io/traefik/providers/kubernetes-crd/#letsencrypt-support-with-the-custom-resource-definition-provider
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $serviceName }}
