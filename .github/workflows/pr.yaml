@@ -4,7 +4,8 @@ on:
   pull_request:
     paths-ignore:
       - README.md
-      - resources/helm/**
+      - "resources/helm/**"
+      - ".ci-helpers/**"
 
 env:
   DOCKER_ORG: cormorack

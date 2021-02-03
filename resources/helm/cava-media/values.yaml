@@ -9,7 +9,7 @@ service:
   portName: http
   type: ClusterIP
   port: 80
-  containerPort: 5000
+  containerPort: 8080
   servicePortName: http
 image:
   repository: cormorack/cava-media
@@ -43,16 +43,14 @@ env:
   value: ""
 restartPolicy: Always
 nodeSelector: {}
-traefik:
-  expose: false
-  entryPoints: 
-    - web
 ingress:
   # Adds ingress annotations to be able to certify
   # annotations:
   #   kubernetes.io/ingress.class: traefik
   #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
   annotations: {}
+  expose: false
+  host: ""
 
   # Adds tls for domain certification
   # tls:

@@ -1,0 +1,33 @@
+{{- if .Values.ingress.expose -}}
+{{- $serviceName := default (include "cava-media.name" .) -}}
+{{- $servicePort := .Values.service.port -}}
+{{- $servicePath := .Values.path -}}
+# https://doc.traefik.io/traefik/providers/kubernetes-crd/#letsencrypt-support-with-the-custom-resource-definition-provider
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    {{- include "cava-media.labels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ $serviceName }}
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
+  rules:
+    - http:
+        paths:
+          - path: {{ $servicePath }}
+            pathType: Prefix
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+      {{- if .Values.ingress.host }}
+      host: {{ .Values.ingress.host }}
+      {{- end }}
+{{- end -}}
