@@ -49,9 +49,7 @@ Selector labels
 {{- define "cava-media.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "cava-media.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/heritage: {{ .Release.Service | quote }}
 app.kubernetes.io/release: {{ .Release.Name | quote }}
-app.kubernetes.io/chart: {{ include "cava-media.chart" . }}
 {{- end -}}
 
 {{/*
