@@ -16,9 +16,9 @@ env:
   TEST_CHART_VALUE: .ci-helpers/secrets/dev-test.yaml
 
 jobs:
-  build:
+  chart-test:
     runs-on: ubuntu-20.04
-
+    name: ${{ matrix.k3s-channel }}-chart-test
     strategy:
       # Keep running even if one variation of the job fail
       fail-fast: false
@@ -29,8 +29,7 @@ jobs:
         #
         # k3s-version: https://github.com/rancher/k3s/tags
         # k3s-channel: https://update.k3s.io/v1-release/channels
-        include:
-          - k3s-channel: v1.18
+        k3s-channel: [v1.18, v1.19]
 
     steps:
       - uses: actions/checkout@v2
