@@ -32,4 +32,22 @@ class BaseController {
 
         if (!params.offset || !Utilities.isNumeric(params.offset.toString()) ) params.offset = 0
     }
+
+    /**
+     * Modifies the URL
+     * @param repl Optional string to remove
+     * @return
+     */
+    protected String setURL(String repl) {
+
+        String uri = request.getScheme() +
+                "://" +
+                request.getServerName() +
+                ":" + request.getServerPort() +
+                request.getRequestURI()
+        if (!repl) {
+            return uri
+        }
+        uri = uri.replaceAll(repl, "")
+    }
 }

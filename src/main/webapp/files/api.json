@@ -1,4 +1,5 @@
 {
+    "basePath": "http://localhost:8080/media",
     "paths": {
         "/media/gallery/videos": {
             "get": {
@@ -259,6 +260,89 @@
                 }
             }
         },
+        "/videoUpload/videoUpload/createIssue": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "createIssue",
+                "operationId": "/videoUpload/createIssue",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/videoUpload/videoUpload/submitIssue": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "submitIssue",
+                "operationId": "/videoUpload/submitIssue",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/videoUpload/videoUpload/issueHook": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "issueHook",
+                "operationId": "/videoUpload/issueHook",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/videoUpload/issueWebhook": {
+            
+        },
+        "/videoUpload/videoUpload/videoForm": {
+            "get": {
+                "tags": [
+                    "Video"
+                ],
+                "summary": "videoForm",
+                "operationId": "/videoUpload/videoForm",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/videoUpload/uploadVideo": {
             "post": {
                 "tags": [
@@ -324,26 +408,6 @@
                     },
                     "200": {
                         "description": "The POST call was successful"
-                    }
-                }
-            }
-        },
-        "/videoUpload/videoUpload/videoForm": {
-            "get": {
-                "tags": [
-                    "Video"
-                ],
-                "summary": "videoForm",
-                "operationId": "/videoUpload/videoForm",
-                "parameters": [
-                    
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "object"
-                        }
                     }
                 }
             }

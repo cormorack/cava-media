@@ -148,3 +148,7 @@ environments:
             readOnly: true
             dbCreate: none
             jndiName: java:comp/env/Cava
+
+server:
+    servlet:
+        context-path: /media

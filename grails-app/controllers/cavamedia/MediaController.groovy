@@ -212,7 +212,7 @@ class MediaController extends BaseController {
 
         String api = "{'message':'api not found'}"
 
-        String serverURL = "${url()}/swagger/api.json"
+        String serverURL = "${setURL('/docs')}/swagger/api.json"
 
         def slurped = new JsonSlurper().parse(serverURL.toURL())
 
@@ -246,22 +246,6 @@ class MediaController extends BaseController {
         api = new JsonBuilder(slurped).toPrettyString()
 
         File file = new File(context.getRealPath("/files/api.json")).write(api)
-    }
-
-    /**
-     * Returns the grails.serverURL property based on the runtime environment
-     * @return
-     */
-    private String url() {
-
-        switch (Environment.current) {
-            case Environment.DEVELOPMENT:
-                return config.grails.serverURL
-                break
-            case Environment.PRODUCTION:
-                return config.grails.serverURL
-                break
-        }
     }
 }
 
