@@ -34,6 +34,10 @@ spring:
             check-template-location: false
     devtools:
         restart:
+            exclude:
+                - 'grails-app/views/**'
+                - 'grails-app/i18n/**'
+                - 'grails-app/conf/**'
             additional-exclude:
                 - '*.gsp'
                 - '**/*.gsp'
@@ -46,9 +50,13 @@ spring:
             enabled: true
             max-file-size: 300MB
             max-request-size: 300MB
+
 management:
     endpoints:
-        enabled-by-default: false
+        #enabled-by-default: true
+        web:
+            exposure:
+                include: "health,prometheus"
 
 ---
 grails:
@@ -106,10 +114,6 @@ grails:
                 scriptlet: html
                 taglib: none
                 staticparts: none
-management:
-    endpoints:
-        jmx:
-            unique-names: true
 
 hibernate:
     format_sql: true
