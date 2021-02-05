@@ -2,7 +2,6 @@ package cavamedia
 
 import grails.converters.JSON
 import grails.plugin.cache.Cacheable
-import grails.util.Environment
 import grails.util.Holders
 import io.swagger.annotations.*
 import groovy.json.JsonBuilder
@@ -212,7 +211,7 @@ class MediaController extends BaseController {
 
         String api = "{'message':'api not found'}"
 
-        String serverURL = "${setURL('/docs')}/swagger/api.json"
+        String serverURL = "${getURL('/docs')}/swagger/api.json"
 
         def slurped = new JsonSlurper().parse(serverURL.toURL())
 

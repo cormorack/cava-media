@@ -92,7 +92,7 @@
 
     var total = 0;
     var current_page = 1;
-    var serviceURL = '${serverURL}';
+    var serviceURL = location.origin + '${context}';
     var serviceURI = serviceURL + '/gallery/findAllVideos.json?max=' + max + '&offset=' + offset;
     var searchMessage = '';
     var tagMessage = "";
@@ -222,9 +222,7 @@
 
         var itemsCount = jsonTotal;
         var itemsOnPage = max;
-        var pagingURL = window.location.protocol +
-            "//" +
-            window.location.host +
+        var pagingURL = location.origin +
             window.location.pathname +
             '?' +
             $.param({'max':max, 'q':query, 'tag':tag});
