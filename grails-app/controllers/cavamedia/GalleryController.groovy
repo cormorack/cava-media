@@ -1,12 +1,12 @@
 package cavamedia
 
+
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import io.swagger.v3.oas.annotations.Hidden
 import grails.converters.JSON
 
 //@Hidden
@@ -21,7 +21,7 @@ class GalleryController extends BaseController {
      */
     @ApiOperation(hidden = true)
     def index() {
-        render view: 'image'
+        render view: 'image', model: [serverURL: setURL("/gallery/image")]
     }
 
     @ApiOperation(hidden = true)
@@ -31,16 +31,26 @@ class GalleryController extends BaseController {
      * Renders the gallery page
      */
     @ApiOperation(hidden = true)
-    def image() {}
+    def image() {
+        [serverURL: setURL("/gallery/image")]
+    }
 
     /**
      * Renders the video page
      */
     @ApiOperation(hidden = true)
-    def video() {}
+    def video() {
+        [serverURL: setURL("/gallery/video")]
+    }
 
+    /**
+     * Renders the media page
+     * @return
+     */
     @ApiOperation(hidden = true)
-    def media() {}
+    def media() {
+        [serverURL: setURL("/gallery/")]
+    }
 
     /**
      * Returns videos that DO NOT have images as JSON

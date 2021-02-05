@@ -27,6 +27,10 @@ if(System.properties['lambdaURL']) {
     lambdaURL = "https://cava-tiles.ooica.net"
 }
 
+server {
+    contextPath = "/media"
+}
+
 environments {
 
     production {
@@ -37,23 +41,23 @@ environments {
         tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
-            grails.serverURL = System.properties['grails.serverURL']
+            server.contextPath = System.properties['grails.serverURL']
         } else {
-            grails.serverURL = "https://api.interactiveoceans.washington.edu/media"
+            server.contextPath = "https://api.interactiveoceans.washington.edu/media"
         }
-        println "serverURL is ${grails.serverURL}"
+        println "server.contextPath is ${server.contextPath}"
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
         cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
         cavaWpUser = "io"
-        cavaHost = "localhost:8080"
+        cavaHost = "localhost:8080/media"
         tagURL = "http://localhost:8888/wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
-            grails.serverURL = System.properties['grails.serverURL']
+            server.contextPath = System.properties['grails.serverURL']
         } else {
-            grails.serverURL = "http://${cavaHost}"
+            server.contextPath = "http://${cavaHost}"
         }
     }
 }
