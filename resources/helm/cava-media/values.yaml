@@ -44,17 +44,12 @@ env:
 restartPolicy: Always
 nodeSelector: {}
 ingress:
-  # Adds ingress annotations to be able to certify
-  # annotations:
-  #   kubernetes.io/ingress.class: traefik
-  #   cert-manager.io/cluster-issuer: "letsencrypt-prod"
-  annotations: {}
   expose: false
-  host: ""
+
+  # If secure, must provide tls
+  secure: false
 
   # Adds tls for domain certification
   # tls:
-  #   - hosts:
-  #       - example.com
-  #     secretName: mysecret-tls
-  tls: []
+  #   certResolver: DEVELOPMENT
+  tls: {}
