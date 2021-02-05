@@ -3,6 +3,17 @@ entries:
   cava-media:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2021-02-05T00:24:00.578863365Z"
+    description: A Helm chart for Kubernetes
+    digest: e51f23de7c05d63aff343aae983755c877568b8f534aac42ce8d1ec0ff638e24
+    icon: https://interactiveoceans.washington.edu/wp-content/uploads/2018/12/interactive-oceans-logo-symbol-only_sm-150x150.png
+    name: cava-media
+    type: application
+    urls:
+    - https://cormorack.github.io/cava-media/cava-media-0.1.2-rc.6.tgz
+    version: 0.1.2-rc.6
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2021-02-04T18:03:50.482443379Z"
     description: A Helm chart for Kubernetes
     digest: c61f9f5ab52880ead1dcfcfae5b4d60a954fac574591b4fe6613d840967b7bcd
@@ -89,4 +100,4 @@ entries:
     urls:
     - https://cormorack.github.io/cava-media/cava-media-0.1.0.tgz
     version: 0.1.0
-generated: "2021-02-04T18:03:50.481735928Z"
+generated: "2021-02-05T00:24:00.578070064Z"
