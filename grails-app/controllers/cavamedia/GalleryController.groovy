@@ -21,35 +21,40 @@ class GalleryController extends BaseController {
      */
     @ApiOperation(hidden = true)
     def index() {
-        render view: 'image', model: [serverURL: setURL("/gallery/image")]
+        render view: 'media', model: [context: getAppContext()]
     }
 
+    /**
+     * Renders the map page
+     */
     @ApiOperation(hidden = true)
-    def map() {}
+    def map() {
+        [context: getAppContext()]
+    }
 
     /**
-     * Renders the gallery page
+     * Renders the image gallery page
      */
     @ApiOperation(hidden = true)
     def image() {
-        [serverURL: setURL("/gallery/image")]
+        [context: getAppContext()]
     }
 
     /**
-     * Renders the video page
+     * Renders the video gallery page
      */
     @ApiOperation(hidden = true)
     def video() {
-        [serverURL: setURL("/gallery/video")]
+        [context: getAppContext()]
     }
 
     /**
-     * Renders the media page
+     * Renders the media gallery page
      * @return
      */
     @ApiOperation(hidden = true)
     def media() {
-        [serverURL: setURL("/gallery/")]
+        [context: getAppContext()]
     }
 
     /**

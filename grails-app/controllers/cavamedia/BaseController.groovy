@@ -34,11 +34,11 @@ class BaseController {
     }
 
     /**
-     * Modifies the URL
-     * @param repl Optional string to remove
+     * Returns a URL from the servletContext.
+     * @param repl Optional string to remove from the URL
      * @return
      */
-    protected String setURL(String repl) {
+    protected String getURL(String repl) {
 
         String uri = request.getScheme() +
                 "://" +
@@ -49,5 +49,14 @@ class BaseController {
             return uri
         }
         uri = uri.replaceAll(repl, "")
+    }
+
+    /**
+     * Returns the application context name from the application.yml
+     * @return
+     */
+    protected String getAppContext() {
+
+        String context = grailsApplication.config.getProperty('server.servlet.context-path') ?: ""
     }
 }
