@@ -24,12 +24,11 @@ import org.springframework.web.multipart.MultipartFile
 
 //@Hidden
 @Api(value = "/videoUpload/", tags = ["Video"])
-class VideoUploadController {
+class VideoUploadController extends BaseController {
 
     @Value('${ISSUES_SECRET}')
     private String issuesPassword
 
-    def config = Holders.config
     def restService
     def clientService
 
@@ -40,50 +39,17 @@ class VideoUploadController {
     static final String ISSUES_URL = "https://api.github.com"
     static final String ISSUES_URI = "/repos/cormorack/feedback/issues"
 
-    def createIssue() {}
-
     /**
-     * Creates a Git Hub Issue
+     * Forwards to issue form
      * @return
      */
-    def submitIssue() {
-
-        withForm {
-
-            if (!params.title || !params.body) {
-                flash.message = "A required field is missing"
-                render(view: 'createIssue')
-                return
-            }
-
-            String message = "Your issue has been submitted."
-
-            Map paramMap = [title: params.title, body: params.body]
-
-            if (params.labels) {
-                List labels = []
-                labels.addAll(params.labels)
-                paramMap.put("labels", labels)
-            }
-
-            Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
-
-            if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
-                message = "An error occurred and your request could not be submitted."
-                log.error("An error occurred when submitting an issue")
-            }
-
-            flash.message = message
-
-            render view: "issueSubmitted"
-        }
+    def issueHook() {
+        [context: getAppContext()]
     }
 
-    def issueHook() {}
-
     /**
-     *
-     * @return
+     * Creates a Github issue
+     * @return JSON response
      */
     def issueWebhook() {
 
@@ -143,7 +109,9 @@ class VideoUploadController {
      * Forwards to the video upload page
      */
     //@ApiOperation(hidden = true)
-    def videoForm() {}
+    def videoForm() {
+        [context: getAppContext()]
+    }
 
     /**
      * Checks the uploaded file size and file type. Then uploads the videos to the streaming server and adds metadata

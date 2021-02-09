@@ -54,7 +54,7 @@
             $("form#upload").submit(function(e) {
                 e.preventDefault();
                 var formData = new FormData(this);
-
+                var serviceURL = location.origin + '${context}';
                 var loading = $("#cover");
 
                 $(document).ajaxStart(function () {
@@ -75,7 +75,7 @@
                         return xhr;
                     },
                     type: 'POST',
-                    url: '${serverURL}/${controllerName}/uploadVideo.json',
+                    url: serviceURL + '/${controllerName}/uploadVideo.json',
                     data: formData,
                     processData: false,
                     contentType: false,

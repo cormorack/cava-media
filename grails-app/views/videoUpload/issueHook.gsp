@@ -64,7 +64,7 @@
         $("form#theForm").submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-
+            var serviceURL = location.origin + '${context}';
             var loading = $("#cover");
 
             $(document).ajaxStart(function () {
@@ -85,7 +85,7 @@
                     return xhr;
                 },
                 type: 'POST',
-                url: '${serverURL}/${controllerName}/issueWebhook.json',
+                url: serviceURL + '/${controllerName}/issueWebhook.json',
                 data: formData,
                 processData: false,
                 contentType: false,
