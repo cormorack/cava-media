@@ -197,6 +197,7 @@ class MediaController extends BaseController {
     def docs() {
         ServletContext context = getServletContext()
         String apiValue = setApiValue(context)
+        [context: getAppContext()]
     }
 
     /**

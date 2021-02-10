@@ -40,11 +40,8 @@ class BaseController {
      */
     protected String getURL(String repl) {
 
-        String uri = request.getScheme() +
-                "://" +
-                request.getServerName() +
-                ":" + request.getServerPort() +
-                request.getRequestURI()
+        String uri = request.getRequestURL().toString()
+
         if (!repl) {
             return uri
         }
