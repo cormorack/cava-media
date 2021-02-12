@@ -1,13 +1,18 @@
 package cavamedia
 
+import grails.util.Environment
 import grails.util.Holders
 import io.swagger.annotations.ApiOperation
 import io.swagger.v3.oas.annotations.Hidden
+import org.springframework.beans.factory.annotation.Value
 
 @Hidden
 class BaseController {
 
     def config = Holders.config
+
+    @Value('${SECURE}')
+    private String isSecure
 
     @ApiOperation(hidden = true)
     def index() { }
@@ -21,31 +26,62 @@ class BaseController {
      */
     protected setParams(params) {
 
-        if (!params.max || !Utilities.isNumeric(params.max.toString()) || params.max.toInteger() < 0) {
+        if (!params.max || !Utilities.isNumeric( params.max.toString() ) || params.max.toInteger() < 0) {
             params.max = config.totalMax
         }
-        params.max = Math.min(params.max?.toInteger() ?: 0, config.totalMax.toInteger())
+        params.max = Math.min( params.max?.toInteger() ?: 0, config.totalMax.toInteger() )
 
-        if (!params.sort) params.sort = "date"
-        if (!params.order) params.order = "desc"
-        if (!params.geoReferenced) params.geoReferenced = "true"
+        if (!params.sort) {
+            params.sort = "date"
+        }
+        if (!params.order) {
+            params.order = "desc"
+        }
+        if (!params.geoReferenced) {
+            params.geoReferenced = "true"
+        }
 
-        if (!params.offset || !Utilities.isNumeric(params.offset.toString()) ) params.offset = 0
+        if (!params.offset || !Utilities.isNumeric( params.offset.toString()) ) {
+            params.offset = 0
+        }
     }
 
     /**
      * Returns a URL from the servletContext.
-     * @param repl Optional string to remove from the URL
-     * @return
+     * Checks the runtime environment and the SECURE env_var to determine
+     * whether or not to use https.
+     * @param remove Optional string to remove from the URL
+     * @return URL String
      */
-    protected String getURL(String repl) {
+    protected String getURL(String remove) {
 
         String uri = request.getRequestURL().toString()
 
-        if (!repl) {
+        // Force https
+        if (isProduction() && isSecure == "true") {
+            uri = uri.replaceAll("http:", "https:")
+        }
+
+        if (!remove) {
             return uri
         }
-        uri = uri.replaceAll(repl, "")
+        uri = uri.replaceAll(remove, "")
+    }
+
+    /**
+     * Returns boolean value whether production or not
+     * @return boolean value
+     */
+    protected boolean isProduction() {
+
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                return false
+                break
+            case Environment.PRODUCTION:
+                return true
+                break
+        }
     }
 
     /**

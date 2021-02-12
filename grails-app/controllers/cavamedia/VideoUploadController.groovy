@@ -43,7 +43,8 @@ class VideoUploadController extends BaseController {
      * Forwards to issue form
      * @return
      */
-    def issueHook() {
+    @ApiOperation(hidden = true)
+    def issueHookForm() {
         [context: getAppContext()]
     }
 
@@ -51,6 +52,50 @@ class VideoUploadController extends BaseController {
      * Creates a Github issue
      * @return JSON response
      */
+    @ApiOperation(
+            value = "Creates a Github Issue",
+            nickname = "issueWebhook",
+            consumes = "application/json",
+            produces = "application/json",
+            httpMethod = "POST"
+    )
+    @ApiResponses([
+            @ApiResponse(
+                    code = 200,
+                    message = "The POST call was successful"),
+            @ApiResponse(
+                    code = 405,
+                    message = "Method Not Allowed. Only POST is allowed"),
+            @ApiResponse(
+                    code = 404,
+                    message = "Method Not Found")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(
+                    name = "name",
+                    paramType = "form",
+                    required = true,
+                    value = "Name",
+                    dataType = "string"),
+            @ApiImplicitParam(
+                    name = "body",
+                    paramType = "form",
+                    required = true,
+                    value = "Issue Description",
+                    dataType = "string"),
+            @ApiImplicitParam(
+                    name = "email",
+                    paramType = "form",
+                    required = true,
+                    value = "Email Address",
+                    dataType = "string"),
+            @ApiImplicitParam(
+                    name = "labels",
+                    paramType = "form",
+                    required = true,
+                    value = "Issue Label",
+                    dataType = "string")
+    ])
     def issueWebhook() {
 
         if (!params.body || !params.name || !params.email || !params.labels) {
@@ -108,7 +153,7 @@ class VideoUploadController extends BaseController {
     /**
      * Forwards to the video upload page
      */
-    //@ApiOperation(hidden = true)
+    @ApiOperation(hidden = true)
     def videoForm() {
         [context: getAppContext()]
     }
@@ -120,7 +165,6 @@ class VideoUploadController extends BaseController {
      * @param Upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
-    //@ApiOperation(hidden = true)
     @ApiOperation(
             value = "Uploads a file",
             nickname = "uploadVideo",

@@ -10,4 +10,4 @@ out/
 .project
 .settings
 .classpath
-src/main/webapp/api.json
+src/main/webapp/files/api.json

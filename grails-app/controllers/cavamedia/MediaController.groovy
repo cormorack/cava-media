@@ -212,11 +212,18 @@ class MediaController extends BaseController {
 
         String api = "{'message':'api not found'}"
 
-        String serverURL = "${getURL('/docs')}/swagger/api.json"
+        def serverURL = "${getURL('/docs')}/swagger/api.json".toURL()
 
-        def slurped = new JsonSlurper().parse(serverURL.toURL())
+        //def slurped = new JsonSlurper().parse(serverURL)
 
-        if (!slurped) {
+        JsonSlurper slurper = new JsonSlurper()
+
+        def slurped = null
+
+        try {
+            slurped = slurper.parse(serverURL)
+        } catch (Exception e) {
+            log.error("An exception occurred parsing ${serverURL}: " + e)
             return api
         }
 
