@@ -13,8 +13,8 @@
             <h2>Report an Issue</h2>
             <g:form
                     method="post"
-                    controller="videoUpload"
-                    action="issueWebhook"
+                    controller="feedback"
+                    action="save"
                     name="theForm"
                     id="theForm">
                 <div class="form-group">
@@ -85,14 +85,14 @@
                     return xhr;
                 },
                 type: 'POST',
-                url: serviceURL + '/${controllerName}/issueWebhook.json',
+                url: serviceURL + '/${controllerName}/save.json',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (data) {
                     $("form#theForm")[0].reset();
                     var para = document.createElement('p');
-                    var paraText = document.createTextNode("Thank you for your submission.");
+                    var paraText = document.createTextNode("Thank you for reporting this issue.");
                     para.appendChild(paraText);
                     document.getElementById("output").appendChild(para);
                     alert(data.data.message);
