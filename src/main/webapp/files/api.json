@@ -329,45 +329,58 @@
                 }
             }
         },
-        "/videoUpload/videoUpload/issueHook": {
-            "get": {
-                "tags": [
-                    "Video"
-                ],
-                "summary": "issueHook",
-                "operationId": "/videoUpload/issueHook",
-                "parameters": [
-                    
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "object"
-                        }
-                    }
-                }
-            }
-        },
         "/videoUpload/issueWebhook": {
-            
-        },
-        "/videoUpload/videoUpload/videoForm": {
-            "get": {
+            "post": {
                 "tags": [
                     "Video"
                 ],
-                "summary": "videoForm",
-                "operationId": "/videoUpload/videoForm",
+                "summary": "Creates a Github Issue",
+                "operationId": "issueWebhook",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
-                    
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "formData",
+                        "description": "Issue Description",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "Email Address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "labels",
+                        "in": "formData",
+                        "description": "Issue Label",
+                        "required": true,
+                        "type": "string"
+                    }
                 ],
                 "responses": {
+                    "404": {
+                        "description": "Method Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed. Only POST is allowed"
+                    },
                     "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "The POST call was successful"
                     }
                 }
             }
