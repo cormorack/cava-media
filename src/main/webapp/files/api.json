@@ -1,5 +1,5 @@
 {
-    "basePath": "http://localhost:8080/",
+    "basePath": "http://localhost:8080/media",
     "paths": {
         "/media/gallery/videos": {
             "get": {
