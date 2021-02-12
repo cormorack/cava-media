@@ -54,7 +54,7 @@ ENV SERVER_URL ''
 
 ENV ISSUES ''
 
-ENV SECURE ''
+ENV SECURE 'false'
 
 # Setup Tomcat configuration files
 COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
