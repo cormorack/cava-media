@@ -7,6 +7,14 @@ import io.micronaut.http.client.HttpClient
 
 class ClientService {
 
+    /**
+     * Makes an http POST with the specified url, uri, parameters and headers
+     * @param url
+     * @param uriString
+     * @param paramMap
+     * @param headerMap
+     * @return boolean value (true if CREATED)
+     */
     boolean postIssue(String url, String uriString, Map paramMap, Map headerMap) {
 
         boolean success = true
