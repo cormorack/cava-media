@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.springframework.beans.factory.annotation.Value
 
-@Api(value = "/feedback/", tags = ["Feedback"])
+@Api(value = "/media/feedback/", tags = ["Feedback"])
 class FeedbackController extends BaseController {
 
     def clientService
@@ -60,30 +60,32 @@ class FeedbackController extends BaseController {
     @ApiImplicitParams([
             @ApiImplicitParam(
                     name = "name",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Name",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "body",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Issue Description",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "email",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Email Address",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "labels",
-                    paramType = "form",
+                    allowMultiple = true,
+                    paramType = "query",
                     required = true,
                     value = "Issue Label",
-                    dataType = "string")
+                    dataType = "[Ljava.util.List;")
     ])
     def save() {
+
         if (!params.body || !params.name || !params.email || !params.labels) {
 
             Map data = ["message": "A required parameter is missing", "data": [] ]

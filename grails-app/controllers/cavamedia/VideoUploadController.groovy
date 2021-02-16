@@ -14,7 +14,7 @@ import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 
-@Api(value = "/videoUpload/", tags = ["Video"])
+@Api(value = "/media/video/", tags = ["Video"])
 class VideoUploadController extends BaseController {
 
     def restService
@@ -39,7 +39,7 @@ class VideoUploadController extends BaseController {
      * @return Message regarding the success or failure of the upload
      */
     @ApiOperation(
-            value = "Uploads a file",
+            value = "Uploads a video and its poster image",
             nickname = "uploadVideo",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = "application/json",
