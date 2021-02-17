@@ -1,6 +1,7 @@
 package cavamedia
 
 import grails.converters.JSON
+import grails.util.Environment
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -9,7 +10,7 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.springframework.beans.factory.annotation.Value
 
-@Api(value = "/feedback/", tags = ["Feedback"])
+@Api(value = "/media/feedback/", tags = ["Feedback"])
 class FeedbackController extends BaseController {
 
     def clientService
@@ -60,30 +61,32 @@ class FeedbackController extends BaseController {
     @ApiImplicitParams([
             @ApiImplicitParam(
                     name = "name",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Name",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "body",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Issue Description",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "email",
-                    paramType = "form",
+                    paramType = "query",
                     required = true,
                     value = "Email Address",
                     dataType = "string"),
             @ApiImplicitParam(
                     name = "labels",
-                    paramType = "form",
+                    allowMultiple = true,
+                    paramType = "query",
                     required = true,
                     value = "Issue Label",
-                    dataType = "string")
+                    dataType = "[Ljava.util.List;")
     ])
     def save() {
+
         if (!params.body || !params.name || !params.email || !params.labels) {
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
@@ -98,7 +101,8 @@ class FeedbackController extends BaseController {
 
         List labels = [params.labels]
 
-        paramMap.put("labels", labels)
+        paramMap."labels" = labels
+        paramMap."assignees" = setAssignees(labels)
         paramMap.put("body", setDescription())
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
@@ -116,6 +120,32 @@ class FeedbackController extends BaseController {
         Map results = ["succes": true, "data": data]
 
         render results as JSON
+    }
+
+    /**
+     * Adds assignees to a List depending on the values of labels
+     * @param labels
+     * @return List of assignees
+     */
+    private List setAssignees(List labels) {
+
+        List assignees = []
+
+        for (String label in labels) {
+
+            if (label.equalsIgnoreCase("Website")) {
+                assignees.add("sdthomas69")
+                assignees.add("hunterhad")
+
+            } else if (label.equalsIgnoreCase("Data Portal")) {
+                assignees.add("lsetiawan")
+                assignees.add("dwinasolihin")
+
+            } else if (label.equalsIgnoreCase("Expeditions")) {
+                assignees.add("mvardaro")
+            }
+        }
+        return assignees
     }
 
     /**
