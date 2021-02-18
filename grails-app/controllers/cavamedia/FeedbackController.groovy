@@ -87,6 +87,8 @@ class FeedbackController extends BaseController {
     ])
     def save() {
 
+        log.info("params are ${params}")
+
         if (!params.body || !params.name || !params.email || !params.labels) {
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
