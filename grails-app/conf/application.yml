@@ -23,7 +23,8 @@ info:
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
 spring:
-    http:
+    logging:
+        file: "logFile.log"
 
     jmx:
         unique-names: true
@@ -52,11 +53,20 @@ spring:
             max-request-size: 300MB
 
 management:
+    metrics:
+        export:
+            datadog:
+                enabled: true
     endpoints:
         #enabled-by-default: true
         web:
             exposure:
                 include: "health,prometheus,logfile"
+
+logging:
+    file: "logs/logFile.log"
+    level:
+        root: INFO
 
 ---
 grails:

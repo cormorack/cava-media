@@ -22,9 +22,17 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
+appender("FILE", FileAppender) {
+    file = "logs/logFile.log"
+    append = true
+    encoder(PatternLayoutEncoder) {
+        pattern = "%d{HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n"
+    }
+}
+
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir != null) {
-    appender("FULL_STACKTRACE", FileAppender) {
+    /*appender("FULL_STACKTRACE", FileAppender) {
         file = "${targetDir}/stacktrace.log"
         append = true
         encoder(PatternLayoutEncoder) {
@@ -32,7 +40,15 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
             pattern = "%level %logger - %msg%n"
         }
     }
-    logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
+    logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)*/
     //logger("io.micronaut.http", TRACE)
+    appender("FILE", FileAppender) {
+        file = "logFile.log"
+        append = true
+        encoder(PatternLayoutEncoder) {
+            pattern = "%d{HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n"
+        }
+    }
 }
-root(ERROR, ['STDOUT'])
+//root(ERROR, ['STDOUT'])
+root(INFO, ["FILE"])
