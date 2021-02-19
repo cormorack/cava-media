@@ -11,4 +11,5 @@ out/
 .settings
 .classpath
 *.json
+*.log
 logs/

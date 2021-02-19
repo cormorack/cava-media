@@ -53,10 +53,6 @@ spring:
             max-request-size: 300MB
 
 management:
-    metrics:
-        export:
-            datadog:
-                enabled: true
     endpoints:
         #enabled-by-default: true
         web:
@@ -66,7 +62,7 @@ management:
 logging:
     file: "logs/logFile.log"
     level:
-        root: INFO
+        root: ERROR
 
 ---
 grails:
