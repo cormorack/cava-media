@@ -87,9 +87,21 @@ class FeedbackController extends BaseController {
     ])
     def save() {
 
-        log.info("params are ${params}")
+        if (isProduction()) {
 
-        if (!params.body || !params.name || !params.email || !params.labels) {
+            String host = request.getHeader("HOST")
+
+            if (!config.trustedURLs.contains(host)) {
+
+                log.error("Illegal access by ${host} was attempted")
+                response.sendError(403)
+                return
+            }
+        }
+
+        if (!params.Description || !params.Name || !params.Email || !params.Labels) {
+
+            log.error("A request with parameters ${params} was rejected")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
             Map results = ["succes": false, "data": data]
@@ -97,15 +109,20 @@ class FeedbackController extends BaseController {
             return
         }
 
-        String titleString = "${params.labels} feedback from ${params.name}"
+        String name = params.Name
+        String description = params.Description
+        String email = params.Email
+        String labels = params.Labels
+
+        String titleString = "${labels} feedback from ${name}"
 
         Map paramMap = [title: titleString]
 
-        List labels = [params.labels]
+        List labelList = [params.Labels]
 
-        paramMap."labels" = labels
-        paramMap."assignees" = setAssignees(labels)
-        paramMap.put("body", setDescription())
+        paramMap."labels" = labelList
+        paramMap."assignees" = setAssignees(labelList)
+        paramMap.put("body", setDescription(description, name, email, labels))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
@@ -143,7 +160,7 @@ class FeedbackController extends BaseController {
                 assignees.add("lsetiawan")
                 assignees.add("dwinasolihin")
 
-            } else if (label.equalsIgnoreCase("Expeditions")) {
+            } else if (label.equalsIgnoreCase("Expedition")) {
                 assignees.add("mvardaro")
             }
         }
@@ -151,20 +168,23 @@ class FeedbackController extends BaseController {
     }
 
     /**
-     * Formats and fills the body with the name, email, label and body
-     * @param title
-     * @return formatted String
+     * Formats and fills the body with the name, email, label and description
+     * @param description
+     * @param name
+     * @param email
+     * @param labels
+     * @return
      */
-    private String setDescription() {
+    private String setDescription(String description, String name, String email, String labels) {
 
         String bodyString = """\
         ## Overview
-        ${params.body}
+        ${description}
 
         ## Details
-        Sender: ${params.name}
-        Sender email: ${params.email}
-        Question type: ${params.labels}
+        Sender: ${name}
+        Sender email: ${email}
+        Question type: ${labels}
         """.stripIndent()
     }
 }
