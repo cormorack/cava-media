@@ -87,6 +87,18 @@ class FeedbackController extends BaseController {
     ])
     def save() {
 
+        if (isProduction()) {
+
+            String host = request.getHeader("HOST")
+
+            if (!config.trustedURLs.contains(host)) {
+
+                log.error("Illegal access by ${host} was attempted")
+                response.sendError(403)
+                return
+            }
+        }
+
         if (!params.Description || !params.Name || !params.Email || !params.Labels) {
 
             log.error("A request with parameters ${params} was rejected")
@@ -156,9 +168,12 @@ class FeedbackController extends BaseController {
     }
 
     /**
-     * Formats and fills the body with the name, email, label and body
-     * @param title
-     * @return formatted String
+     * Formats and fills the body with the name, email, label and description
+     * @param description
+     * @param name
+     * @param email
+     * @param labels
+     * @return
      */
     private String setDescription(String description, String name, String email, String labels) {
 
