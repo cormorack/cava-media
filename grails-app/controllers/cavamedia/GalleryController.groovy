@@ -49,7 +49,7 @@ class GalleryController extends BaseController {
     }
 
     /**
-     * Renders the video gallery page
+     * Renders the video playlist page
      */
     @ApiOperation(hidden = true)
     def playlist() {
