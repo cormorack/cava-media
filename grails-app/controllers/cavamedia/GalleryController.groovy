@@ -49,6 +49,14 @@ class GalleryController extends BaseController {
     }
 
     /**
+     * Renders the video gallery page
+     */
+    @ApiOperation(hidden = true)
+    def playlist() {
+        [context: getAppContext(), params: params]
+    }
+
+    /**
      * Renders the media gallery page
      * @return
      */
