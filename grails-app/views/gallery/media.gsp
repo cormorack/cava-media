@@ -8,7 +8,7 @@
     <asset:stylesheet href="gallery2.css"/>
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
-    <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
+    <asset:javascript src="jwplayer/jwplayer.js"/>
     <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
     <title>Image Gallery</title>
 </head>
