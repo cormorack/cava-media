@@ -33,6 +33,7 @@
                             <div id="videoHeader" class="header-bar"></div>
                             <div id="videoContainer"></div>
                             <div id="videoDescription" class="header-bar"></div>
+                            <div id="videoLink" class="header-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -96,6 +97,7 @@
     var serviceURI = serviceURL + '/gallery/findAllVideos.json?max=' + max + '&offset=' + offset;
     var searchMessage = '';
     var tagMessage = "";
+    var mediaURL = 'https://interactiveoceans.washington.edu/?attachment_id=';
 
     if (query) {
         serviceURI = serviceURI  + '&q=' + query;
@@ -181,6 +183,7 @@
         imageDiv.setAttribute('data-image', image.image);
         imageDiv.setAttribute('data-title', image.title);
         imageDiv.setAttribute('data-description', image.description);
+        imageDiv.setAttribute('data-id', image.id);
         imageDiv.setAttribute('alt', image.title);
         imageDiv.setAttribute('title', image.title);
         columnDiv.appendChild(imageDiv);
@@ -279,6 +282,13 @@
             var description = button.data("description");
             $("#videoHeader").html(title);
             $("#videoDescription").html(description);
+
+            var link = document.getElementById("videoLink");
+            var linkText = document.createTextNode("Permalink");
+            link.appendChild(linkText);
+            link.addEventListener('click', function() {
+                window.open(mediaURL + button.data("id"), '_blank')
+            }, false);
 
             jwplayer("videoContainer").setup({
                 file: url,
