@@ -273,6 +273,8 @@
         $("#selectMax").val(max).attr('selected', 'selected');
     });
 
+    var linkEventHandler = null;
+
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
@@ -286,9 +288,11 @@
             var link = document.getElementById("videoLink");
             var linkText = document.createTextNode("Permalink");
             link.appendChild(linkText);
-            link.addEventListener('click', function() {
+
+            linkEventHandler = function() {
                 window.open(mediaURL + button.data("id"), '_blank')
-            }, false);
+            };
+            link.addEventListener("click", elemEventHandler , false);
 
             jwplayer("videoContainer").setup({
                 file: url,
@@ -301,6 +305,9 @@
         // Remove attributes when the modal has finished being hidden from the user
         $("#videoModal").on("hidden.bs.modal", function() {
             //$("#videoModal iframe").removeAttr("src allow");
+            var link = document.getElementById("videoLink");
+            link.removeEventListener("click", linkEventHandler , false);
+            link.innerHTML = '';
         });
     });
 
