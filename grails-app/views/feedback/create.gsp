@@ -50,6 +50,12 @@
                         Expedition
                     </label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="Labels" id="Proposal" value="Proposal">
+                    <label class="form-check-label" for="Proposal">
+                        Proposal
+                    </label>
+                </div>
                 <hr />
                <div id="submitbutton">
                    <button type="submit" class="btn btn-secondary" >Submit</button>
@@ -92,7 +98,7 @@
                 success: function (data) {
                     $("form#theForm")[0].reset();
                     var para = document.createElement('p');
-                    var paraText = document.createTextNode("Thank you for reporting this issue.");
+                    var paraText = document.createTextNode("Thank you for your submission.");
                     para.appendChild(paraText);
                     document.getElementById("output").appendChild(para);
                     alert(data.data.message);
