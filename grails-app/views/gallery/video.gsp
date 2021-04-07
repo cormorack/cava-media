@@ -292,7 +292,7 @@
             linkEventHandler = function() {
                 window.open(mediaURL + button.data("id"), '_blank')
             };
-            link.addEventListener("click", elemEventHandler , false);
+            link.addEventListener("click", linkEventHandler , false);
 
             jwplayer("videoContainer").setup({
                 file: url,
