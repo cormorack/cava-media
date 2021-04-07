@@ -162,6 +162,9 @@ class FeedbackController extends BaseController {
 
             } else if (label.equalsIgnoreCase("Expedition")) {
                 assignees.add("mvardaro")
+
+            } else if (label.equalsIgnoreCase("Proposal")) {
+                assignees.add("dskelley")
             }
         }
         return assignees
