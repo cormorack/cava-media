@@ -123,17 +123,18 @@ class FeedbackController extends BaseController {
         paramMap."labels" = labelList
         paramMap."assignees" = setAssignees(labelList)
         paramMap.put("body", setDescription(description, name, email, labels))
+        println "paramMap is ${paramMap}"
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+        /*if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
             Map results = ["succes": false, "data": data]
             render results as JSON
             return
-        }
+        }*/
 
         Map data = ["message": "Your issue has been reported", "data": [] ]
         Map results = ["succes": true, "data": data]
@@ -159,6 +160,7 @@ class FeedbackController extends BaseController {
             } else if (label.equalsIgnoreCase("Data Portal")) {
                 assignees.add("lsetiawan")
                 assignees.add("dwinasolihin")
+                assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Expedition")) {
                 assignees.add("mvardaro")
