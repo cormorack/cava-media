@@ -1,7 +1,6 @@
 package cavamedia
 
 import grails.converters.JSON
-import grails.util.Environment
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -122,7 +121,7 @@ class FeedbackController extends BaseController {
 
         paramMap."labels" = labelList
         paramMap."assignees" = setAssignees(labelList)
-        paramMap.put("body", setDescription(description, name, email, labels))
+        paramMap.put("body", setDescription(cleanHtml(description, 'none'), name, email, labels))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
@@ -159,6 +158,7 @@ class FeedbackController extends BaseController {
             } else if (label.equalsIgnoreCase("Data Portal")) {
                 assignees.add("lsetiawan")
                 assignees.add("dwinasolihin")
+                assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Expedition")) {
                 assignees.add("mvardaro")
