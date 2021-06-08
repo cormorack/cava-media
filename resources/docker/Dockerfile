@@ -56,7 +56,9 @@ ENV ISSUES ''
 
 ENV SECURE 'false'
 
-ENV MINMAXMEMORY '-Xms2048M -Xmx2048M'
+ENV TOMCAT_MIN_MEM '-Xms2048M'
+
+ENV TOMCAT_MAX_MEM '-Xmx2048M'
 
 # Setup Tomcat configuration files
 COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
