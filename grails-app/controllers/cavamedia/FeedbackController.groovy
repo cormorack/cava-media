@@ -98,9 +98,31 @@ class FeedbackController extends BaseController {
             }
         }
 
-        if (!params.Description || !params.Name || !params.Email || !params.Labels) {
+        String name = ""
+        String description = ""
+        String email = ""
+        String labels = ""
+        String parameters = ""
 
-            log.error("A request with parameters ${params} was rejected")
+        if (request.format == "json") {
+            def jsonObj = request.JSON
+            name = jsonObj.Name
+            description = jsonObj.Description
+            email = jsonObj.Email
+            labels = jsonObj.Labels
+            parameters = jsonObj
+        }
+        else {
+            name = params.Name
+            description = params.Description
+            email = params.Email
+            labels = params.Labels
+            parameters = params
+        }
+
+        if (!description || !name || !email || !labels) {
+
+            log.error("A request with parameters ${parameters} was rejected")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
             Map results = ["succes": false, "data": data]
@@ -108,20 +130,15 @@ class FeedbackController extends BaseController {
             return
         }
 
-        String name = params.Name
-        String description = params.Description
-        String email = params.Email
-        String labels = params.Labels
-
         String titleString = "${labels} feedback from ${name}"
 
         Map paramMap = [title: titleString]
 
-        List labelList = [params.Labels]
+        List labelList = [labels]
 
         paramMap."labels" = labelList
         paramMap."assignees" = setAssignees(labelList)
-        paramMap.put("body", setDescription(cleanHtml(description, 'none'), name, email, labels))
+        paramMap.put("body", setDescription( cleanHtml(description, 'none'), name, email, labels))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
@@ -141,7 +158,7 @@ class FeedbackController extends BaseController {
     }
 
     /**
-     * Adds assignees to a List depending on the values of labels
+     * Adds assignees to a List depending on the value of labels
      * @param labels
      * @return List of assignees
      */
