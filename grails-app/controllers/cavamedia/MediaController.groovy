@@ -2,7 +2,6 @@ package cavamedia
 
 import grails.converters.JSON
 import grails.plugin.cache.Cacheable
-import grails.util.Environment
 import grails.util.Holders
 import io.swagger.annotations.*
 import groovy.json.JsonBuilder
@@ -198,6 +197,7 @@ class MediaController extends BaseController {
     def docs() {
         ServletContext context = getServletContext()
         String apiValue = setApiValue(context)
+        [context: getAppContext()]
     }
 
     /**
@@ -212,11 +212,18 @@ class MediaController extends BaseController {
 
         String api = "{'message':'api not found'}"
 
-        String serverURL = "${url()}/swagger/api.json"
+        def serverURL = "${getURL('/docs')}/swagger/api.json".toURL()
 
-        def slurped = new JsonSlurper().parse(serverURL.toURL())
+        //def slurped = new JsonSlurper().parse(serverURL)
 
-        if (!slurped) {
+        JsonSlurper slurper = new JsonSlurper()
+
+        def slurped = null
+
+        try {
+            slurped = slurper.parse(serverURL)
+        } catch (Exception e) {
+            log.error("An exception occurred parsing ${serverURL}: " + e)
             return api
         }
 
@@ -246,22 +253,6 @@ class MediaController extends BaseController {
         api = new JsonBuilder(slurped).toPrettyString()
 
         File file = new File(context.getRealPath("/files/api.json")).write(api)
-    }
-
-    /**
-     * Returns the grails.serverURL property based on the runtime environment
-     * @return
-     */
-    private String url() {
-
-        switch (Environment.current) {
-            case Environment.DEVELOPMENT:
-                return config.grails.serverURL
-                break
-            case Environment.PRODUCTION:
-                return config.grails.serverURL
-                break
-        }
     }
 }
 

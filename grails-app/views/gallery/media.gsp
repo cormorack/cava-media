@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <!DOCTYPE html>
 <html>
 
@@ -9,7 +8,7 @@
     <asset:stylesheet href="gallery2.css"/>
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
-    <script type="text/javascript" src="https://io.ocean.washington.edu/jwplayer_new/jwplayer.js"></script>
+    <asset:javascript src="jwplayer/jwplayer.js"/>
     <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
     <title>Image Gallery</title>
 </head>
@@ -123,7 +122,7 @@
 
     var total = 0;
     var current_page = 1;
-    var serviceURL = '${serverURL}';
+    var serviceURL = location.origin + '${context}';
     var serviceURI = serviceURL + '/gallery/findAllMedia.json?max=' + max + '&offset=' + offset;
     var searchMessage = '';
     var tagMessage = "";
@@ -338,9 +337,7 @@
 
         var itemsCount = jsonTotal;
         var itemsOnPage = max;
-        var pagingURL = window.location.protocol +
-            "//" +
-            window.location.host +
+        var pagingURL = location.origin +
             window.location.pathname +
             '?' +
             $.param({'max':max, 'q':query, 'tag':tag});

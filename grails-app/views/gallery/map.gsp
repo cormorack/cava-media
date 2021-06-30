@@ -1,4 +1,3 @@
-<g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <g:set var="lamdaURL" value="${grailsApplication.config.lambdaURL}" />
 <!DOCTYPE html>
 <html>
@@ -132,9 +131,11 @@
                     console.log(map.getZoom())
                 });*/
 
-                var videoURL = '${serverURL}/media?type=video';
+                var serviceURL = location.origin + '${context}';
 
-                var imageURL = '${serverURL}/media?type=image';
+                var videoURL = serviceURL + '?type=video';
+
+                var imageURL = serviceURL + '?type=image';
 
                 map.addSource('imageData', { type: 'geojson', data: imageURL});
 

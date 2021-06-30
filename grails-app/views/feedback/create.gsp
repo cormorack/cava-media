@@ -13,41 +13,47 @@
             <h2>Report an Issue</h2>
             <g:form
                     method="post"
-                    controller="videoUpload"
-                    action="issueWebhook"
+                    controller="feedback"
+                    action="save"
                     name="theForm"
                     id="theForm">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input class="form-control" type="text" id="name" name="name" value="" required="" maxlength="50"/>
+                    <input class="form-control" type="text" id="Name" name="Name" value="" required="" maxlength="50"/>
                 </div>
                 <div class="form-group">
                     <label for="name">Email:</label>
-                    <input class="form-control" type="text" id="email" name="email" value="" required=""/>
+                    <input class="form-control" type="text" id="Email" name="Email" value="" required=""/>
                 </div>
                 <div class="form-group">
-                    <label for="body">Description:</label>
-                    <textarea class="form-control" id="body" name="body" cols="18" rows="4" required="" maxlength="500"></textarea>
+                    <label for="Description">Description:</label>
+                    <textarea class="form-control" id="Description" name="Description" cols="18" rows="4" required="" maxlength="500"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Labels:</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="labels" id="Website" value="Website" checked>
+                    <input class="form-check-input" type="radio" name="Labels" id="Website" value="Website" checked>
                     <label class="form-check-label" for="Website">
                         Website
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="labels" id="Data Portal" value="Data Portal">
+                    <input class="form-check-input" type="radio" name="Labels" id="Data Portal" value="Data Portal">
                     <label class="form-check-label" for="Data Portal">
                         Data Portal
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="labels" id="Expeditions" value="Expeditions">
-                    <label class="form-check-label" for="Expeditions">
+                    <input class="form-check-input" type="radio" name="Labels" id="Expedition" value="Expedition">
+                    <label class="form-check-label" for="Expedition">
                         Expedition
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="Labels" id="Proposal" value="Proposal">
+                    <label class="form-check-label" for="Proposal">
+                        Proposal
                     </label>
                 </div>
                 <hr />
@@ -64,7 +70,7 @@
         $("form#theForm").submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-
+            var serviceURL = location.origin + '${context}';
             var loading = $("#cover");
 
             $(document).ajaxStart(function () {
@@ -85,7 +91,7 @@
                     return xhr;
                 },
                 type: 'POST',
-                url: '${serverURL}/${controllerName}/issueWebhook.json',
+                url: serviceURL + '/${controllerName}/save.json',
                 data: formData,
                 processData: false,
                 contentType: false,

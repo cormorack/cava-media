@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <!DOCTYPE html>
 <html>
 
@@ -32,7 +31,7 @@
         <script type="text/javascript">
 
             var data = {};
-            var swaggerURI = '${serverURL}/files/api.json';
+            var swaggerURI = location.origin + '${context}/files/api.json';
 
             window.onload = function() {
                 SwaggerUIBundle({

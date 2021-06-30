@@ -2,11 +2,6 @@ package cavamedia
 
 import grails.converters.JSON
 import grails.util.Environment
-import grails.util.Holders
-import io.micronaut.http.client.HttpClient
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -14,136 +9,27 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import org.springframework.beans.factory.annotation.Value
-
-// import io.swagger.v3.oas.annotations.*
 import org.springframework.http.MediaType
 import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 
-//@Hidden
-@Api(value = "/videoUpload/", tags = ["Video"])
-class VideoUploadController {
+@Api(value = "/media/video/", tags = ["Video"])
+class VideoUploadController extends BaseController {
 
-    @Value('${ISSUES_SECRET}')
-    private String issuesPassword
-
-    def config = Holders.config
     def restService
-    def clientService
 
     //def beforeInterceptor = [action: this.checkHost()]
 
-    static allowedMethods = [uploadVideo: 'POST', submitIssue: 'POST', issueWebhook: 'POST']
-
-    static final String ISSUES_URL = "https://api.github.com"
-    static final String ISSUES_URI = "/repos/cormorack/feedback/issues"
-
-    def createIssue() {}
-
-    /**
-     * Creates a Git Hub Issue
-     * @return
-     */
-    def submitIssue() {
-
-        withForm {
-
-            if (!params.title || !params.body) {
-                flash.message = "A required field is missing"
-                render(view: 'createIssue')
-                return
-            }
-
-            String message = "Your issue has been submitted."
-
-            Map paramMap = [title: params.title, body: params.body]
-
-            if (params.labels) {
-                List labels = []
-                labels.addAll(params.labels)
-                paramMap.put("labels", labels)
-            }
-
-            Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
-
-            if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
-                message = "An error occurred and your request could not be submitted."
-                log.error("An error occurred when submitting an issue")
-            }
-
-            flash.message = message
-
-            render view: "issueSubmitted"
-        }
-    }
-
-    def issueHook() {}
-
-    /**
-     *
-     * @return
-     */
-    def issueWebhook() {
-
-        if (!params.body || !params.name || !params.email || !params.labels) {
-
-            Map data = ["message": "A required parameter is missing", "data": [] ]
-            Map results = ["succes": false, "data": data]
-            render results as JSON
-            return
-        }
-
-        String titleString = "${params.labels} feedback from ${params.name}"
-
-        Map paramMap = [title: titleString]
-
-        List labels = [params.labels]
-
-        paramMap.put("labels", labels)
-        paramMap.put("body", setDescription())
-
-        Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
-
-        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
-
-            log.error("An error occurred when submitting an issue")
-            Map data = ["message": "The operation could not be completed", "data": [] ]
-            Map results = ["succes": false, "data": data]
-            render results as JSON
-            return
-        }
-
-        Map data = ["message": "The form was sent successfully", "data": [] ]
-        Map results = ["succes": true, "data": data]
-
-        render results as JSON
-    }
-
-    /**
-     * Formats and fills the body with the name, email, label and body
-     * @param title
-     * @return formatted String
-     */
-    private String setDescription() {
-
-        String bodyString = """\
-        ## Overview
-        ${params.body}
-
-        ## Details
-        Sender: ${params.name}
-        Sender email: ${params.email}
-        Question type: ${params.labels}
-        """.stripIndent()
-    }
+    static allowedMethods = [uploadVideo: 'POST', submitIssue: 'POST']
 
     /**
      * Forwards to the video upload page
      */
-    //@ApiOperation(hidden = true)
-    def videoForm() {}
+    @ApiOperation(hidden = true)
+    def videoForm() {
+        [context: getAppContext()]
+    }
 
     /**
      * Checks the uploaded file size and file type. Then uploads the videos to the streaming server and adds metadata
@@ -152,9 +38,8 @@ class VideoUploadController {
      * @param Upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
-    //@ApiOperation(hidden = true)
     @ApiOperation(
-            value = "Uploads a file",
+            value = "Uploads a video and its poster image",
             nickname = "uploadVideo",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = "application/json",

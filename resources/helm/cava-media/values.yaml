@@ -9,7 +9,7 @@ service:
   portName: http
   type: ClusterIP
   port: 80
-  containerPort: 5000
+  containerPort: 8080
   servicePortName: http
 image:
   repository: cormorack/cava-media
@@ -43,7 +43,13 @@ env:
   value: ""
 restartPolicy: Always
 nodeSelector: {}
-traefik:
+ingress:
   expose: false
-  entryPoints: 
-    - web
+
+  # If secure, must provide tls
+  secure: false
+
+  # Adds tls for domain certification
+  # tls:
+  #   certResolver: DEVELOPMENT
+  tls: {}

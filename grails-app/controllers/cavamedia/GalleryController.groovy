@@ -1,12 +1,12 @@
 package cavamedia
 
+
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import io.swagger.v3.oas.annotations.Hidden
 import grails.converters.JSON
 
 //@Hidden
@@ -21,26 +21,49 @@ class GalleryController extends BaseController {
      */
     @ApiOperation(hidden = true)
     def index() {
-        render view: 'image'
+        render view: 'media', model: [context: getAppContext()]
     }
 
-    @ApiOperation(hidden = true)
-    def map() {}
-
     /**
-     * Renders the gallery page
+     * Renders the map page
      */
     @ApiOperation(hidden = true)
-    def image() {}
+    def map() {
+        [context: getAppContext()]
+    }
 
     /**
-     * Renders the video page
+     * Renders the image gallery page
      */
     @ApiOperation(hidden = true)
-    def video() {}
+    def image() {
+        [context: getAppContext()]
+    }
 
+    /**
+     * Renders the video gallery page
+     */
     @ApiOperation(hidden = true)
-    def media() {}
+    def video() {
+        [context: getAppContext()]
+    }
+
+    /**
+     * Renders the video playlist page
+     */
+    @ApiOperation(hidden = true)
+    def playlist() {
+        [context: getAppContext(), params: params]
+    }
+
+    /**
+     * Renders the media gallery page
+     * @return
+     */
+    @ApiOperation(hidden = true)
+    def media() {
+        [context: getAppContext()]
+    }
 
     /**
      * Returns videos that DO NOT have images as JSON

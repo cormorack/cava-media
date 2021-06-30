@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:set var="serverURL" value="${grailsApplication.config.grails.serverURL}" />
 <!DOCTYPE html>
 <html>
 
@@ -10,7 +9,7 @@
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
-    <script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/media.ooica.net/js/jwplayer8/jwplayer.js"></script>
+    <asset:javascript src="jwplayer/jwplayer.js"/>
     <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
 </head>
 
@@ -34,6 +33,7 @@
                             <div id="videoHeader" class="header-bar"></div>
                             <div id="videoContainer"></div>
                             <div id="videoDescription" class="header-bar"></div>
+                            <div id="videoLink" class="header-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -93,10 +93,11 @@
 
     var total = 0;
     var current_page = 1;
-    var serviceURL = '${serverURL}';
+    var serviceURL = location.origin + '${context}';
     var serviceURI = serviceURL + '/gallery/findAllVideos.json?max=' + max + '&offset=' + offset;
     var searchMessage = '';
     var tagMessage = "";
+    var mediaURL = 'https://interactiveoceans.washington.edu/?attachment_id=';
 
     if (query) {
         serviceURI = serviceURI  + '&q=' + query;
@@ -182,6 +183,7 @@
         imageDiv.setAttribute('data-image', image.image);
         imageDiv.setAttribute('data-title', image.title);
         imageDiv.setAttribute('data-description', image.description);
+        imageDiv.setAttribute('data-id', image.id);
         imageDiv.setAttribute('alt', image.title);
         imageDiv.setAttribute('title', image.title);
         columnDiv.appendChild(imageDiv);
@@ -223,9 +225,7 @@
 
         var itemsCount = jsonTotal;
         var itemsOnPage = max;
-        var pagingURL = window.location.protocol +
-            "//" +
-            window.location.host +
+        var pagingURL = location.origin +
             window.location.pathname +
             '?' +
             $.param({'max':max, 'q':query, 'tag':tag});
@@ -273,6 +273,8 @@
         $("#selectMax").val(max).attr('selected', 'selected');
     });
 
+    var linkEventHandler = null;
+
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
@@ -282,6 +284,15 @@
             var description = button.data("description");
             $("#videoHeader").html(title);
             $("#videoDescription").html(description);
+
+            var link = document.getElementById("videoLink");
+            var linkText = document.createTextNode("Permalink");
+            link.appendChild(linkText);
+
+            linkEventHandler = function() {
+                window.open(mediaURL + button.data("id"), '_blank')
+            };
+            link.addEventListener("click", linkEventHandler , false);
 
             jwplayer("videoContainer").setup({
                 file: url,
@@ -294,6 +305,9 @@
         // Remove attributes when the modal has finished being hidden from the user
         $("#videoModal").on("hidden.bs.modal", function() {
             //$("#videoModal iframe").removeAttr("src allow");
+            var link = document.getElementById("videoLink");
+            link.removeEventListener("click", linkEventHandler , false);
+            link.innerHTML = '';
         });
     });
 

@@ -40,6 +40,11 @@ class UrlMappings {
             action = "docs"
         }
 
+        "/media/docs" {
+            controller = "media"
+            action = "docs"
+        }
+
         "/" {
             controller = "media"
             action = "index"
@@ -56,6 +61,8 @@ class UrlMappings {
         "/media/api"(controller: "media", action: "index", method: "GET")
 
         "/media/api/$id"(controller: "media", action: "summary", method: "GET")
+
+        "/media/swagger/api"(controller: "swagger", action: "api")
 
         "/apidoc/$action?/$id?"(controller: "apiDoc", action: "getDocuments")
 

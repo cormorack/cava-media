@@ -33,6 +33,7 @@ jobs:
         run: sudo apt-get install git-crypt
       - name: Install Chartpress
         run: |
+          # Six doesn't get pulled in for some reason ...
           pip install six chartpress
           chartpress --help
       - name: Configure AWS Credentials
@@ -55,7 +56,7 @@ jobs:
           helm dependencies update ${{ env.CHART_PATH }}
       - name: Lint chart's templates
         run: |
-          helm lint ${{ env.CHART_PATH }} --strict --values ${{ env.TEST_CHART_VALUE }}
+          helm lint ${{ env.CHART_PATH }} --values ${{ env.TEST_CHART_VALUE }}
 
       - name: Validate chart's templates can render
         run: |
