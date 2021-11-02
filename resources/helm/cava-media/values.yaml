@@ -41,6 +41,8 @@ env:
   value: ""
 - name: ISSUES
   value: ""
+- name: DATA_URL
+  value: ""
 restartPolicy: Always
 nodeSelector: {}
 ingress:
