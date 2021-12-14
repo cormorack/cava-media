@@ -92,7 +92,7 @@ class FeedbackController extends BaseController {
 
             if (!config.trustedURLs.contains(host)) {
 
-                log.error("Illegal access by ${host} was attempted")
+                //log.error("Illegal access by ${host} was attempted")
                 response.sendError(403)
                 return
             }
@@ -122,7 +122,7 @@ class FeedbackController extends BaseController {
 
         if (!description || !name || !email || !labels) {
 
-            log.error("A request with parameters ${parameters} was rejected")
+            log.error("A request with parameters was rejected")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
             Map results = ["succes": false, "data": data]
