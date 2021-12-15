@@ -1,12 +1,17 @@
 package cavamedia
 
 import grails.converters.JSON
+
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
+
+import org.apache.tika.langdetect.OptimaizeLangDetector
+import org.apache.tika.language.detect.LanguageDetector
+
 import org.springframework.beans.factory.annotation.Value
 
 @Api(value = "/media/feedback/", tags = ["Feedback"])
@@ -92,7 +97,7 @@ class FeedbackController extends BaseController {
 
             if (!config.trustedURLs.contains(host)) {
 
-                //log.error("Illegal access by ${host} was attempted")
+                log.error("Illegal access by a host was attempted")
                 response.sendError(403)
                 return
             }
@@ -122,9 +127,19 @@ class FeedbackController extends BaseController {
 
         if (!description || !name || !email || !labels) {
 
-            log.error("A request with parameters was rejected")
+            log.info("A request was rejected because of missing parameters")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
+            Map results = ["succes": false, "data": data]
+            render results as JSON
+            return
+        }
+
+        if (!acceptValues(description, email)) {
+
+            log.info("A request was rejected because of unwanted data")
+
+            Map data = ["message": "Data is invalid", "data": [] ]
             Map results = ["succes": false, "data": data]
             render results as JSON
             return
@@ -207,4 +222,42 @@ class FeedbackController extends BaseController {
         Question type: ${labels}
         """.stripIndent()
     }
+
+    /**
+     * Determines whether or not to accept the values based on language or email domain.
+     * @param lang a String of text
+     * @param email The email address
+     * @return boolean value
+     */
+    private boolean acceptValues(String lang, String email) {
+
+        if (detectLanguage(lang) != "en") {
+            return false
+        }
+        if (excludeEmail(email)) {
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Evaluates the email domain
+     * @param email The email address
+     * @return boolean value
+     */
+    private boolean excludeEmail(String email) {
+        return email.contains(".ru")
+    }
+
+    /**
+     * Determines the language
+     * @param text String of text
+     * @return a language ISO code or 'no' if it can't be determined
+     */
+    private String detectLanguage(String text) {
+        LanguageDetector detector = new OptimaizeLangDetector().loadModels()
+        detector.addText(text)
+        return detector.detect().getLanguage()
+    }
+
 }
