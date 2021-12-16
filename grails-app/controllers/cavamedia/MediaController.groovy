@@ -223,7 +223,7 @@ class MediaController extends BaseController {
         try {
             slurped = slurper.parse(serverURL)
         } catch (Exception e) {
-            log.error("An exception occurred parsing ${serverURL}: " + e)
+            log.error("An exception occurred parsing serverURL: " + e)
             return api
         }
 
