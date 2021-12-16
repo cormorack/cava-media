@@ -81,5 +81,5 @@ swagger {
     //consumes = ["application/json"]
 }
 
-trustedURLs = ['interactiveoceans.washington.edu', 'api-development.ooica.net', 'api.interactiveoceans.washington.edu', 'localhost:8080']
+trustedURLs = ['interactiveoceans.washington.edu', 'api-development.ooica.net', 'api.interactiveoceans.washington.edu']
 
