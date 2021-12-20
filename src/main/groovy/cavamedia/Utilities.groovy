@@ -314,7 +314,7 @@ class Utilities {
         String data = ""
 
         if (!post?.getMetaValue(WP_METADATA)?.metaValue) {
-            log.error("No ${WP_METADATA} found")
+            log.error("No WP_METADATA found")
             return data
         }
 

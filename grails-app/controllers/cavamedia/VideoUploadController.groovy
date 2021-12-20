@@ -135,7 +135,7 @@ class VideoUploadController extends BaseController {
                     mfile.transferTo(renamedFile)
 
                 } catch (Exception e) {
-                    log.error("An error occurred in ${controllerName}.${actionName} because of ${e}")
+                    log.error("An error occurred because of ${e}")
                     flash.message = "The video could not be uploaded"
                     render(view: 'videoForm')
                     return

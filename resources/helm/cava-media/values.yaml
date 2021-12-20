@@ -31,6 +31,11 @@ env:
   value: ""
 - name: PORT
   value: ""
+# For production deployment in k8s,
+# DBNAME should be appended with the `enabledTLSProtocols`
+# query variable with value of `TLSv1.2`.
+# e.g. mydb?enabledTLSProtocols=TLSv1.2
+# See: https://tinyurl.com/2vrcb53x
 - name: DBNAME
   value: ""
 - name: MAXFILESIZE
@@ -40,6 +45,8 @@ env:
 - name: SERVER_URL
   value: ""
 - name: ISSUES
+  value: ""
+- name: DATA_URL
   value: ""
 restartPolicy: Always
 nodeSelector: {}
