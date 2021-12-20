@@ -62,6 +62,8 @@ ENV TOMCAT_MIN_MEM '2048M'
 
 ENV TOMCAT_MAX_MEM '2048M'
 
+ENV LOG4J_NO_LOOKUPS 'TRUE'
+
 # Setup Tomcat configuration files
 COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
 
