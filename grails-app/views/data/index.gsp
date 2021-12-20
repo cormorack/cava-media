@@ -93,6 +93,7 @@
                         });
                         this.instrumentData = finalData;
                         //console.log(finalData);
+                        const parameters = this.$route.query;
                     }
                 },
                 setValue(val) {

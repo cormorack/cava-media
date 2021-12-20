@@ -36,7 +36,7 @@
               auth="Container"
               type="javax.sql.DataSource"
               username="${dB_USERNAME}"
-              url="jdbc:mysql://${dB_HOST}:${dB_PORT}/${dB_DBNAME}"
+              url="jdbc:mysql://${dB_HOST}:${dB_PORT}/${dB_DBNAME}?enabledTLSProtocols=TLSv1.2"
               password="${dB_PW}"
               driverClassName="com.mysql.cj.jdbc.Driver"
               maxIdle="30"
