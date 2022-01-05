@@ -54,7 +54,10 @@
         <asset:javascript src="axios.min.js"/>
         <script>
 
-            const url = "${dataURL}/messages/RS03AXPS-SF03A-2A-CTDPFA302-streamed-ctdpf_sbe43_sample";
+            let refDes = '';
+            const urlParams = new URLSearchParams(window.location.search);
+            refDes = urlParams.get("refDes");
+            const url = "${dataURL}/feed/" + refDes;
 
             const unitMap = {
                 "pressure_temp": "Seawater Pressure (dBar)",
@@ -68,7 +71,8 @@
                 "temperature": "Seawater Temperature (ºC)",
                 "time": "Time (UTC)",
                 "pressure": "CTD Seawater Pressure (dbar)",
-                "practical_salinity": "Practical Salinity (1)"
+                "practical_salinity": "Practical Salinity (1)",
+                "ctd_tc_oxygen": "Oxygen (µmol kg-1)"
             };
 
             const vm = new Vue({
@@ -84,7 +88,6 @@
                 methods: {
                     parseData(data) {
                         const values = JSON.parse(data.value);
-                        //console.log(values);
                         const dataObject = values;
                         const keys = Object.keys(dataObject);
                         let finalData = {};
@@ -92,16 +95,10 @@
                             finalData[ unitMap[key] ] = dataObject[key]
                         });
                         this.instrumentData = finalData;
-                        //console.log(finalData);
-                        const parameters = this.$route.query;
                     }
-                },
-                setValue(val) {
-
                 }
             });
-
-
+            
         </script>
     </body>
 </html>
