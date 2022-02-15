@@ -19,30 +19,32 @@ image:
 replicas: 1
 resources: {}
 env:
-- name: WPUSER
-  value: ""
-- name: WPPASSWORD
-  value: ""
-- name: USERNAME
-  value: ""
-- name: PASSWORD
-  value: ""
-- name: HOST
-  value: ""
-- name: PORT
-  value: ""
-- name: DBNAME
-  value: ""
-- name: MAXFILESIZE
-  value: ""
-- name: JVM_OPTS
-  value: ""
-- name: SERVER_URL
-  value: ""
-- name: ISSUES
-  value: ""
-- name: DATA_URL
-  value: ""
+  - name: WPUSER
+    value: ""
+  - name: WPPASSWORD
+    value: ""
+  - name: USERNAME
+    value: ""
+  - name: PASSWORD
+    value: ""
+  - name: HOST
+    value: ""
+  - name: PORT
+    value: ""
+  - name: DBNAME
+    value: ""
+  - name: MAXFILESIZE
+    value: ""
+  - name: JVM_OPTS
+    value: ""
+  - name: SERVER_URL
+    value: ""
+  - name: ISSUES
+    value: ""
+  - name: DATA_URL
+    value: ""
+  - name: QUERY
+    value: ""
 restartPolicy: Always
 nodeSelector: {}
 ingress:
