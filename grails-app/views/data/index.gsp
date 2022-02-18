@@ -54,10 +54,15 @@
 <asset:javascript src="axios.min.js"/>
 <script>
 
-    let refDes = '';
+    const baseUrl = "${dataURL}";
+    let url = baseUrl;
+    let refDes = null;
     const urlParams = new URLSearchParams(window.location.search);
+
     refDes = urlParams.get("ref");
-    const url = "${dataURL}/feed?" + refDes;
+    if (refDes != null) {
+        url = baseUrl + "/feed/?ref=" + refDes;
+    }
 
     const unitMap = {
         "pressure_temp": "Seawater Pressure (dBar)",
@@ -87,17 +92,37 @@
         },
         methods: {
             parseData(data) {
-                const values = JSON.parse(data.value);
-                const dataObject = values;
-                const keys = Object.keys(dataObject);
+
+                const dataObject = data;
+                let streams = {};
+                let streamValues = {};
                 let finalData = {};
+                const keys = Object.keys(dataObject);
+
                 keys.forEach(key => {
-                    finalData[ unitMap[key] ] = dataObject[key]
+                    streams = dataObject[key]
                 });
+
+                Object.entries(streams).map( item => {
+                    streamValues = item[1]
+                });
+
+                Object.entries(streamValues).forEach( ([key, value]) => {
+                    finalData[ unitMap[key] ] = roundToTwo(key, value)
+                });
+
                 this.instrumentData = finalData;
             }
         }
     });
+
+    function roundToTwo(key, val) {
+
+        if (key.includes("time")) {
+            return val;
+        }
+        else return + (Math.round(val + "e+2")  + "e-2");
+    }
 
 </script>
 </body>
