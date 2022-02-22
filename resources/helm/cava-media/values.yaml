@@ -45,6 +45,13 @@ env:
     value: ""
   - name: QUERY
     value: ""
+
+# For production deployment in k8s,
+# QUERY should have the `enabledTLSProtocols`
+# query variable with value of `TLSv1.2`.
+# e.g. ?enabledTLSProtocols=TLSv1.2
+# See: https://tinyurl.com/2vrcb53x
+
 restartPolicy: Always
 nodeSelector: {}
 ingress:
