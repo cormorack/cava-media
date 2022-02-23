@@ -2,19 +2,13 @@ package cavamedia
 
 import grails.converters.JSON
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiImplicitParam
-import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
 
 import org.apache.tika.langdetect.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
 
 import org.springframework.beans.factory.annotation.Value
 
-@Api(value = "/media/feedback/", tags = ["Feedback"])
 class FeedbackController extends BaseController {
 
     def clientService
@@ -44,51 +38,7 @@ class FeedbackController extends BaseController {
      * Creates a Github issue
      * @return JSON response
      */
-    @ApiOperation(
-            value = "Creates a Github Issue",
-            nickname = "save",
-            consumes = "application/json",
-            produces = "application/json",
-            httpMethod = "POST"
-    )
-    @ApiResponses([
-            @ApiResponse(
-                    code = 200,
-                    message = "The POST call was successful"),
-            @ApiResponse(
-                    code = 405,
-                    message = "Method Not Allowed. Only POST is allowed"),
-            @ApiResponse(
-                    code = 404,
-                    message = "Method Not Found")
-    ])
-    @ApiImplicitParams([
-            @ApiImplicitParam(
-                    name = "name",
-                    paramType = "query",
-                    required = true,
-                    value = "Name",
-                    dataType = "string"),
-            @ApiImplicitParam(
-                    name = "body",
-                    paramType = "query",
-                    required = true,
-                    value = "Issue Description",
-                    dataType = "string"),
-            @ApiImplicitParam(
-                    name = "email",
-                    paramType = "query",
-                    required = true,
-                    value = "Email Address",
-                    dataType = "string"),
-            @ApiImplicitParam(
-                    name = "labels",
-                    allowMultiple = true,
-                    paramType = "query",
-                    required = true,
-                    value = "Issue Label",
-                    dataType = "[Ljava.util.List;")
-    ])
+    @ApiOperation(hidden = true)
     def save() {
 
         if (isProduction()) {
