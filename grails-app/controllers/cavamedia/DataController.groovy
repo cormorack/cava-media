@@ -9,10 +9,18 @@ class DataController extends BaseController {
 
     def index() {
 
+        String parameterURL = "/metadata/parameters"
+        String context = getAppContext()
+
         if (!isProduction()) {
-            dataURL = "http://localhost:8081"
+            dataURL = "${context}/files/data.json"
+            parameterURL = "${context}/files/parameters.json"
+        }
+        if (isProduction()) {
+            parameterURL = "${dataURL}/metadata/parameters"
+            dataURL = "${dataURL}/feed"
         }
 
-        [dataURL: dataURL]
+        [dataURL: dataURL, parameterURL: parameterURL]
     }
 }
