@@ -9,11 +9,16 @@ class DataController extends BaseController {
 
     def index() {
 
-        String parameterURL = "https://api-development.ooica.net/metadata/parameters"
+        String parameterURL = "/metadata/parameters"
+        String context = getAppContext()
 
         if (!isProduction()) {
-            dataURL = "http://localhost:8080/media/files/data.json"
-            parameterURL = "http://localhost:8080/media/files/parameters.json"
+            dataURL = "${context}/files/data.json"
+            parameterURL = "${context}/files/parameters.json"
+        }
+        if (isProduction()) {
+            parameterURL = "${dataURL}/metadata/parameters"
+            dataURL = "${dataURL}/feed"
         }
 
         [dataURL: dataURL, parameterURL: parameterURL]
