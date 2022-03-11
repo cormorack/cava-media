@@ -18,7 +18,6 @@ class DataController extends BaseController {
         }
         if (isProduction()) {
             parameterURL = "${dataURL}/metadata/parameters"
-            dataURL = "${dataURL}/feed"
         }
 
         [dataURL: dataURL, parameterURL: parameterURL]
