@@ -55,7 +55,6 @@
         <asset:javascript src="lodash.min.js"/>
         <script>
 
-            const origin = location.origin;
             const parameterURL = "${parameterURL}";
             const baseUrl = "${dataURL}";
             let url = baseUrl;
@@ -65,7 +64,7 @@
             refDes = urlParams.get("ref");
 
             if (refDes != null) {
-                url = baseUrl + "/?ref=" + refDes;
+                url = baseUrl + "/feed/?ref=" + refDes;
             }
 
             const vm = new Vue({
