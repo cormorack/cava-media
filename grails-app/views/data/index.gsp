@@ -36,7 +36,7 @@
     </head>
 
     <body>
-        <div class="container-fluid" id="app">
+        <div class="container-fluid" id="app" data-iframe-height>
             <div class="row">
                 <h3 class="text-center">Instrument Data</h3>
                 <div class="col">
@@ -67,6 +67,8 @@
                 url = baseUrl + "/feed/?ref=" + refDes;
             }
 
+            let message = "No data is available";
+
             const vm = new Vue({
                 el: '#app',
                 data: {
@@ -95,21 +97,19 @@
                         let parameters = {};
 
                         if (nullCheck(data)) {
-                            finalData["No data is available"] = ""
+                            finalData[message] = ""
                             return this.instrumentData = finalData;
                         } else {
                             _.mapValues(params, (value) => {
                                 filter(parameters, value);
                             });
                             _.mapValues(data, (value) => {
-                                if (nullCheck(value)) {
-                                    finalData["No data is available"] = ""
-                                    return this.instrumentData = finalData;
-                                } else {
-                                    Object.entries(value).forEach( ([key, val]) => {
-                                        finalData[ parameters[key] ] = round(key, val);
-                                    });
-                                }
+                                Object.entries(value).forEach( ([key, val]) => {
+                                    if (_.isUndefined(parameters[key])) {
+                                        return;
+                                    }
+                                    finalData[ parameters[key] ] = round(key, val);
+                                });
                             });
                         }
                         this.instrumentData = finalData;
@@ -118,10 +118,14 @@
             });
 
             function nullCheck(value) {
-                if (!value || value === 'No data is available' || value == null) {
+
+                if (!value || value === message || value == null) {
                     return true;
                 }
-                else return false;
+                else if (_.isObject(value)) {
+                    return false;
+                }
+                else return true;
             }
 
             function filter(p, value) {
@@ -135,7 +139,10 @@
                 if (key.includes("time")) {
                     return val;
                 }
-                else return _.round(val, 4);
+                else if (_.isNumber(val)) {
+                    return _.round(val, 4);
+                }
+                else return val;
             }
 
         </script>
