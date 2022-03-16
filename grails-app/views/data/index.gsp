@@ -36,7 +36,7 @@
     </head>
 
     <body>
-        <div class="container-fluid" id="app">
+        <div class="container-fluid" id="app" data-iframe-height>
             <div class="row">
                 <h3 class="text-center">Instrument Data</h3>
                 <div class="col">
