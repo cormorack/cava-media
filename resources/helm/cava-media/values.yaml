@@ -19,35 +19,39 @@ image:
 replicas: 1
 resources: {}
 env:
-- name: WPUSER
-  value: ""
-- name: WPPASSWORD
-  value: ""
-- name: USERNAME
-  value: ""
-- name: PASSWORD
-  value: ""
-- name: HOST
-  value: ""
-- name: PORT
-  value: ""
+  - name: WPUSER
+    value: ""
+  - name: WPPASSWORD
+    value: ""
+  - name: USERNAME
+    value: ""
+  - name: PASSWORD
+    value: ""
+  - name: HOST
+    value: ""
+  - name: PORT
+    value: ""
+  - name: DBNAME
+    value: ""
+  - name: MAXFILESIZE
+    value: ""
+  - name: JVM_OPTS
+    value: ""
+  - name: SERVER_URL
+    value: ""
+  - name: ISSUES
+    value: ""
+  - name: DATA_URL
+    value: ""
+  - name: QUERY
+    value: ""
+
 # For production deployment in k8s,
-# DBNAME should be appended with the `enabledTLSProtocols`
+# QUERY should have the `enabledTLSProtocols`
 # query variable with value of `TLSv1.2`.
-# e.g. mydb?enabledTLSProtocols=TLSv1.2
+# e.g. ?enabledTLSProtocols=TLSv1.2
 # See: https://tinyurl.com/2vrcb53x
-- name: DBNAME
-  value: ""
-- name: MAXFILESIZE
-  value: ""
-- name: JVM_OPTS
-  value: ""
-- name: SERVER_URL
-  value: ""
-- name: ISSUES
-  value: ""
-- name: DATA_URL
-  value: ""
+
 restartPolicy: Always
 nodeSelector: {}
 ingress:

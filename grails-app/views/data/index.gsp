@@ -8,35 +8,35 @@
         <script src="https://kit.fontawesome.com/636d54db3c.js" crossorigin="anonymous"></script>
         <title>Instrument Data</title>
         <style>
-            ul.list-group {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
+        ul.list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-            li.list-group-item {
-                padding-left: 1em;
-                text-indent: -.7em;
-            }
+        li.list-group-item {
+            padding-left: 1em;
+            text-indent: -.7em;
+        }
 
-            li.list-group-item:before {
-                content: "\f111";
-                font-family: FontAwesome;
-                color: blue;
-                margin-right: 4px;
-            }
+        li.list-group-item:before {
+            content: "\f111";
+            font-family: FontAwesome;
+            color: #1aff00;
+            margin-right: 4px;
+        }
 
-            li.list-group-item.off:before {
-                content: "\f057";
-                font-family: FontAwesome;
-                color: grey;
-                margin-right: 4px;
-            }
+        li.list-group-item.off:before {
+            content: "\f057";
+            font-family: FontAwesome;
+            color: grey;
+            margin-right: 4px;
+        }
         </style>
     </head>
 
     <body>
-        <div class="container-fluid" id="app">
+        <div class="container-fluid" id="app" data-iframe-height>
             <div class="row">
                 <h3 class="text-center">Instrument Data</h3>
                 <div class="col">
@@ -52,54 +52,98 @@
         </div>
         <asset:javascript src="vue.min.js"/>
         <asset:javascript src="axios.min.js"/>
+        <asset:javascript src="lodash.min.js"/>
         <script>
 
-            const url = "${dataURL}/messages/RS03AXPS-SF03A-2A-CTDPFA302-streamed-ctdpf_sbe43_sample";
+            const parameterURL = "${parameterURL}";
+            const baseUrl = "${dataURL}";
+            let url = baseUrl;
+            let rawData = {};
+            const urlParams = new URLSearchParams(window.location.search);
 
-            const unitMap = {
-                "pressure_temp": "Seawater Pressure (dBar)",
-                "seawater_temperature": "Seawater Temperature (ºC)",
-                "seawater_pressure": "Seawater Pressure (dBar)",
-                "depth": "Depth (m)",
-                "density": "Density (kg m-3)",
-                "conductivity": "Seawater Conductivity (counts)",
-                "corrected_dissolved_oxygen": "Corrected Dissolved Oxygen (µmol kg-1)",
-                "seawater_conductivity": "Seawater Conductivity (S m-1)",
-                "temperature": "Seawater Temperature (ºC)",
-                "time": "Time (UTC)",
-                "pressure": "CTD Seawater Pressure (dbar)",
-                "practical_salinity": "Practical Salinity (1)"
-            };
+            refDes = urlParams.get("ref");
+
+            if (refDes != null) {
+                url = baseUrl + "/feed/?ref=" + refDes;
+            }
+
+            let message = "No data is available";
 
             const vm = new Vue({
                 el: '#app',
                 data: {
-                    instrumentData: {}
+                    instrumentData: {},
                 },
                 mounted() {
                     axios.get(url).then( response => {
                         this.parseData(response.data);
+                    }),
+                    axios.get(parameterURL).then( response => {
+                        this.parseParameters(response.data);
                     })
                 },
                 methods: {
                     parseData(data) {
-                        const values = JSON.parse(data.value);
-                        //console.log(values);
-                        const dataObject = values;
-                        const keys = Object.keys(dataObject);
-                        let finalData = {};
-                        keys.forEach(key => {
-                            finalData[ unitMap[key] ] = dataObject[key]
+                        _.mapValues(data, (value) => {
+                            rawData = value;
                         });
-                        this.instrumentData = finalData;
-                        //console.log(finalData);
-                    }
-                },
-                setValue(val) {
+                    },
+                    parseParameters(data) {
+                        const dataParams = data;
+                        this.formatData(rawData, dataParams)
+                    },
+                    formatData(data, params) {
+                        let finalData = {};
+                        let parameters = {};
 
+                        if (nullCheck(data)) {
+                            finalData[message] = ""
+                            return this.instrumentData = finalData;
+                        } else {
+                            _.mapValues(params, (value) => {
+                                filter(parameters, value);
+                            });
+                            _.mapValues(data, (value) => {
+                                Object.entries(value).forEach( ([key, val]) => {
+                                    if (_.isUndefined(parameters[key])) {
+                                        return;
+                                    }
+                                    finalData[ parameters[key] ] = round(key, val);
+                                });
+                            });
+                        }
+                        this.instrumentData = finalData;
+                    }
                 }
             });
 
+            function nullCheck(value) {
+
+                if (!value || value === message || value == null) {
+                    return true;
+                }
+                else if (_.isObject(value)) {
+                    return false;
+                }
+                else return true;
+            }
+
+            function filter(p, value) {
+                if (value.unit === '1') {
+                    return p[value.reference_designator] = value.parameter_name;
+                }
+                else return p[value.reference_designator] = value.parameter_name + " (" + value.unit + ")";
+            }
+
+            function round(key, val) {
+                if (key.includes("time")) {
+                    return val;
+                }
+                else if (_.isNumber(val)) {
+                    return _.round(val, 4);
+                }
+                else return val;
+            }
 
         </script>
     </body>
