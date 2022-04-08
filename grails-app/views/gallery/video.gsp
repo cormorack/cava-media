@@ -98,6 +98,7 @@
     var searchMessage = '';
     var tagMessage = "";
     var mediaURL = 'https://interactiveoceans.washington.edu/?attachment_id=';
+    var downloadURL = 'http://stream.ocean.washington.edu/videos/';
 
     if (query) {
         serviceURI = serviceURI  + '&q=' + query;
@@ -286,7 +287,7 @@
             $("#videoDescription").html(description);
 
             var link = document.getElementById("videoLink");
-            var linkText = document.createTextNode("Permalink");
+            var linkText = document.createTextNode("Link");
             link.appendChild(linkText);
 
             linkEventHandler = function() {
@@ -298,7 +299,11 @@
                 file: url,
                 width: "100%",
                 aspectratio: "16:9",
-                'image': poster
+                'image': poster,
+                sharing: {
+                    sites: ["facebook","twitter","reddit","linkedin","pinterest"],
+                    code: "<iframe class='jwp-video-code' src='" + url + "'  width='640'  height='360'  frameborder='0'  scrolling='auto'>"
+                }
             });
         });
 
