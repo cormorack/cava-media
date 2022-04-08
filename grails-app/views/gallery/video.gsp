@@ -9,7 +9,7 @@
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
-    <asset:javascript src="jwplayer/jwplayer.js"/>
+    <asset:javascript src="jwplayer-8.24.6/jwplayer.js"/>
     <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
 </head>
 
