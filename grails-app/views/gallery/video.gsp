@@ -34,6 +34,7 @@
                             <div id="videoContainer"></div>
                             <div id="videoDescription" class="header-bar"></div>
                             <div id="videoLink" class="header-bar"></div>
+                            <div id="downloadLink" class="header-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -275,6 +276,7 @@
     });
 
     var linkEventHandler = null;
+    var downloadEventHandler = null;
 
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
@@ -290,10 +292,21 @@
             var linkText = document.createTextNode("Link");
             link.appendChild(linkText);
 
+            var download = document.getElementById("downloadLink");
+            var downloadText = document.createTextNode("Download");
+            download.appendChild(downloadText);
+
+            var video = extractVideo(url);
+
             linkEventHandler = function() {
                 window.open(mediaURL + button.data("id"), '_blank')
             };
             link.addEventListener("click", linkEventHandler , false);
+
+            downloadEventHandler = function() {
+                window.open(downloadURL + video, '_blank')
+            };
+            download.addEventListener("click", downloadEventHandler , false);
 
             jwplayer("videoContainer").setup({
                 file: url,
@@ -315,6 +328,14 @@
             link.innerHTML = '';
         });
     });
+
+    function extractVideo(url) {
+
+        var result = url.lastIndexOf(":");
+        var s = url.substring(result +1);
+        var x = s.split("/playlist")[0];
+        return x;
+    }
 
     /*jQuery( document ).ready(function( $ ) {
         $('[data-toggle="tooltip"]').tooltip({
