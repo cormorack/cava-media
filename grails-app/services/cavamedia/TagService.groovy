@@ -1,6 +1,5 @@
 package cavamedia
 
-//import grails.transaction.Transactional
 import grails.gorm.transactions.Transactional
 import grails.plugin.cache.*
 import grails.util.Holders
@@ -24,7 +23,7 @@ class TagService {
 
         def tagJson = restService.getURL( tagURL() )
 
-        if (tagJson.status == 200 && tagJson.json) {
+        if (tagJson && tagJson.status == 200 && tagJson.json) {
 
             for (Term tag in tagJson.json) {
                 if (tag.count > 0) {

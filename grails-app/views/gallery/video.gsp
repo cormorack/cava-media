@@ -9,7 +9,7 @@
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
     <title>Video Gallery</title>
-    <asset:javascript src="jwplayer/jwplayer.js"/>
+    <asset:javascript src="jwplayer-8.24.6/jwplayer.js"/>
     <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
 </head>
 
@@ -34,6 +34,7 @@
                             <div id="videoContainer"></div>
                             <div id="videoDescription" class="header-bar"></div>
                             <div id="videoLink" class="header-bar"></div>
+                            <div id="downloadLink" class="header-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -98,6 +99,7 @@
     var searchMessage = '';
     var tagMessage = "";
     var mediaURL = 'https://interactiveoceans.washington.edu/?attachment_id=';
+    var downloadURL = 'http://stream.ocean.washington.edu/videos/';
 
     if (query) {
         serviceURI = serviceURI  + '&q=' + query;
@@ -274,6 +276,7 @@
     });
 
     var linkEventHandler = null;
+    var downloadEventHandler = null;
 
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
@@ -286,19 +289,34 @@
             $("#videoDescription").html(description);
 
             var link = document.getElementById("videoLink");
-            var linkText = document.createTextNode("Permalink");
+            var linkText = document.createTextNode("Link");
             link.appendChild(linkText);
+
+            var download = document.getElementById("downloadLink");
+            var downloadText = document.createTextNode("Download");
+            download.appendChild(downloadText);
+
+            var video = extractVideo(url);
 
             linkEventHandler = function() {
                 window.open(mediaURL + button.data("id"), '_blank')
             };
             link.addEventListener("click", linkEventHandler , false);
 
+            downloadEventHandler = function() {
+                window.open(downloadURL + video, '_blank')
+            };
+            download.addEventListener("click", downloadEventHandler , false);
+
             jwplayer("videoContainer").setup({
                 file: url,
                 width: "100%",
                 aspectratio: "16:9",
-                'image': poster
+                'image': poster,
+                sharing: {
+                    sites: ["facebook","twitter","reddit","linkedin","pinterest"],
+                    code: "<iframe class='jwp-video-code' src='" + url + "'  width='640'  height='360'  frameborder='0'  scrolling='auto'>"
+                }
             });
         });
 
@@ -310,6 +328,14 @@
             link.innerHTML = '';
         });
     });
+
+    function extractVideo(url) {
+
+        var result = url.lastIndexOf(":");
+        var s = url.substring(result +1);
+        var x = s.split("/playlist")[0];
+        return x;
+    }
 
     /*jQuery( document ).ready(function( $ ) {
         $('[data-toggle="tooltip"]').tooltip({
