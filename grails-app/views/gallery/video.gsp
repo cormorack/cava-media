@@ -326,6 +326,9 @@
             var link = document.getElementById("videoLink");
             link.removeEventListener("click", linkEventHandler , false);
             link.innerHTML = '';
+            var download = document.getElementById("downloadLink");
+            download.removeEventListener("click", downloadEventHandler , false);
+            download.innerHTML = '';
         });
     });
 
