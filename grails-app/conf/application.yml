@@ -143,7 +143,7 @@ environments:
             readOnly: true
             username: cavauser
             password: iHazN0i0@
-            url: jdbc:mysql://localhost:8889/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+            url: jdbc:mysql://localhost:3306/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
             #jndiName: java:comp/env/Cava
             #url: jdbc:mysql://host.docker.internal:8889/cavaweb
     test:

@@ -49,7 +49,7 @@ environments {
     }
     development {
         cavaWpRestUrl = "http://localhost:8888/"
-        cavaWpPassword = "iRmQcp@YOCrbRxOHgCT9#4ZT"
+        cavaWpPassword = 'f^C1Z$Ol$taxYu6teuR)X^7p'
         cavaWpUser = "io"
         cavaHost = "localhost:8080/media"
         tagURL = "http://localhost:8888/wp-json/wp/v2/tags?per_page=400"
