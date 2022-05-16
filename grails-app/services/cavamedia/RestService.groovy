@@ -6,6 +6,7 @@ import grails.plugins.rest.client.RestResponse
 import grails.gorm.transactions.Transactional
 import grails.util.Holders
 import grails.util.Environment
+import groovy.json.JsonBuilder
 import org.springframework.beans.factory.annotation.Value
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.HttpsURLConnection
@@ -14,6 +15,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.servlet.ServletContext
 import java.util.concurrent.*
+import groovy.json.JsonOutput
 
 @Transactional(readOnly = true)
 class RestService {
@@ -66,12 +68,12 @@ class RestService {
 
         String message = ""
 
-        if (!addToStreamingServer(upload)) {
+        /*if (!addToStreamingServer(upload)) {
 
             message = "The videos could not be uploaded to the streaming server."
             log.error(message)
             return message
-        }
+        }*/
         return uploadVideo(context, upload)
     }
 
@@ -84,9 +86,13 @@ class RestService {
 
         List videos = []
 
-        if (upload.desktopVideo) videos.add(upload.desktopVideo)
+        if (upload.desktopVideo) {
+            videos.add(upload.desktopVideo)
+        }
 
-        if (upload.phoneVideo) videos.add(upload.phoneVideo)
+        if (upload.phoneVideo) {
+            videos.add(upload.phoneVideo)
+        }
 
         for (File video in videos) {
 
@@ -192,10 +198,6 @@ class RestService {
 
         Map metaMap = [:]
 
-        /*if (file.latitude) metaMap.put("latitude", file.latitude)
-
-        if (file.longitude) metaMap.put("longitude", file.longitude)*/
-
         String posterImageURL = ""
         String jwShortcode = ""
 
@@ -205,41 +207,40 @@ class RestService {
 
         // Add streaming video metas
         if (upload) {
-            if (upload.desktopVideoURL) metaMap.put("_jwppp-video-url-1", upload.desktopVideoURL)
+            if (upload.desktopVideoURL) {
+                metaMap.put("_jwppp-video-url-1", upload.desktopVideoURL)
+            }
+            if (upload.phoneVideoURL) {
+                metaMap.put("_jwppp-1-source-1-url", upload.phoneVideoURL)
+            }
+            if (posterImageURL) {
+                metaMap.put("_jwppp-video-image-1", posterImageURL)
+            }
 
-            if (upload.phoneVideoURL) metaMap.put("_jwppp-1-source-1-url", upload.phoneVideoURL)
-
-            if (posterImageURL) metaMap.put("_jwppp-video-image-1", posterImageURL)
-
-            metaMap.put("_jwppp-video-title-1", upload.title)
+            metaMap.put("_jwppp-video-title-1", "${upload.title}")
+            metaMap.put("_jwppp-single-embed-1", "1")
 
             jwShortcode = '[jwp-video="1"]' + "\n" + upload.content
         }
 
         Closure json = {
-            title = upload.title
-            description = jwShortcode ?: upload.content
-            caption = upload.content
-            meta = metaMap
+            title upload.title
+            description jwShortcode ?: upload.content
+            caption upload.content
+            meta metaMap
         }
 
-        RestResponse resp = postToApi(url, json)
+        JsonBuilder jb = new JsonBuilder(json)
 
-        /**
-         * For some reason WP returns a 403 here even though the content is updated...
-         * so we can't check for a 201
-         */
-        /*if (resp?.status != 201) {
-            log.error(resp?.json?.toString())
-            return false
-        }*/
-        if (!resp?.status) {
+        RestResponse resp = postToApi(url, jb)
+
+        if (resp?.status != 200) {
             message = resp?.json?.toString()
             log.error(message)
             return message
         }
 
-        if (resp.json.permalink_template) {
+        if (resp?.json?.permalink_template) {
             message = "${resp.json.permalink_template}"
         }
         return message
@@ -265,9 +266,11 @@ class RestService {
 
         file.delete()
 
-        String fileURL = ""
+        String fileURL = "#"
 
-        if (resp.json?.source_url) fileURL = resp.json.source_url.toString()
+        if (resp.json?.source_url) {
+            fileURL = resp.json.source_url.toString()
+        }
     }
 
     /**
@@ -277,19 +280,17 @@ class RestService {
      * @param metaMap
      * @return a grails.plugins.rest.client.RestResponse
      */
-    private RestResponse postToApi(String url, Closure customJson) {
+    private RestResponse postToApi(String url, JsonBuilder customJson) {
 
         def rest = new RestBuilder()
         RestResponse resp = null
         disableSSLCheck()
 
         try {
-
             resp = rest.post(url) {
-
                 auth cavaWpUser(), cavaWpPassword()
                 contentType "application/json"
-                json customJson
+                json customJson.toString()
             }
         } catch (Exception e) {
             log.error(e.printStackTrace())
