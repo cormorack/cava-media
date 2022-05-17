@@ -4,13 +4,13 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Video Gallery</title>
     <asset:stylesheet href="bootstrap4.css"/>
     <asset:stylesheet href="gallery2.css"/>
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
-    <title>Video Gallery</title>
     <asset:javascript src="jwplayer-8.24.6/jwplayer.js"/>
-    <script>jwplayer.key="mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o=";</script>
+    <script>jwplayer.key="${grailsApplication.config.jwPlayerKey}";</script>
 </head>
 
 <body>

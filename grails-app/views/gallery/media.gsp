@@ -8,8 +8,8 @@
     <asset:stylesheet href="gallery2.css"/>
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
-    <asset:javascript src="jwplayer/jwplayer.js"/>
-    <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
+    <asset:javascript src="jwplayer-8.24.6/jwplayer.js"/>
+    <script>jwplayer.key="${grailsApplication.config.jwPlayerKey}";</script>
     <title>Image Gallery</title>
 </head>
 
@@ -181,7 +181,7 @@
         if (start == 0) {
             start = 1;
         }
-        searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' images';
+        searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' media';
         if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
         results.innerHTML = searchMessage;
     }
