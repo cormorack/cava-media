@@ -68,12 +68,12 @@ class RestService {
 
         String message = ""
 
-        /*if (!addToStreamingServer(upload)) {
+        if (!addToStreamingServer(upload)) {
 
             message = "The videos could not be uploaded to the streaming server."
             log.error(message)
             return message
-        }*/
+        }
         return uploadVideo(context, upload)
     }
 

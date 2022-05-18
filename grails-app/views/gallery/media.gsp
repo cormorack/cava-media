@@ -8,8 +8,8 @@
     <asset:stylesheet href="gallery2.css"/>
     <asset:stylesheet href="jqueryUI.css" />
     <asset:stylesheet href="pagination.css"/>
-    <asset:javascript src="jwplayer/jwplayer.js"/>
-    <script>jwplayer.key="TlrRuCKIJtPFH4TCqTcHNr5P2KxNL5zIzfOOx1yFCCU=";</script>
+    <asset:javascript src="jwplayer-8.24.6/jwplayer.js"/>
+    <script>jwplayer.key="${grailsApplication.config.jwPlayerKey}";</script>
     <title>Image Gallery</title>
 </head>
 
@@ -181,8 +181,10 @@
         if (start == 0) {
             start = 1;
         }
-        searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' images';
-        if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' media';
+        if (tag) {
+            searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        }
         results.innerHTML = searchMessage;
     }
 
@@ -198,16 +200,8 @@
 
             createGallery(image, i);
 
-            /*if (image.type == "video/quicktime" || image.type == "video/mp4") {
-                createGallery(image, i);
-            }*/
-
-            //createStepNav(image, i);
-            //createModal(image, i);
-
-            //if (image.type != "video/quicktime" || image.type != "video/mp4") {
             if (!image.type.includes("video")) {
-                createStepNav(image, counter);
+                //createStepNav(image, counter);
                 createModal(image, counter);
                 counter ++;
             }
@@ -291,7 +285,7 @@
 
     function createModal(image, counter) {
 
-        console.log("adding " + counter);
+        //console.log("adding " + counter);
 
         var modalItem = document.createElement('div');
         if (counter == 0) {

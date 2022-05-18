@@ -19,7 +19,7 @@ maxPerPage = 8
 
 totalMax = 100
 
-//https://media-dev.ooica.net/CavaMedia
+jwPlayerKey = "mj9LTtvpJ1Dy6DpIHY30xijBS9IQ4QJdGQoKHaS4D7o="
 
 if(System.properties['lambdaURL']) {
     lambdaURL = System.properties['lambdaURL']
