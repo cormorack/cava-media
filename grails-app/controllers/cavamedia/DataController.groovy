@@ -1,10 +1,7 @@
 package cavamedia
 
-import org.springframework.beans.factory.annotation.Value
-
 class DataController extends BaseController {
 
-    @Value('${DATA_URL}')
     private String dataURL
 
     def index() {
@@ -16,8 +13,11 @@ class DataController extends BaseController {
             dataURL = "${context}/files/data.json"
             parameterURL = "${context}/files/parameters.json"
         }
+
         if (isProduction()) {
-            parameterURL = "${dataURL}/metadata/parameters"
+            String contextPath = config.server.contextPath
+            String domain = contextPath.replaceAll(context, "")
+            parameterURL = domain + parameterURL
         }
 
         [dataURL: dataURL, parameterURL: parameterURL]
