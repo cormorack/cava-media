@@ -182,7 +182,9 @@
             start = 1;
         }
         searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' media';
-        if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        if (tag) {
+            searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        }
         results.innerHTML = searchMessage;
     }
 
@@ -198,16 +200,8 @@
 
             createGallery(image, i);
 
-            /*if (image.type == "video/quicktime" || image.type == "video/mp4") {
-                createGallery(image, i);
-            }*/
-
-            //createStepNav(image, i);
-            //createModal(image, i);
-
-            //if (image.type != "video/quicktime" || image.type != "video/mp4") {
             if (!image.type.includes("video")) {
-                createStepNav(image, counter);
+                //createStepNav(image, counter);
                 createModal(image, counter);
                 counter ++;
             }
@@ -291,7 +285,7 @@
 
     function createModal(image, counter) {
 
-        console.log("adding " + counter);
+        //console.log("adding " + counter);
 
         var modalItem = document.createElement('div');
         if (counter == 0) {

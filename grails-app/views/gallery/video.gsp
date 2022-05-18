@@ -155,7 +155,9 @@
             start = 1;
         }
         searchMessage = 'Displaying ' + start + ' through ' + current + ' of ' + total + ' videos';
-        if (tag) searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        if (tag) {
+            searchMessage += ' with the tag: <strong>' + tagMessage + '</strong>';
+        }
         results.innerHTML = searchMessage;
     }
 
