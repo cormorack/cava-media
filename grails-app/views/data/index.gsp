@@ -1,4 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<g:if env="development">
+    <g:set var="dataURL" value="${context}/files/data.json" />
+    <g:set var="parameterURL" value="${context}/files/parameters.json" />
+</g:if>
+<g:if env="production">
+    <g:set var="dataURL" value="/feed" />
+    <g:set var="parameterURL" value="/metadata/parameters" />
+</g:if>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -55,8 +63,8 @@
         <asset:javascript src="lodash.min.js"/>
         <script>
 
-            const parameterURL = "${parameterURL}";
-            const baseUrl = "${dataURL}";
+            const parameterURL = location.origin + "${parameterURL}";
+            const baseUrl = location.origin + "${dataURL}";
             let url = baseUrl;
             let rawData = {};
             const urlParams = new URLSearchParams(window.location.search);
@@ -64,7 +72,7 @@
             refDes = urlParams.get("ref");
 
             if (refDes != null) {
-                url = baseUrl + "/feed/?ref=" + refDes;
+                url = baseUrl + "?ref=" + refDes;
             }
 
             let message = "No data is available";

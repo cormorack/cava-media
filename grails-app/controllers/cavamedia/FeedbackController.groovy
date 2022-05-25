@@ -47,7 +47,8 @@ class FeedbackController extends BaseController {
 
             if (!config.trustedURLs.contains(host)) {
 
-                log.error("Illegal access by a host was attempted")
+                log.error("Illegal access by an unauthorized host was attempted.")
+                log.error("Host is ${host}")
                 response.sendError(403)
                 return
             }
