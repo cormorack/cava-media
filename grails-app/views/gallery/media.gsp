@@ -44,7 +44,7 @@
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Next</span>
                                 </a>
-                                <ol id="carouseList" class="carousel-indicators"></ol>
+                                <ol id="carouselList" class="carousel-indicators"></ol>
                             </div>
                         </div>
                         %{--<div class="modal-footer">
@@ -63,6 +63,8 @@
                             <div id="videoHeader" class="header-bar"></div>
                             <div id="videoContainer"></div>
                             <div id="videoDescription" class="header-bar"></div>
+                            <div id="videoLink" class="header-bar"></div>
+                            <div id="downloadLink" class="header-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -126,6 +128,8 @@
     var serviceURI = serviceURL + '/gallery/findAllMedia.json?max=' + max + '&offset=' + offset;
     var searchMessage = '';
     var tagMessage = "";
+    var mediaURL = 'https://interactiveoceans.washington.edu/?attachment_id=';
+    var downloadURL = 'http://stream.ocean.washington.edu/videos/';
 
     if (query) {
         serviceURI = serviceURI  + '&q=' + query;
@@ -191,17 +195,13 @@
     function generateGrid(data) {
 
         var images = data.images;
-
         var counter = 0;
 
         for (var i = 0; i < images.length; i++) {
-
             var image = images[i];
-
             createGallery(image, i);
-
             if (!image.type.includes("video")) {
-                //createStepNav(image, counter);
+                createStepNav(image, counter);
                 createModal(image, counter);
                 counter ++;
             }
@@ -228,11 +228,12 @@
             imageDiv.setAttribute('data-description', image.description);
         } else {
             //imageDiv.setAttribute('data-toggle', 'tooltip');
-
             imageDiv.setAttribute('id', 'tip' + counter);
             imageDiv.setAttribute('data-placement', 'top');
-            imageDiv.setAttribute('data-target', '#exampleModal');
-            imageDiv.setAttribute('data-toggle', 'modal');
+            imageDiv.setAttribute('data-target', '#carouselExample');
+            //imageDiv.setAttribute('data-target', '#exampleModal');
+            //imageDiv.setAttribute('data-toggle', 'modal');
+            imageDiv.setAttribute('data-toggle', 'tooltip');
             imageDiv.setAttribute('data-slide-to', counter.toString());
             //imageDiv.setAttribute('data-toggle-fullscreen', '');
             imageDiv.setAttribute('target', '_blank');
@@ -249,7 +250,7 @@
         if (counter == 0) {
             listItem.setAttribute('class', 'active');
         }
-        document.getElementById('carouseList').appendChild(listItem);
+        document.getElementById('carouselList').appendChild(listItem);
     }
 
     function createTagCloud(data) {
@@ -285,8 +286,6 @@
 
     function createModal(image, counter) {
 
-        //console.log("adding " + counter);
-
         var modalItem = document.createElement('div');
         if (counter == 0) {
             modalItem.setAttribute('class', 'carousel-item active');
@@ -312,9 +311,15 @@
         textDiv.appendChild(description);
         modalItem.appendChild(textDiv);
 
-        modalItem.addEventListener('click', function() {
-            window.open(image.file, '_blank')
-        }, false);
+        if (!image.type.includes("video")) {
+            modalItem.addEventListener('click', function() {
+                window.open(mediaURL + image.id, '_blank')
+            }, false);
+        } else {
+            modalItem.addEventListener('click', function() {
+                window.open(image.file, '_blank')
+            }, false);
+        }
 
         document.getElementById('carouselModal').appendChild(modalItem);
     }
@@ -374,6 +379,9 @@
         myPagination.make(itemsCount, itemsOnPage, getParam("page"), max, offset);
     };
 
+    var linkEventHandler = null;
+    var downloadEventHandler = null;
+
     $(document).ready(function() {
         $("#videoModal").on("show.bs.modal", function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
@@ -384,19 +392,57 @@
             $("#videoHeader").html(title);
             $("#videoDescription").html(description);
 
+            var link = document.getElementById("videoLink");
+            var linkText = document.createTextNode("Link");
+            link.appendChild(linkText);
+
+            var download = document.getElementById("downloadLink");
+            var downloadText = document.createTextNode("Download");
+            download.appendChild(downloadText);
+
+            var video = extractVideo(url);
+
+            linkEventHandler = function() {
+                window.open(mediaURL + button.data("id"), '_blank')
+            };
+            link.addEventListener("click", linkEventHandler , false);
+
+            downloadEventHandler = function() {
+                window.open(downloadURL + video, '_blank')
+            };
+            download.addEventListener("click", downloadEventHandler , false);
+
             jwplayer("videoContainer").setup({
                 file: url,
                 width: "100%",
                 aspectratio: "16:9",
-                'image': poster
+                'image': poster,
+                sharing: {
+                    sites: ["facebook","twitter","reddit","linkedin","pinterest"],
+                    code: "<iframe class='jwp-video-code' src='" + url + "'  width='640'  height='360'  frameborder='0'  scrolling='auto'>"
+                }
             });
         });
 
         // Remove attributes when the modal has finished being hidden from the user
         $("#videoModal").on("hidden.bs.modal", function() {
             //$("#videoModal iframe").removeAttr("src allow");
+            var link = document.getElementById("videoLink");
+            link.removeEventListener("click", linkEventHandler , false);
+            link.innerHTML = '';
+            var download = document.getElementById("downloadLink");
+            download.removeEventListener("click", downloadEventHandler , false);
+            download.innerHTML = '';
         });
     });
+
+    function extractVideo(url) {
+
+        var result = url.lastIndexOf(":");
+        var s = url.substring(result +1);
+        var x = s.split("/playlist")[0];
+        return x;
+    }
 
 </script>
 <script
