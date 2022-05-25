@@ -4,7 +4,7 @@
     <g:set var="parameterURL" value="${context}/files/parameters.json" />
 </g:if>
 <g:if env="production">
-    <g:set var="dataURL" value="/feed/" />
+    <g:set var="dataURL" value="/feed" />
     <g:set var="parameterURL" value="/metadata/parameters" />
 </g:if>
 <!DOCTYPE html>
