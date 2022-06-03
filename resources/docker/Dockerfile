@@ -66,6 +66,8 @@ ENV QUERY ''
 
 ENV LOG4J_NO_LOOKUPS 'TRUE'
 
+ENV FEEDBACK_HOST ''
+
 # Setup Tomcat configuration files
 COPY resources/docker/context.xml $CATALINA_HOME/conf/context.xml
 
