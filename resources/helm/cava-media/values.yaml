@@ -45,6 +45,8 @@ env:
     value: ""
   - name: QUERY
     value: ""
+  - name: FEEDBACK_HOST
+    value: ""
 
 # For production deployment in k8s,
 # QUERY should have the `enabledTLSProtocols`

@@ -20,6 +20,9 @@ class FeedbackController extends BaseController {
     @Value('${ISSUES_SECRET}')
     private String issuesPassword
 
+    @Value('${FEEDBACK_HOST}')
+    private String feedbackHost
+
     @ApiOperation(hidden = true)
     def index() {
         render ""
@@ -45,7 +48,7 @@ class FeedbackController extends BaseController {
 
             String host = request.getHeader("HOST")
 
-            if (!config.trustedURLs.contains(host)) {
+            if (host != feedbackHost) {
 
                 log.error("Illegal access by an unauthorized host was attempted.")
                 log.error("Host is ${host}")
