@@ -62,7 +62,7 @@ dependencies {
     compile "org.grails.plugins:swagger-grails:0.4.0"
     compile group: 'com.xk72', name: 'pherialize', version: '1.2.4'
     compile 'org.grails:grails-datastore-rest-client:6.1.12.RELEASE'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
 
     //compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile ('commons-io:commons-io:2.7') {
