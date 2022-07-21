@@ -65,7 +65,7 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
 
     //compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile ("commons-io:commons-io:2.6") {
+    compile ('commons-io:commons-io:2.7') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     compile 'org.grails.plugins:html-cleaner:3.0.0.1'
