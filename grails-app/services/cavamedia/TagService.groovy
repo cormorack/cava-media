@@ -2,6 +2,7 @@ package cavamedia
 
 import grails.gorm.transactions.Transactional
 import grails.plugin.cache.*
+import grails.plugins.rest.client.RestResponse
 import grails.util.Holders
 import grails.util.Environment
 
@@ -14,14 +15,14 @@ class TagService {
     /**
      * Gets a list of tags (WP Terms) from a remote endpoint.
      * The result is cached after the first successful request.
-     * @return
+     * @return List of tags
      */
     @Cacheable('tags')
     List getTags() {
 
         List tagList = []
 
-        def tagJson = restService.getURL( tagURL() )
+        RestResponse tagJson = restService.getURL(tagURL() as String)
 
         if (tagJson && tagJson.status == 200 && tagJson.json) {
 
@@ -33,6 +34,16 @@ class TagService {
             }
         }
         return tagList
+    }
+
+    /**
+     * Clears the tags cache
+     * @return
+     */
+    @CacheEvict(value = "tags", allEntries = true)
+    void clearTags() {
+        Date date = new Date()
+        println "The tag cache was cleared at ${date}"
     }
 
     /**
