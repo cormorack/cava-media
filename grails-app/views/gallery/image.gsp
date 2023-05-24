@@ -42,7 +42,7 @@
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Next</span>
                                 </a>
-                                <ol id="carouseList" class="carousel-indicators"></ol>
+                                <ol id="carouselList" class="carousel-indicators"></ol>
                             </div>
                         </div>
                         %{--<div class="modal-footer">
@@ -89,7 +89,7 @@
 </div>
 <asset:javascript src="jquery-3.3.1.min.js"/>
 <asset:javascript src="jqueryUI.js" />
-<script src="https://unpkg.com/@popperjs/core@2"></script>
+%{--<script src="https://unpkg.com/@popperjs/core@2"></script>--}%
 %{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>--}%
 <asset:javascript src="bootstrap4.js"/>
 <asset:javascript src="pagination.js"/>
@@ -178,13 +178,9 @@
         var images = data.images;
 
         for (var i = 0; i < images.length; i++) {
-
             var image = images[i];
-
             createGallery(image, i);
-
             createStepNav(image, i);
-
             createModal(image, i);
         }
     }
@@ -197,14 +193,14 @@
         var imageDiv = document.createElement('img');
         imageDiv.setAttribute('class', 'w-100');
         imageDiv.setAttribute('src', image.image);
-        imageDiv.setAttribute('data-toggle', 'tooltip');
+        imageDiv.setAttribute('alt', image.title);
+        imageDiv.setAttribute('title', image.title);
         imageDiv.setAttribute('id', 'tip' + counter);
+        imageDiv.setAttribute('data-toggle', 'tooltip');
         imageDiv.setAttribute('data-placement', 'top');
         imageDiv.setAttribute('data-target', '#carouselExample');
         imageDiv.setAttribute('data-slide-to', counter.toString());
         //imageDiv.setAttribute('data-toggle-fullscreen', '');
-        imageDiv.setAttribute('alt', image.title);
-        imageDiv.setAttribute('title', image.title);
         imageDiv.setAttribute('target', '_blank');
         columnDiv.appendChild(imageDiv);
         document.getElementById('gallery').appendChild(columnDiv);
@@ -218,7 +214,7 @@
         if (counter == 0) {
             listItem.setAttribute('class', 'active');
         }
-        document.getElementById('carouseList').appendChild(listItem);
+        document.getElementById('carouselList').appendChild(listItem);
     }
 
     function createTagCloud(data) {
@@ -286,10 +282,10 @@
         document.getElementById('carouselModal').appendChild(modalItem);
     }
 
-    $(function () {
+    /*$(function () {
         $('[data-toggle="tooltip"]').tooltip()
         $("#selectMax").val(max).attr('selected', 'selected');
-    })
+    })*/
     /*$('#tip5').tooltip({
         trigger: 'hover'
     })*/

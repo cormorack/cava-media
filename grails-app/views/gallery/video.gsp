@@ -272,10 +272,10 @@
         myPagination.make(itemsCount, itemsOnPage, getParam("page"), max, offset);
     };
 
-    $(function () {
+    /*$(function () {
         $('[data-toggle="tooltip"]').tooltip()
         $("#selectMax").val(max).attr('selected', 'selected');
-    });
+    });*/
 
     var linkEventHandler = null;
     var downloadEventHandler = null;
