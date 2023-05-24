@@ -72,7 +72,7 @@
             refDes = urlParams.get("ref");
 
             if (refDes != null) {
-                url = baseUrl + "?ref=" + refDes;
+                url = baseUrl + "/?ref=" + refDes;
             }
 
             let message = "No data is available";

@@ -16,12 +16,12 @@
 <body>
 <div class="container" data-iframe-height>
     <div class="row">
-        <div class="col-8">
+        <div class="col-${mediaOnly ? '12' : '8'}">
             <div id="cover" style="display:none; z-index: 10; text-align: center;">
                 <asset:image src="io-load-animation.png" width="200px" height="200px"/>
             </div>
-
             <div class="row" id="gallery" ></div>
+            %{--<div class="row" id="gallery" data-toggle="modal" data-target="#exampleModal"></div>--}%
 
             <!-- Modal -->
 
@@ -71,7 +71,7 @@
             </div>
             <div id="pagination-fancy"></div>
         </div>
-        <div class="col-4">
+        <div class="col-4" style="visibility: ${mediaOnly ? 'hidden' : 'visible'};">
             <div class="row">
                 <div class="searchResultsWrapper">
                     <div id="searchResults"></div>
@@ -195,16 +195,18 @@
     function generateGrid(data) {
 
         var images = data.images;
-        var counter = 0;
+        //var counter = 0;
 
         for (var i = 0; i < images.length; i++) {
             var image = images[i];
             createGallery(image, i);
-            if (!image.type.includes("video")) {
+            createStepNav(image, i);
+            createModal(image, i);
+            /*if (!image.type.includes("video")) {
                 createStepNav(image, counter);
                 createModal(image, counter);
                 counter ++;
-            }
+            }*/
         }
     }
 
@@ -218,6 +220,7 @@
         imageDiv.setAttribute('src', image.image);
         imageDiv.setAttribute('alt', image.title);
         imageDiv.setAttribute('title', image.title);
+        imageDiv.setAttribute('id', 'tip' + counter);
 
         if (image.type == "video/quicktime" || image.type == "video/mp4") {
             imageDiv.setAttribute('data-target', '#videoModal');
@@ -226,14 +229,11 @@
             imageDiv.setAttribute('data-image', image.image);
             imageDiv.setAttribute('data-title', image.title);
             imageDiv.setAttribute('data-description', image.description);
-        } else {
-            //imageDiv.setAttribute('data-toggle', 'tooltip');
-            imageDiv.setAttribute('id', 'tip' + counter);
+        }
+        if (image.type != "video/quicktime" && image.type != "video/mp4") {
+            imageDiv.setAttribute('data-toggle', 'modal');
             imageDiv.setAttribute('data-placement', 'top');
-            imageDiv.setAttribute('data-target', '#carouselExample');
-            //imageDiv.setAttribute('data-target', '#exampleModal');
-            //imageDiv.setAttribute('data-toggle', 'modal');
-            imageDiv.setAttribute('data-toggle', 'tooltip');
+            imageDiv.setAttribute('data-target', '#exampleModal');
             imageDiv.setAttribute('data-slide-to', counter.toString());
             //imageDiv.setAttribute('data-toggle-fullscreen', '');
             imageDiv.setAttribute('target', '_blank');
@@ -311,13 +311,9 @@
         textDiv.appendChild(description);
         modalItem.appendChild(textDiv);
 
-        if (!image.type.includes("video")) {
+        if (image.type != "video/quicktime" && image.type != "video/mp4") {
             modalItem.addEventListener('click', function() {
                 window.open(mediaURL + image.id, '_blank')
-            }, false);
-        } else {
-            modalItem.addEventListener('click', function() {
-                window.open(image.file, '_blank')
             }, false);
         }
 
@@ -339,7 +335,7 @@
         var pagingURL = location.origin +
             window.location.pathname +
             '?' +
-            $.param({'max':max, 'q':query, 'tag':tag});
+            $.param({'max':max, 'q':query, 'tag':tag ${mediaOnlyParam.encodeAsRaw()}});
 
         var myPagination = new Pagination({
 

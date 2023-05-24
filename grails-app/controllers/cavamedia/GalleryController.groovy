@@ -62,7 +62,16 @@ class GalleryController extends BaseController {
      */
     @ApiOperation(hidden = true)
     def media() {
-        [context: getAppContext()]
+
+        boolean mediaOnly = false
+        String mediaOnlyParam = ""
+
+        if (params.mediaOnly) {
+            mediaOnly = true
+            mediaOnlyParam = ", 'mediaOnly':'t'"
+        }
+
+        [context: getAppContext(), mediaOnly: mediaOnly, mediaOnlyParam: mediaOnlyParam]
     }
 
     /**
