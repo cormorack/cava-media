@@ -2,11 +2,11 @@ package cavamedia
 
 import grails.util.Environment
 import grails.util.Holders
-import io.swagger.annotations.ApiOperation
-import io.swagger.v3.oas.annotations.Hidden
+/*import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Hidden*/
 import org.springframework.beans.factory.annotation.Value
 
-@Hidden
+//@Hidden
 class BaseController {
 
     def config = Holders.config
@@ -14,7 +14,7 @@ class BaseController {
     @Value('${SECURE}')
     private String isSecure
 
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def index() { }
 
     /**

@@ -1,14 +1,14 @@
 package cavamedia
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+/*import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty*/
 
-@ApiModel(description = "Partial representation of a WP Post")
+//@ApiModel(description = "Partial representation of a WP Post")
 class Post {
 
     Date date
 
-    @ApiModelProperty(notes = "Title of the Post", name="title", dataType = "String")
+    //@ApiModelProperty(notes = "Title of the Post", name="title", dataType = "String")
     String title
     String excerpt
     String type

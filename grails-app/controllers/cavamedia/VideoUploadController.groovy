@@ -2,19 +2,19 @@ package cavamedia
 
 import grails.converters.JSON
 import grails.util.Environment
-import io.swagger.annotations.Api
+/*import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.annotations.ApiResponses*/
 import org.springframework.http.MediaType
 import javax.servlet.ServletContext
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 
-@Api(value = "/media/video/", tags = ["Video"])
+//@Api(value = "/media/video/", tags = ["Video"])
 class VideoUploadController extends BaseController {
 
     def restService
@@ -26,7 +26,7 @@ class VideoUploadController extends BaseController {
     /**
      * Forwards to the video upload page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def videoForm() {
         [context: getAppContext()]
     }
@@ -38,7 +38,7 @@ class VideoUploadController extends BaseController {
      * @param Upload (a simple DTO)
      * @return Message regarding the success or failure of the upload
      */
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Uploads a video and its poster image",
             nickname = "uploadVideo",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -81,8 +81,9 @@ class VideoUploadController extends BaseController {
                     required = true,
                     value = "Video Description",
                     dataType = "string")
-    ])
-    def uploadVideo( @ApiParam(hidden = true) Upload upload) {
+    ])*/
+    //def uploadVideo( @ApiParam(hidden = true) Upload upload) {
+    def uploadVideo( Upload upload) {
 
         if (!checkParams()) {
             flash.message = "A required field is missing"

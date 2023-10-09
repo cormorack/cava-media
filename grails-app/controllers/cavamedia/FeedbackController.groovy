@@ -2,7 +2,7 @@ package cavamedia
 
 import grails.converters.JSON
 
-import io.swagger.annotations.ApiOperation
+//import io.swagger.annotations.ApiOperation
 
 import org.apache.tika.langdetect.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
@@ -23,7 +23,7 @@ class FeedbackController extends BaseController {
     @Value('${FEEDBACK_HOST}')
     private String feedbackHost
 
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def index() {
         render ""
     }
@@ -32,7 +32,7 @@ class FeedbackController extends BaseController {
      * Forwards to issue form
      * @return
      */
-    @ApiOperation(hidden = true)
+   // @ApiOperation(hidden = true)
     def create() {
         [context: getAppContext()]
     }
@@ -41,7 +41,7 @@ class FeedbackController extends BaseController {
      * Creates a Github issue
      * @return JSON response
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def save() {
 
         if (isProduction()) {

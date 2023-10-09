@@ -1,16 +1,16 @@
 package cavamedia
 
 
-import io.swagger.annotations.Api
+/*import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.annotations.ApiResponses*/
 import grails.converters.JSON
 
 //@Hidden
-@Api(value = "/media/gallery/", tags = ["Gallery"])
+//@Api(value = "/media/gallery/", tags = ["Gallery"])
 class GalleryController extends BaseController {
 
     def postService
@@ -19,7 +19,7 @@ class GalleryController extends BaseController {
     /**
      * Renders the gallery page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def index() {
         render view: 'media', model: [context: getAppContext()]
     }
@@ -27,7 +27,7 @@ class GalleryController extends BaseController {
     /**
      * Renders the map page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def map() {
         [context: getAppContext()]
     }
@@ -35,7 +35,7 @@ class GalleryController extends BaseController {
     /**
      * Renders the image gallery page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def image() {
         [context: getAppContext()]
     }
@@ -43,7 +43,7 @@ class GalleryController extends BaseController {
     /**
      * Renders the video gallery page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def video() {
         [context: getAppContext()]
     }
@@ -51,7 +51,7 @@ class GalleryController extends BaseController {
     /**
      * Renders the video playlist page
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def playlist() {
         [context: getAppContext(), params: params]
     }
@@ -60,7 +60,7 @@ class GalleryController extends BaseController {
      * Renders the media gallery page
      * @return
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def media() {
 
         boolean mediaOnly = false
@@ -78,7 +78,7 @@ class GalleryController extends BaseController {
      * Returns videos that DO NOT have images as JSON
      * @return
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def findVideos() {
 
         params.geoReferenced = "false"
@@ -111,7 +111,7 @@ class GalleryController extends BaseController {
      * Returns a list of videos formatted as JW Player JSON
      * @return
      */
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Returns a JSON list of videos formatted for the JW Player",
             nickname = "videos",
             produces = "application/json",
@@ -169,7 +169,7 @@ class GalleryController extends BaseController {
                     required = false,
                     value = "Enables searching by tag slug (i.e. axial-caldera).",
                     dataType = "string")
-    ])
+    ])*/
     def findAllVideos() {
 
         params.geoReferenced = "false"
@@ -211,7 +211,7 @@ class GalleryController extends BaseController {
      * Returns a list of images as JSON
      * @return
      */
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Returns a JSON list of images",
             nickname = "images",
             produces = "application/json",
@@ -269,7 +269,7 @@ class GalleryController extends BaseController {
                     required = false,
                     value = "Enables searching by tag slug (i.e. axial-caldera).",
                     dataType = "string")
-    ])
+    ])*/
     def findAllImages() {
 
         params.geoReferenced = "false"
@@ -307,7 +307,7 @@ class GalleryController extends BaseController {
         render dataMap as JSON
     }
 
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def findAllMedia() {
 
         params.geoReferenced = "false"
