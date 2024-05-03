@@ -40,22 +40,6 @@ environments {
         cavaHost = "interactiveoceans.washington.edu:8080"
         tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=400"
 
-        /*server {
-            ssl {
-                setProperty "key-store-type", "PKCS12"
-                setProperty "key-store", "/etc/letsencrypt/live/interactiveoceans.washington.edu/keystore.p12"
-                setProperty "key-store-password", "changeit"
-                setProperty "key-alias", "PKCS12"
-                enabled = true
-            }
-        }*/
-
-        /*server.ssl.setProperty "key-store-type", "PKCS12"
-        server.ssl.setProperty "key-store", "/etc/letsencrypt/live/interactiveoceans.washington.edu/keystore.p12"
-        server.ssl.setProperty "key-store-password", "changeit"
-        server.ssl.setProperty "key-alias", "PKCS12"
-        server.ssl.enabled = true*/
-
         if(System.properties['grails.serverURL']) {
             server.contextPath = System.properties['grails.serverURL']
         } else {
