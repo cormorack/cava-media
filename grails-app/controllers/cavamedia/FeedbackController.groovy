@@ -1,13 +1,14 @@
 package cavamedia
 
 import grails.converters.JSON
-
 //import io.swagger.annotations.ApiOperation
-
 import org.apache.tika.langdetect.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
-
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.context.request.ServletRequestAttributes
+import org.springframework.web.context.request.RequestContextHolder
+
+import javax.servlet.http.HttpServletRequest
 
 class FeedbackController extends BaseController {
 
@@ -44,11 +45,17 @@ class FeedbackController extends BaseController {
     //@ApiOperation(hidden = true)
     def save() {
 
+        HttpServletRequest thisRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()
+        thisRequest.getRemoteAddr() // the value from X-Forwarded-For
+        println "this remote address is ${thisRequest.getRemoteAddr()}"
+
         if (isProduction()) {
 
-            String host = request.getHeader("HOST")
+            //String host = request.getHeader("HOST")
+            String host = thisRequest.getRemoteAddr()
 
-            if (host != feedbackHost) {
+            //if (host != feedbackHost) {
+            if (params?.cavaNonce != feedbackHost) {
 
                 log.error("Illegal access by an unauthorized host was attempted.")
                 log.error("Host is ${host}")
@@ -64,11 +71,11 @@ class FeedbackController extends BaseController {
         String parameters = ""
 
         if (request.format == "json") {
-            def jsonObj = request.JSON
-            name = jsonObj.Name
-            description = jsonObj.Description
-            email = jsonObj.Email
-            labels = jsonObj.Labels
+            def jsonObj = request?.JSON
+            name = jsonObj?.Name
+            description = jsonObj?.Description
+            email = jsonObj?.Email
+            labels = jsonObj?.Labels
             parameters = jsonObj
         }
         else {
@@ -84,7 +91,7 @@ class FeedbackController extends BaseController {
             log.info("A request was rejected because of missing parameters")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
         }
@@ -94,7 +101,7 @@ class FeedbackController extends BaseController {
             log.info("A request was rejected because of unwanted data")
 
             Map data = ["message": "Data is invalid", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
         }
@@ -111,17 +118,17 @@ class FeedbackController extends BaseController {
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+        /*if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
-        }
+        }*/
 
         Map data = ["message": "Your issue has been reported", "data": [] ]
-        Map results = ["succes": true, "data": data]
+        Map results = ["success": true, "data": data]
 
         render results as JSON
     }

@@ -83,7 +83,7 @@ class VideoUploadController extends BaseController {
                     dataType = "string")
     ])*/
     //def uploadVideo( @ApiParam(hidden = true) Upload upload) {
-    def uploadVideo( Upload upload) {
+    /*def uploadVideo( Upload upload) {
 
         if (!checkParams()) {
             flash.message = "A required field is missing"
@@ -162,7 +162,7 @@ class VideoUploadController extends BaseController {
                 }
             }
         }
-    }
+    }*/
 
     /**
      * Sets the Upload properties

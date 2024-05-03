@@ -17,6 +17,7 @@
                     action="save"
                     name="theForm"
                     id="theForm">
+                <input type="hidden" name="cavaNonce" value="fwj4M9rKNGg2CQsBTpA57z">
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input class="form-control" type="text" id="Name" name="Name" value="" required="" maxlength="50"/>
