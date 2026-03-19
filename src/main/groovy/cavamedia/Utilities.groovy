@@ -2,11 +2,12 @@ package cavamedia
 
 import de.ailis.pherialize.MixedArray
 import de.ailis.pherialize.Pherialize
-import grails.util.Holders
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.math.NumberUtils
-import org.grails.plugins.htmlcleaner.HtmlCleaner
+import org.jsoup.Jsoup
+import org.jsoup.safety.Safelist
+import org.jsoup.safety.Cleaner
 import java.text.BreakIterator
 
 @Slf4j
@@ -110,14 +111,14 @@ class Utilities {
 
         String defaultText = "Description not available."
 
-        HtmlCleaner htmlCleaner = Holders.applicationContext.getBean('htmlCleaner') as HtmlCleaner
+        Cleaner htmlCleaner = new Cleaner(Safelist.none())
 
         if (post.excerpt) {
-            return htmlCleaner.cleanHtml(post.excerpt, 'none')
+            return htmlCleaner.clean(Jsoup.parse(post.excerpt)).text()
         }
         else if (!post.excerpt && post.content) {
 
-            String description = htmlCleaner.cleanHtml(post.content, 'none')
+            String description = htmlCleaner.clean(Jsoup.parse(post.content)).text()
 
             description = description.replaceAll("\\[(.*?)\\]", "")
 
@@ -126,9 +127,13 @@ class Utilities {
             if (description.size() > 0)  {
                 return description
             }
-            else return defaultText
+            else {
+                return defaultText
+            }
         }
-        else return defaultText
+        else {
+            return defaultText
+        }
     }
 
     /**

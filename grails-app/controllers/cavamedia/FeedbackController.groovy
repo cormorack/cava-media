@@ -4,7 +4,11 @@ import grails.converters.JSON
 //import io.swagger.annotations.ApiOperation
 import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
+import org.jsoup.Jsoup
 import org.springframework.beans.factory.annotation.Value
+import org.jsoup.safety.Safelist
+import org.jsoup.safety.Cleaner
+import java.text.BreakIterator
 import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -111,6 +115,10 @@ class FeedbackController extends BaseController {
             return
         }
 
+        Cleaner htmlCleaner = new Cleaner(Safelist.none())
+
+        description = htmlCleaner.clean(Jsoup.parse(description)).text()
+
         String titleString = "${labels} feedback from ${name}"
 
         Map paramMap = [title: titleString]
@@ -119,7 +127,7 @@ class FeedbackController extends BaseController {
 
         paramMap."labels" = labelList
         paramMap."assignees" = setAssignees(labelList)
-        paramMap.put("body", setDescription( cleanHtml(description, 'none'), name, email, labels))
+        paramMap.put("body", setDescription( description, name, email, labels))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
