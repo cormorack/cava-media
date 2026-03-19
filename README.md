@@ -7,7 +7,7 @@
 
 Latest DockerHub Images: https://hub.docker.com/repository/docker/cormorack/cava-media
 
-Cava media service is a web service to access picturee, videos, and metadata uploaded on the static site.
+Cava media service is a web service to access images, videos, and metadata uploaded on the static site.
 
 ## Docker
 

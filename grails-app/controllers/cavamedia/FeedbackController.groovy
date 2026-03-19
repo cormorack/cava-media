@@ -2,7 +2,7 @@ package cavamedia
 
 import grails.converters.JSON
 //import io.swagger.annotations.ApiOperation
-import org.apache.tika.langdetect.OptimaizeLangDetector
+import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -24,6 +24,9 @@ class FeedbackController extends BaseController {
     @Value('${FEEDBACK_HOST}')
     private String feedbackHost
 
+    /*@Value('${FEEDBACK_NONCE}')
+    private String feedbackNonce*/
+
     //@ApiOperation(hidden = true)
     def index() {
         render ""
@@ -35,6 +38,8 @@ class FeedbackController extends BaseController {
      */
    // @ApiOperation(hidden = true)
     def create() {
+
+        session.cavaNonce = makeNonce()
         [context: getAppContext()]
     }
 
@@ -45,24 +50,24 @@ class FeedbackController extends BaseController {
     //@ApiOperation(hidden = true)
     def save() {
 
-        HttpServletRequest thisRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()
-        thisRequest.getRemoteAddr() // the value from X-Forwarded-For
-        println "this remote address is ${thisRequest.getRemoteAddr()}"
+        //HttpServletRequest thisRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()
+        //thisRequest.getRemoteAddr() // the value from X-Forwarded-For
+        //println "this remote address is ${thisRequest.getRemoteAddr()}"
 
-        if (isProduction()) {
+        //if (isProduction()) {
 
             //String host = request.getHeader("HOST")
-            String host = thisRequest.getRemoteAddr()
+            //String host = thisRequest.getRemoteAddr()
 
             //if (host != feedbackHost) {
-            if (params?.cavaNonce != feedbackHost) {
+            /*if (params?.cavaNonce != session.cavaNonce) {
 
                 log.error("Illegal access by an unauthorized host was attempted.")
                 log.error("Host is ${host}")
                 response.sendError(403)
                 return
-            }
-        }
+            }*/
+        //}
 
         String name = ""
         String description = ""
@@ -98,7 +103,7 @@ class FeedbackController extends BaseController {
 
         if (!acceptValues(description, email)) {
 
-            log.info("A request was rejected because of unwanted data")
+            log.info("A request was rejected because of problematic data")
 
             Map data = ["message": "Data is invalid", "data": [] ]
             Map results = ["success": false, "data": data]
@@ -118,14 +123,14 @@ class FeedbackController extends BaseController {
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
-        /*if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
+        if (!clientService.postIssue(ISSUES_URL, ISSUES_URI, paramMap, headerMap)) {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
             Map results = ["success": false, "data": data]
             render results as JSON
             return
-        }*/
+        }
 
         Map data = ["message": "Your issue has been reported", "data": [] ]
         Map results = ["success": true, "data": data]
@@ -145,12 +150,11 @@ class FeedbackController extends BaseController {
         for (String label in labels) {
 
             if (label.equalsIgnoreCase("Website")) {
-                assignees.add("sdthomas69")
-                assignees.add("hunterhad")
+                assignees.add('sdthomas69')
+                assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Data Portal")) {
-                assignees.add("lsetiawan")
-                assignees.add("dwinasolihin")
+                assignees.add("sdthomas69")
                 assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Expedition")) {
@@ -219,6 +223,17 @@ class FeedbackController extends BaseController {
         LanguageDetector detector = new OptimaizeLangDetector().loadModels()
         detector.addText(text)
         return detector.detect().getLanguage()
+    }
+
+    /**
+     * Generates a random 60 character String safe for URL encoding
+     * @return
+     */
+    private String makeNonce() {
+
+        String nonce = org.apache.commons.lang.RandomStringUtils.random(60, true, true)
+
+        return nonce.replaceAll("[^\\d\\w\\.\\-]", "")
     }
 
 }

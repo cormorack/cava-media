@@ -37,7 +37,7 @@ environments {
         cavaWpRestUrl = "https://interactiveoceans.washington.edu/"
         cavaWpPassword = ""
         cavaWpUser = ""
-        cavaHost = "interactiveoceans.washington.edu:8080"
+        cavaHost = "api.ooica.net"
         tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
@@ -82,4 +82,6 @@ swagger {
 }
 
 trustedURLs = ['interactiveoceans.washington.edu', 'api-development.ooica.net', 'api.ooica.net']
+
+hibernate.connection.provider_class = org.hibernate.connection.C3P0ConnectionProvider
 
