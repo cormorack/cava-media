@@ -294,21 +294,28 @@
             var linkText = document.createTextNode("Link");
             link.appendChild(linkText);
 
-            var download = document.getElementById("downloadLink");
-            var downloadText = document.createTextNode("Download");
-            download.appendChild(downloadText);
-
             var video = extractVideo(url);
+            var fullLink = downloadURL + video;
+
+            var download = document.getElementById("downloadLink");
+            var downloadText = document.createTextNode("Right Click/Save As to Download");
+            //download.appendChild(downloadText);
+            var downloadTag = document.createElement('a');
+            downloadTag.setAttribute('href', fullLink);
+            downloadTag.setAttribute('download', fullLink);
+            downloadTag.setAttribute('target', '_blank');
+            downloadTag.appendChild(downloadText);
+            download.appendChild(downloadTag);
 
             linkEventHandler = function() {
                 window.open(mediaURL + button.data("id"), '_blank')
             };
             link.addEventListener("click", linkEventHandler , false);
 
-            downloadEventHandler = function() {
+            /*downloadEventHandler = function() {
                 window.open(downloadURL + video, '_blank')
             };
-            download.addEventListener("click", downloadEventHandler , false);
+            download.addEventListener("click", downloadEventHandler , false);*/
 
             jwplayer("videoContainer").setup({
                 file: url,
@@ -329,7 +336,7 @@
             link.removeEventListener("click", linkEventHandler , false);
             link.innerHTML = '';
             var download = document.getElementById("downloadLink");
-            download.removeEventListener("click", downloadEventHandler , false);
+            //download.removeEventListener("click", downloadEventHandler , false);
             download.innerHTML = '';
         });
     });

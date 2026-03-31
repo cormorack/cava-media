@@ -37,13 +37,13 @@ environments {
         cavaWpRestUrl = "https://interactiveoceans.washington.edu/"
         cavaWpPassword = ""
         cavaWpUser = ""
-        cavaHost = "interactiveoceans.washington.edu"
+        cavaHost = "api.ooica.net"
         tagURL = "${cavaWpRestUrl}wp-json/wp/v2/tags?per_page=400"
 
         if(System.properties['grails.serverURL']) {
             server.contextPath = System.properties['grails.serverURL']
         } else {
-            server.contextPath = "https://api.interactiveoceans.washington.edu/media"
+            server.contextPath = "https://${cavaHost}/media"
         }
         println "server.contextPath is ${server.contextPath}"
     }
@@ -82,4 +82,6 @@ swagger {
 }
 
 trustedURLs = ['interactiveoceans.washington.edu', 'api-development.ooica.net', 'api.ooica.net']
+
+hibernate.connection.provider_class = org.hibernate.connection.C3P0ConnectionProvider
 

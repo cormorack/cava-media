@@ -1,3 +1,4 @@
+%{--
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!doctype html>
 <html lang="en">
@@ -17,6 +18,7 @@
                     action="save"
                     name="theForm"
                     id="theForm">
+                <input type="hidden" name="cavaNonce" value="${session.cavaNonce}">
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input class="form-control" type="text" id="Name" name="Name" value="" required="" maxlength="50"/>
@@ -112,4 +114,4 @@
     </script>
     </body>
 
-</html>
+</html>--}%

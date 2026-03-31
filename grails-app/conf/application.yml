@@ -23,6 +23,13 @@ info:
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
 spring:
+    datasource:
+      tomcat:
+          test-while-idle: true
+#          time-between-eviction-runs-millis: 60000
+          validation-query: SELECT 1
+          test-on-borrow: true
+          validation-interval: 30000 # 30s
     logging:
         file: "logFile.log"
 
@@ -124,18 +131,33 @@ grails:
 
 hibernate:
     format_sql: true
-#    cache:
+#    c3p0:
+#        min_size: 5
+#        max_size: 20
+#        timeout: 3600
+#        testConnectionOnCheckout: true
+#        preferredTestQuery: "SELECT 1"
+#        idle_test_period: 300
+
 #        queries: false
 #        use_second_level_cache: true
 #        use_query_cache: false
 #        #region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 #        provider_class: net.sf.ehcache.hibernate.EhCacheProvider
 #        region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+
+
+
 dataSource:
     pooled: true
     jmxExport: true
     driverClassName: com.mysql.cj.jdbc.Driver
-    dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    dialect: org.hibernate.dialect.MySQL8Dialect
+#    properties:
+#        initialTimeout: 1
+#        maxActive: 50
+#        minIdle: 5
+#        maxIdle: 25
 
 environments:
     development:
@@ -144,7 +166,7 @@ environments:
             readOnly: true
             username: cavauser
             password: iHazN0i0@
-            url: jdbc:mysql://localhost:3306/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+            url: jdbc:mysql://localhost:3306/cavaweb
             #jndiName: java:comp/env/Cava
             #url: jdbc:mysql://host.docker.internal:8889/cavaweb
     test:
@@ -153,13 +175,34 @@ environments:
             readOnly: true
             username: cavauser
             password: iHazN0i0@
-            url: jdbc:mysql://localhost:8889/cavaweb?useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles
+            url: jdbc:mysql://localhost:8889/cavaweb
     production:
         dataSource:
             readOnly: true
             dbCreate: none
-            jndiName: java:comp/env/Cava
+            username: '${dB_USERNAME}'
+            password: '${dB_PW}'
+            url: "jdbc:mysql://${dB_HOST}"
+            initialSize: 5
+            maxActive: 50
+            maxIdle: 20
+            minIdle: 5
+            timeBetweenEvictionRunsMillis: 30000 # Run evictor every 30 seconds
+            minEvictableIdleTimeMillis: 60000    # Evict connections idle for more than 60 seconds
+            testOnBorrow: true                  # Validate connection when borrowed
+            testWhileIdle: true                 # Validate connections in the background
+            testOnReturn: false
+            validationQuery: "SELECT 1"         # The query to validate the connection
+            validationQueryTimeout: 3           # Timeout in seconds for the validation query
+            #jndiName: java:comp/env/Cava
 
 server:
     servlet:
         context-path: /media
+    port: 8080
+#    ssl:
+#        enabled: true
+#        key-store: "${KEYSTORE}"
+#        key-store-password: "${KEYSTORE_PASS}"
+#        key-store-type: PKCS12
+#        key-alias: cavamedia

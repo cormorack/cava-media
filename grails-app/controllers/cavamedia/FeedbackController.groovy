@@ -1,13 +1,18 @@
 package cavamedia
 
 import grails.converters.JSON
-
-import io.swagger.annotations.ApiOperation
-
-import org.apache.tika.langdetect.OptimaizeLangDetector
+//import io.swagger.annotations.ApiOperation
+import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector
 import org.apache.tika.language.detect.LanguageDetector
-
+import org.jsoup.Jsoup
 import org.springframework.beans.factory.annotation.Value
+import org.jsoup.safety.Safelist
+import org.jsoup.safety.Cleaner
+import java.text.BreakIterator
+import org.springframework.web.context.request.ServletRequestAttributes
+import org.springframework.web.context.request.RequestContextHolder
+
+import javax.servlet.http.HttpServletRequest
 
 class FeedbackController extends BaseController {
 
@@ -23,7 +28,10 @@ class FeedbackController extends BaseController {
     @Value('${FEEDBACK_HOST}')
     private String feedbackHost
 
-    @ApiOperation(hidden = true)
+    /*@Value('${FEEDBACK_NONCE}')
+    private String feedbackNonce*/
+
+    //@ApiOperation(hidden = true)
     def index() {
         render ""
     }
@@ -32,8 +40,10 @@ class FeedbackController extends BaseController {
      * Forwards to issue form
      * @return
      */
-    @ApiOperation(hidden = true)
+   // @ApiOperation(hidden = true)
     def create() {
+
+        session.cavaNonce = makeNonce()
         [context: getAppContext()]
     }
 
@@ -41,21 +51,27 @@ class FeedbackController extends BaseController {
      * Creates a Github issue
      * @return JSON response
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def save() {
 
-        if (isProduction()) {
+        //HttpServletRequest thisRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()
+        //thisRequest.getRemoteAddr() // the value from X-Forwarded-For
+        //println "this remote address is ${thisRequest.getRemoteAddr()}"
 
-            String host = request.getHeader("HOST")
+        //if (isProduction()) {
 
-            if (host != feedbackHost) {
+            //String host = request.getHeader("HOST")
+            //String host = thisRequest.getRemoteAddr()
+
+            //if (host != feedbackHost) {
+            /*if (params?.cavaNonce != session.cavaNonce) {
 
                 log.error("Illegal access by an unauthorized host was attempted.")
                 log.error("Host is ${host}")
                 response.sendError(403)
                 return
-            }
-        }
+            }*/
+        //}
 
         String name = ""
         String description = ""
@@ -64,11 +80,11 @@ class FeedbackController extends BaseController {
         String parameters = ""
 
         if (request.format == "json") {
-            def jsonObj = request.JSON
-            name = jsonObj.Name
-            description = jsonObj.Description
-            email = jsonObj.Email
-            labels = jsonObj.Labels
+            def jsonObj = request?.JSON
+            name = jsonObj?.Name
+            description = jsonObj?.Description
+            email = jsonObj?.Email
+            labels = jsonObj?.Labels
             parameters = jsonObj
         }
         else {
@@ -84,20 +100,24 @@ class FeedbackController extends BaseController {
             log.info("A request was rejected because of missing parameters")
 
             Map data = ["message": "A required parameter is missing", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
         }
 
         if (!acceptValues(description, email)) {
 
-            log.info("A request was rejected because of unwanted data")
+            log.info("A request was rejected because of problematic data")
 
             Map data = ["message": "Data is invalid", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
         }
+
+        Cleaner htmlCleaner = new Cleaner(Safelist.none())
+
+        description = htmlCleaner.clean(Jsoup.parse(description)).text()
 
         String titleString = "${labels} feedback from ${name}"
 
@@ -107,7 +127,7 @@ class FeedbackController extends BaseController {
 
         paramMap."labels" = labelList
         paramMap."assignees" = setAssignees(labelList)
-        paramMap.put("body", setDescription( cleanHtml(description, 'none'), name, email, labels))
+        paramMap.put("body", setDescription( description, name, email, labels))
 
         Map headerMap = ['Authorization': "token ${issuesPassword}", 'User-Agent': 'ooi-data-bot']
 
@@ -115,13 +135,13 @@ class FeedbackController extends BaseController {
 
             log.error("An error occurred when submitting an issue")
             Map data = ["message": "The operation could not be completed", "data": [] ]
-            Map results = ["succes": false, "data": data]
+            Map results = ["success": false, "data": data]
             render results as JSON
             return
         }
 
         Map data = ["message": "Your issue has been reported", "data": [] ]
-        Map results = ["succes": true, "data": data]
+        Map results = ["success": true, "data": data]
 
         render results as JSON
     }
@@ -138,12 +158,11 @@ class FeedbackController extends BaseController {
         for (String label in labels) {
 
             if (label.equalsIgnoreCase("Website")) {
-                assignees.add("sdthomas69")
-                assignees.add("hunterhad")
+                assignees.add('sdthomas69')
+                assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Data Portal")) {
-                assignees.add("lsetiawan")
-                assignees.add("dwinasolihin")
+                assignees.add("sdthomas69")
                 assignees.add("mvardaro")
 
             } else if (label.equalsIgnoreCase("Expedition")) {
@@ -212,6 +231,17 @@ class FeedbackController extends BaseController {
         LanguageDetector detector = new OptimaizeLangDetector().loadModels()
         detector.addText(text)
         return detector.detect().getLanguage()
+    }
+
+    /**
+     * Generates a random 60 character String safe for URL encoding
+     * @return
+     */
+    private String makeNonce() {
+
+        String nonce = org.apache.commons.lang.RandomStringUtils.random(60, true, true)
+
+        return nonce.replaceAll("[^\\d\\w\\.\\-]", "")
     }
 
 }

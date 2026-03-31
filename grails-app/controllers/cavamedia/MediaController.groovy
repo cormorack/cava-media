@@ -3,13 +3,13 @@ package cavamedia
 import grails.converters.JSON
 import grails.plugin.cache.Cacheable
 import grails.util.Holders
-import io.swagger.annotations.*
+/*import io.swagger.annotations.**/
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
 import javax.servlet.ServletContext
 
-@Api(value = "/media/", tags = ["Media"])
+//@Api(value = "/media/", tags = ["Media"])
 class MediaController extends BaseController {
 
     static namespace = 'v1'
@@ -24,7 +24,7 @@ class MediaController extends BaseController {
      * @param type
      * @return a geoJson string
      */
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Returns JSON or geoJSON representations of WP_Posts",
             nickname = "api",
             produces = "application/json",
@@ -96,7 +96,7 @@ class MediaController extends BaseController {
                     required = false,
                     value = "Enables searching by tag slug (i.e. axial-caldera).",
                     dataType = "string")
-    ])
+    ])*/
     def index() {
 
         setParams(params)
@@ -128,7 +128,7 @@ class MediaController extends BaseController {
      * @param id
      * @return
      */
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Returns a JSON representation of a WP Post with its associated Featured Media, if it has one",
             nickname = "api/{id}",
             produces = "application/json",
@@ -150,7 +150,7 @@ class MediaController extends BaseController {
                     required = true,
                     value = "Post Id",
                     dataType = "integer")
-    ])
+    ])*/
     def summary() {
 
         Integer id = 0
@@ -193,7 +193,7 @@ class MediaController extends BaseController {
     /**
      * Forwards to the docs page.
      */
-    @ApiOperation(hidden = true)
+    //@ApiOperation(hidden = true)
     def docs() {
         ServletContext context = getServletContext()
         String apiValue = setApiValue(context)

@@ -1,10 +1,10 @@
 import cavamedia.AccessHiddenSpecFilter
-import io.swagger.models.SecurityRequirement
-import io.swagger.models.Swagger
+/*import io.swagger.models.SecurityRequirement
+import io.swagger.models.Swagger*/
 //import io.swagger.models.auth.ApiKeyAuthDefinition
 //import io.swagger.models.auth.In
-import swagger.grails.SwaggerCache
-import io.swagger.config.FilterFactory
+/*import swagger.grails.SwaggerCache
+import io.swagger.config.FilterFactory*/
 
 def sInfo = {
     description = "InteractiveOceans Media API Documentation"
@@ -23,7 +23,7 @@ def sInfo = {
 
 // Place your Spring DSL code here
 beans = {
-    swagger(Swagger) { bean ->
+    /*swagger(Swagger) { bean ->
         basePath = grailsApplication.config.server.contextPath ?: null
         //securityDefinitions = ["apiKey": new ApiKeyAuthDefinition("apiKey", In.HEADER)]
         //security = [new SecurityRequirement().requirement("apiKey")]
@@ -33,7 +33,7 @@ beans = {
 
     swaggerCache(SwaggerCache) { bean ->
         swagger = ref('swagger')
-    }
+    }*/
 
     //FilterFactory.setFilter(new AccessHiddenSpecFilter());
     /*filterFactory(FilterFactory) { bean ->

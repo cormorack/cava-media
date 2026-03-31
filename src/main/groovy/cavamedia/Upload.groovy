@@ -1,8 +1,8 @@
 package cavamedia
 
-import io.swagger.v3.oas.annotations.*
+//import io.swagger.v3.oas.annotations.*
 
-@Hidden
+//@Hidden
 class Upload implements grails.validation.Validateable {
 
     String desktopVideoURL, phoneVideoURL, title, content
