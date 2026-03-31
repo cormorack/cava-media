@@ -131,12 +131,13 @@ grails:
 
 hibernate:
     format_sql: true
-    c3p0:
-        min_size: 5
-        max_size: 20
-        timeout: 60
-        testConnectionOnCheckout: true
-        preferredTestQuery: "SELECT 1"
+#    c3p0:
+#        min_size: 5
+#        max_size: 20
+#        timeout: 3600
+#        testConnectionOnCheckout: true
+#        preferredTestQuery: "SELECT 1"
+#        idle_test_period: 300
 
 #        queries: false
 #        use_second_level_cache: true
@@ -182,10 +183,17 @@ environments:
             username: '${dB_USERNAME}'
             password: '${dB_PW}'
             url: "jdbc:mysql://${dB_HOST}"
-            testWhileIdle: true
-            validationQuery: select 1
-#            timeBetweenEvictionRunsMillis: 3600000
-#            connectTimeout: 10
+            initialSize: 5
+            maxActive: 50
+            maxIdle: 20
+            minIdle: 5
+            timeBetweenEvictionRunsMillis: 30000 # Run evictor every 30 seconds
+            minEvictableIdleTimeMillis: 60000    # Evict connections idle for more than 60 seconds
+            testOnBorrow: true                  # Validate connection when borrowed
+            testWhileIdle: true                 # Validate connections in the background
+            testOnReturn: false
+            validationQuery: "SELECT 1"         # The query to validate the connection
+            validationQueryTimeout: 3           # Timeout in seconds for the validation query
             #jndiName: java:comp/env/Cava
 
 server:
