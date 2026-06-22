@@ -15,7 +15,7 @@ env:
 
 jobs:
   java-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: ['11.0.4']
