@@ -1,10 +1,13 @@
 package cavamedia
 
-//import grails.transaction.Transactional
 import grails.gorm.transactions.Transactional
-
 import grails.util.Holders
-import org.hibernate.FetchMode as FM
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Recover
+import org.springframework.retry.annotation.Retryable
+import com.mysql.cj.exceptions.CJCommunicationsException
+import javax.naming.ServiceUnavailableException
+import java.sql.SQLRecoverableException
 
 @Transactional(readOnly = true)
 class PostService {
@@ -46,6 +49,11 @@ class PostService {
      * @param tag: filter by tag
      * @return java.util.List
      */
+    @Retryable(
+            value = [CJCommunicationsException, SQLRecoverableException],
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 1000L, multiplier = 2D)  // 1s, 2s, 4s
+    )
     List getMedia(
             Integer max = maxPerPage,
             Integer offset = 0,
@@ -130,6 +138,13 @@ class PostService {
         }
 
         List posts = Post.createCriteria().list(['max': max, 'offset': offset], query)
+    }
+
+    @Recover
+    def recover(CJCommunicationsException e) {
+        log.error("DB connection failed after retries", e)
+        // return a safe fallback, or rethrow as a domain exception
+        throw new ServiceUnavailableException("Database temporarily unavailable")
     }
 
     def imageOrClause = {

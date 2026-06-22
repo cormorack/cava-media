@@ -22,17 +22,8 @@ info:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
-spring:
-    datasource:
-      tomcat:
-          test-while-idle: true
-#          time-between-eviction-runs-millis: 60000
-          validation-query: SELECT 1
-          test-on-borrow: true
-          validation-interval: 30000 # 30s
     logging:
         file: "logFile.log"
-
     jmx:
         unique-names: true
     main:
@@ -68,7 +59,8 @@ management:
             base-path: "/"
 
 logging:
-    file: "logs/logFile.log"
+    file:
+        name: "logs/logFile.log"
     level:
         root: ERROR
 
@@ -131,33 +123,32 @@ grails:
 
 hibernate:
     format_sql: true
-#    c3p0:
-#        min_size: 5
-#        max_size: 20
-#        timeout: 3600
-#        testConnectionOnCheckout: true
-#        preferredTestQuery: "SELECT 1"
-#        idle_test_period: 300
-
-#        queries: false
-#        use_second_level_cache: true
-#        use_query_cache: false
-#        #region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
-#        provider_class: net.sf.ehcache.hibernate.EhCacheProvider
-#        region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-
-
 
 dataSource:
     pooled: true
     jmxExport: true
     driverClassName: com.mysql.cj.jdbc.Driver
     dialect: org.hibernate.dialect.MySQL8Dialect
-#    properties:
-#        initialTimeout: 1
-#        maxActive: 50
-#        minIdle: 5
-#        maxIdle: 25
+    properties:
+        poolName: "Grails6HikariPool"
+        readOnly: true
+        # Keep connections alive — must be LESS than MySQL wait_timeout
+        keepaliveTime: 120000          # ping idle connections every 2 min (ms)
+        idleTimeout: 300000            # remove connections idle > 5 min (ms)
+        maxLifetime: 600000            # recycle connections after 10 min (ms)
+        # MUST be < MySQL wait_timeout
+
+        # Connection validation
+        connectionTestQuery: SELECT 1  # fallback for drivers without isValid()
+        connectionTimeout: 30000        # fail fast if no connection in 30s (ms)
+        validationTimeout: 5000         # how long to wait to validate (ms)
+
+        # Pool sizing (tune to your instance)
+        minimumIdle: 2
+        maximumPoolSize: 10
+
+        # Auto-recovery from dropped connections
+        initializationFailTimeout: 1  # fail fast at startup if DB unreachable
 
 environments:
     development:
@@ -167,6 +158,7 @@ environments:
             username: cavauser
             password: iHazN0i0@
             url: jdbc:mysql://localhost:3306/cavaweb
+            type: com.zaxxer.hikari.HikariDataSource
             #jndiName: java:comp/env/Cava
             #url: jdbc:mysql://host.docker.internal:8889/cavaweb
     test:
@@ -182,18 +174,8 @@ environments:
             dbCreate: none
             username: '${dB_USERNAME}'
             password: '${dB_PW}'
-            url: "jdbc:mysql://${dB_HOST}"
-            initialSize: 5
-            maxActive: 50
-            maxIdle: 20
-            minIdle: 5
-            timeBetweenEvictionRunsMillis: 30000 # Run evictor every 30 seconds
-            minEvictableIdleTimeMillis: 60000    # Evict connections idle for more than 60 seconds
-            testOnBorrow: true                  # Validate connection when borrowed
-            testWhileIdle: true                 # Validate connections in the background
-            testOnReturn: false
-            validationQuery: "SELECT 1"         # The query to validate the connection
-            validationQueryTimeout: 3           # Timeout in seconds for the validation query
+            url: "jdbc:mysql://${dB_HOST}?useSSL=true&requireSSL=true&autoReconnect=true"
+            type: com.zaxxer.hikari.HikariDataSource
             #jndiName: java:comp/env/Cava
 
 server:

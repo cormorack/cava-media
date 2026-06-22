@@ -39,6 +39,9 @@ configurations {
             }
         }
     }
+    configureEach {
+        exclude group: 'org.apache.tomcat.embed'
+    }
 }
 
 dependencies {
@@ -59,14 +62,13 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-logging"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    /*implementation "org.springframework.boot:spring-boot-starter-tomcat"*/
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "com.xk72:pherialize:1.2.4"
     implementation "org.grails.plugins:quartz:2.0.13"
     implementation 'org.apache.tika:tika-core:3.2.3'
     implementation 'org.apache.tika:tika-langdetect-optimaize:3.2.3'
     implementation "com.mysql:mysql-connector-j:9.6.0"
-    //implementation("org.hibernate:hibernate-c3p0:6.2.32.Final")
     implementation "org.grails.plugins:cache"
     implementation 'io.micronaut:micronaut-http-client'
     implementation 'org.jsoup:jsoup:1.15.3'
@@ -79,6 +81,9 @@ dependencies {
     implementation ('commons-io:commons-io:2.21.0') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework.boot:spring-boot-starter-aop' // required
+    implementation("com.zaxxer:HikariCP:7.0.2")
 
     compileOnly "io.micronaut:micronaut-inject-groovy"
 
@@ -88,7 +93,7 @@ dependencies {
 
     runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:4.5.1"
     runtimeOnly "com.h2database:h2"
-    runtimeOnly "org.apache.tomcat:tomcat-jdbc"
+    //runtimeOnly "org.apache.tomcat:tomcat-jdbc"
     runtimeOnly "org.fusesource.jansi:jansi:1.18"
 
     testImplementation "io.micronaut:micronaut-inject-groovy"
@@ -99,6 +104,10 @@ dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:4.19.1"
     testImplementation "org.seleniumhq.selenium:selenium-support:4.19.1"
     testImplementation "org.spockframework:spock-core"
+
+    /*testImplementation ('org.springframework.boot:spring-boot-starter-tomcat') {
+        exclude group: 'org.apache.tomcat.embed'
+    }*/
 
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:4.19.1"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:4.19.1"
@@ -148,6 +157,12 @@ assets {
 war {
     project.version = ""
     baseName rootProject.name
+}
+
+bootWar {
+    from("${project.rootDir}/.ebextensions") {
+        into '.ebextensions'
+    }
 }
 
 application {
