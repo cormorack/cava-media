@@ -6,7 +6,6 @@ import grails.util.Holders
 /*import io.swagger.annotations.**/
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
 import javax.servlet.ServletContext
 
 //@Api(value = "/media/", tags = ["Media"])

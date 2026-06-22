@@ -66,14 +66,21 @@ class UrlMappings {
 
         "/apidoc/$action?/$id?"(controller: "apiDoc", action: "getDocuments")
 
+        "/media/test"(controller: "test", action: "index", method: "GET")
+
         "/$controller/$action?/$id?(.$format)?"{
             constraints {
                 // apply constraints here
             }
         }
 
-        "500"(view:'/error')
-        "404"(view:'/notFound')
+        "403" (controller: "errors", action: "error403")
+        "404" (controller: "errors", action: "error404")
+        "500" (controller: "errors", action: "error500")
+        "/error" (controller: "errors", action: "error500")
+
+        /*"500"(view:'/error')
+        "404"(view:'/notFound')*/
     }
 }
 
